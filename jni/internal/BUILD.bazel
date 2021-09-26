@@ -1,0 +1,48 @@
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@bazel_skylib//rules:common_settings.bzl", "string_list_flag")
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+
+cc_library(
+    name = "jni",
+    hdrs = [":jni_h"],
+    includes = ["."],
+    visibility = ["//jni:__pkg__"],
+    deps = [":jni_md"],
+)
+
+cc_library(
+    name = "jni_md",
+    hdrs = select({
+        "@platforms//os:windows": ["//jni/internal/windows:jni_md_h"],
+        "//conditions:default": ["//jni/internal/unix:jni_md_h"],
+    }),
+    includes = select({
+        "@platforms//os:windows": ["windows"],
+        "//conditions:default": ["unix"],
+    }),
+    visibility = ["//jni:__pkg__"],
+)
+
+copy_file(
+    name = "jni_h",
+    src = "@com_github_openjdk_jdk_jni_h//file",
+    out = "jni.h",
+    is_executable = False,
+)
+
+bzl_library(
+    name = "all_rules",
+    srcs = glob(["*.bzl"]),
+    visibility = ["//jni:__pkg__"],
+    deps = [
+        "@bazel_tools//tools/build_defs/repo:http.bzl",
+        "@bazel_tools//tools/build_defs/repo:utils.bzl",
+        "@bazel_tools//tools/cpp:toolchain_utils.bzl",
+    ],
+)
+
+string_list_flag(
+    name = "pre_transition_platforms",
+    build_setting_default = [],
+    visibility = ["//visibility:public"],
+)

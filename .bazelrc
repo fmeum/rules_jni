@@ -1,0 +1,10 @@
+# Isolate sandboxed build actions from each other.
+build --sandbox_tmpfs_path=/tmp
+
+# Trim PATH to the bare minimum for build actions, but preserve it for tests.
+build --incompatible_strict_action_env
+test --noincompatible_strict_action_env
+
+# Required for layering_check.
+build:ci --repo_env=CC=clang
+build:ci --features=layering_check

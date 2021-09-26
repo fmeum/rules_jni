@@ -1,0 +1,112 @@
+cc_test(
+    name = "hermetic_release_failure_test",
+    size = "small",
+    srcs = [
+        "hermetic_release_failure_test.c",
+    ],
+    env = {
+        "RULES_JNI_TRACE": "1",
+        # Setting PATH in env directly does not work, so we let the test
+        # override it with this value.
+        "PATH_OVERRIDE": "",
+    },
+    deps = [
+        "//jni:libjvm_release",
+    ],
+)
+
+cc_test(
+    name = "hermetic_test",
+    size = "small",
+    env = {
+        "RULES_JNI_TRACE": "1",
+        # Setting PATH in env directly does not work, so we let the test
+        # override it with this value.
+        "PATH_OVERRIDE": "",
+    },
+    deps = [
+        ":libjvm_test_lib",
+    ],
+)
+
+cc_test(
+    name = "java_home_release_test",
+    size = "small",
+    env = {
+        "RULES_JNI_TRACE": "1",
+    },
+    env_inherit = [
+        "JAVA_HOME",
+    ],
+    deps = [
+        ":libjvm_release_test_lib",
+    ],
+)
+
+cc_test(
+    name = "java_home_test",
+    size = "small",
+    env = {
+        "RULES_JNI_TRACE": "1",
+    },
+    env_inherit = [
+        "JAVA_HOME",
+    ],
+    deps = [
+        ":libjvm_test_lib",
+    ],
+)
+
+cc_test(
+    name = "path_release_test",
+    size = "small",
+    env = {
+        "RULES_JNI_TRACE": "1",
+    },
+    env_inherit = [
+        "PATH",
+    ],
+    deps = [
+        ":libjvm_release_test_lib",
+    ],
+)
+
+cc_test(
+    name = "path_test",
+    size = "small",
+    env = {
+        "RULES_JNI_TRACE": "1",
+    },
+    env_inherit = [
+        "PATH",
+    ],
+    deps = [
+        ":libjvm_test_lib",
+    ],
+)
+
+cc_library(
+    name = "libjvm_test_lib",
+    srcs = ["libjvm_test.cpp"],
+    data = [":HelloFromJava_deploy.jar"],
+    deps = [
+        "//jni:libjvm",
+        "@bazel_tools//tools/cpp/runfiles",
+    ],
+)
+
+cc_library(
+    name = "libjvm_release_test_lib",
+    srcs = ["libjvm_test.cpp"],
+    data = [":HelloFromJava_deploy.jar"],
+    deps = [
+        "//jni:libjvm_release",
+        "@bazel_tools//tools/cpp/runfiles",
+    ],
+)
+
+java_binary(
+    name = "HelloFromJava",
+    srcs = ["src/test/java/com/example/HelloFromJava.java"],
+    create_executable = False,
+)

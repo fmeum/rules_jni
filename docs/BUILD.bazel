@@ -1,0 +1,56 @@
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+load("@bazel_skylib//rules:write_file.bzl", "write_file")
+load("@io_bazel_stardoc//stardoc:stardoc.bzl", "stardoc")
+
+stardoc(
+    name = "rules",
+    out = "rules_gen.md",
+    input = "//jni:defs.bzl",
+    deps = ["//jni:all_rules"],
+)
+
+stardoc(
+    name = "workspace_macros",
+    out = "workspace_macros_gen.md",
+    input = "//jni:repositories.bzl",
+    deps = ["//jni:all_rules"],
+)
+
+# Keep at the bottom for existing_rules().
+_STARDOC_RULES = [
+    name
+    for name, attrs in existing_rules().items()
+    if attrs["kind"] == "stardoc"
+]
+
+[
+    diff_test(
+        name = "%s_test" % stardoc_rule,
+        failure_message = "Please run:\n    bazel run //docs:update",
+        file1 = "%s.md" % stardoc_rule,
+        file2 = "%s_gen.md" % stardoc_rule,
+        target_compatible_with = select({
+            "@platforms//os:windows": ["@platforms//:incompatible"],
+            "//conditions:default": [],
+        }),
+    )
+    for stardoc_rule in _STARDOC_RULES
+]
+
+write_file(
+    name = "update_script",
+    out = "update.sh",
+    content = [
+        "#!/bin/sh",
+        "cd $BUILD_WORKSPACE_DIRECTORY",
+    ] + [
+        "cp -fv bazel-bin/docs/{0}_gen.md docs/{0}.md".format(stardoc_rule)
+        for stardoc_rule in _STARDOC_RULES
+    ],
+)
+
+sh_binary(
+    name = "update",
+    srcs = ["update.sh"],
+    data = ["%s_gen.md" % stardoc_rule for stardoc_rule in _STARDOC_RULES],
+)

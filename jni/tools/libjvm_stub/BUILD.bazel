@@ -1,0 +1,92 @@
+load(":current_java_runtime.bzl", "current_java_runtime")
+load("//jni/internal:common.bzl", "merge_cc_infos")
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+
+merge_cc_infos(
+    name = "libjvm_stub_with_jni",
+    libs = [
+        ":libjvm_stub",
+        "//jni",
+    ],
+    visibility = ["//jni:__pkg__"],
+)
+
+merge_cc_infos(
+    name = "libjvm_stub_release_with_jni",
+    libs = [
+        ":libjvm_stub_release",
+        "//jni",
+    ],
+    visibility = ["//jni:__pkg__"],
+)
+
+cc_library(
+    name = "libjvm_stub",
+    hdrs = [
+        "rules_jni.h",
+    ],
+    deps = [
+        ":bazel",
+        ":libjvm_stub_lib",
+    ],
+)
+
+cc_library(
+    name = "libjvm_stub_release",
+    hdrs = [
+        "rules_jni.h",
+    ],
+    deps = [
+        ":libjvm_stub_lib",
+        ":release",
+    ],
+)
+
+cc_library(
+    name = "libjvm_stub_lib",
+    srcs = [
+        "libjvm_stub.c",
+        ":utils",
+    ],
+    includes = ["."],
+    linkopts = select({
+        "@platforms//os:windows": [],
+        "//conditions:default": ["-ldl"],
+    }),
+    deps = [
+        "//jni",
+    ],
+)
+
+copy_file(
+    name = "utils",
+    src = select({
+        "@platforms//os:windows": "utils_windows.h",
+        "//conditions:default": "utils_unix.h",
+    }),
+    out = "utils.h",
+)
+
+current_java_runtime(
+    name = "current_java_runtime",
+)
+
+cc_library(
+    name = "bazel",
+    srcs = [
+        "bazel.cpp",
+        "rules_jni.h",
+    ],
+    deps = [
+        ":current_java_runtime",
+        "@bazel_tools//tools/cpp/runfiles",
+    ],
+)
+
+cc_library(
+    name = "release",
+    srcs = [
+        "release.c",
+        "rules_jni.h",
+    ],
+)

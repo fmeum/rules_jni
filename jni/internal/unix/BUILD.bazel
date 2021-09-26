@@ -1,0 +1,9 @@
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+
+copy_file(
+    name = "jni_md_h",
+    src = "@com_github_openjdk_jdk_unix_jni_md_h//file",
+    out = "jni_md.h",
+    is_executable = False,
+    visibility = ["//jni/internal:__pkg__"],
+)
