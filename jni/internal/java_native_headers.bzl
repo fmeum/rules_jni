@@ -15,7 +15,11 @@
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
 
 def _java_native_headers_impl(ctx):
-    include_dir = ctx.actions.declare_directory(ctx.attr.name)
+    # Giving the include directory a name with a header extension ensures
+    # compatibility with Bazel 4.0.0, which only considers the extension and not
+    # whether an artifact is a tree artifact (aka a directory) when validating
+    # header files (see ad652f12a6).
+    include_dir = ctx.actions.declare_directory(ctx.attr.name + ".h")
     native_headers_jar = ctx.attr.lib[JavaInfo].outputs.native_headers
 
     args = ctx.actions.args()
