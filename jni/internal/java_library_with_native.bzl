@@ -24,7 +24,7 @@ def java_library_with_native(
 
     # Simple concatenation is compatible with select, append is not.
     java_library_args.setdefault("deps", [])
-    java_library_args["deps"] += ["@fmeum_rules_jni//jni/tools/jni_loader"]
+    java_library_args["deps"] += ["@fmeum_rules_jni//jni/tools/native_loader"]
 
     java_library_args.setdefault("tags", [])
     if tags:

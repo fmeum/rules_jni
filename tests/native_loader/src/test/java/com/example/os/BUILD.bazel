@@ -6,10 +6,10 @@ java_library_with_native(
         "OsUtils.java",
     ],
     native_libs = [
-        "//tests/jni_loader/src/test/native/com/example/os",
+        "//tests/native_loader/src/test/native/com/example/os",
     ],
     visibility = [
-        "//tests/jni_loader/src/test/java/com/example:__pkg__",
-        "//tests/jni_loader/src/test/native/com/example/os:__pkg__",
+        "//tests/native_loader/src/test/java/com/example:__pkg__",
+        "//tests/native_loader/src/test/native/com/example/os:__pkg__",
     ],
 )
