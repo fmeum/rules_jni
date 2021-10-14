@@ -3,10 +3,10 @@ cc_library(
     srcs = ["os.cpp"],
     tags = ["manual"],
     visibility = [
-        "//tests/jni_loader/src/test/native/com/example/os:__pkg__",
+        "//tests/native_loader/src/test/native/com/example/os:__pkg__",
     ],
     deps = [
-        "//tests/jni_loader/src/test/native/com/example/os:os_headers",
+        "//tests/native_loader/src/test/native/com/example/os:os_headers",
     ],
     # Required to keep the symbols for native methods only called from Java.
     alwayslink = True,

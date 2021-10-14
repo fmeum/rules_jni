@@ -11,7 +11,7 @@ cc_test(
         "PATH_OVERRIDE": "",
     },
     deps = [
-        "//jni:libjvm_release",
+        "//jni:libjvm_lite",
     ],
 )
 
@@ -100,7 +100,7 @@ cc_library(
     srcs = ["libjvm_test.cpp"],
     data = [":HelloFromJava_deploy.jar"],
     deps = [
-        "//jni:libjvm_release",
+        "//jni:libjvm_lite",
         "@bazel_tools//tools/cpp/runfiles",
     ],
 )

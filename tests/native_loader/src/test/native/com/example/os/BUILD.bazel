@@ -1,0 +1,22 @@
+load("@fmeum_rules_jni//jni:defs.bzl", "java_native_library")
+
+java_native_library(
+    name = "os",
+    srcs = [
+        "onload.cpp",
+    ],
+    java_lib = "//tests/native_loader/src/test/java/com/example/os",
+    platforms = select({
+        "@platforms//os:linux": ["//tests/native_loader/src/test/java/com/example:linux_x86_64"],
+        "@platforms//os:macos": ["//tests/native_loader/src/test/java/com/example:macos_x86_64"],
+        "@platforms//os:windows": ["//tests/native_loader/src/test/java/com/example:windows_x86_64"],
+    }),
+    visibility = [
+        "//tests/native_loader/src/test/java/com/example/os:__pkg__",
+        "//tests/native_loader/src/test/native/com/example/os:__subpackages__",
+    ],
+    deps = select({
+        "@platforms//os:windows": ["//tests/native_loader/src/test/native/com/example/os/windows:os_impl"],
+        "//conditions:default": ["//tests/native_loader/src/test/native/com/example/os/unix:os_impl"],
+    }),
+)

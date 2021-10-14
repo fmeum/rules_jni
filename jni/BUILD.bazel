@@ -15,7 +15,7 @@ alias(
 )
 
 alias(
-    name = "libjvm_release",
+    name = "libjvm_lite",
     actual = "//jni/tools/libjvm_stub:libjvm_stub_release_with_jni",
     visibility = ["//visibility:public"],
 )

@@ -5,8 +5,8 @@ java_native_library(
     srcs = [
         "math.c",
     ],
-    java_lib = "//tests/jni_loader/src/test/java/com/example/math",
+    java_lib = "//tests/native_loader/src/test/java/com/example/math",
     visibility = [
-        "//tests/jni_loader/src/test/java/com/example/math:__pkg__",
+        "//tests/native_loader/src/test/java/com/example/math:__pkg__",
     ],
 )
