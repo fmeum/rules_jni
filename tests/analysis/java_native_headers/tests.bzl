@@ -21,10 +21,11 @@ def _provider_test_impl(ctx):
     target_under_test = analysistest.target_under_test(env)
     target_name = target_under_test.label.name
     compilation_context = target_under_test[CcInfo].compilation_context
+    include_dir = target_name + ".h"
 
     asserts.set_equals(
         env,
-        expected = sets.make(["jni.h", "jni_md.h", target_name]),
+        expected = sets.make(["jni.h", "jni_md.h", include_dir]),
         actual = sets.make([file.basename for file in compilation_context.headers.to_list()]),
     )
 
@@ -35,7 +36,7 @@ def _provider_test_impl(ctx):
     )
 
     quote_include_basenames = [path.split("/")[-1] for path in compilation_context.quote_includes.to_list()]
-    asserts.true(env, target_name in quote_include_basenames)
+    asserts.true(env, include_dir in quote_include_basenames)
     asserts.false(env, "jni.h" in quote_include_basenames)
     asserts.false(env, "jni_md.h" in quote_include_basenames)
 
@@ -45,7 +46,7 @@ def _provider_test_impl(ctx):
 
     asserts.equals(
         env,
-        expected = [target_name],
+        expected = [include_dir],
         actual = [file.basename for file in target_under_test[DefaultInfo].files.to_list()],
     )
 
