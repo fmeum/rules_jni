@@ -11,6 +11,45 @@ java_native_headers(<a href="#java_native_headers-name">name</a>, <a href="#java
 </pre>
 
 
+Generates the native headers for a `java_library` and exposes it to `cc_*` rules.
+
+For every Java class `com.example.Foo` in the `java_library` target specified by `lib` that contains at least one
+function marked with `native` or constant annotated with `@Native`, the include directory exported by this rule will
+contain a file `com_example_Foo.h` that provides the C/C++ interface for this class. Consuming `cc_*` rules should have
+this rule added to their `deps` and can then access such a header file via:
+
+```c
+#include "com_example_Foo.h"
+```
+
+This rule also directly exports the JNI header, which can be included via:
+
+```c
+#include <jni.h>
+```
+
+*Example:*
+
+```starlark
+load("@fmeum_rules_jni//jni:defs.bzl", "java_native_headers")
+
+java_library(
+    name = "os_utils",
+    ...
+)
+
+java_native_headers(
+    name = "os_utils_hdrs",
+    lib = ":os_utils",
+)
+
+cc_library(
+    name = "os_utils_impl",
+    ...
+    deps = [":os_utils_hdrs"],
+)
+```
+
 
 **ATTRIBUTES**
 
@@ -18,7 +57,7 @@ java_native_headers(<a href="#java_native_headers-name">name</a>, <a href="#java
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
 | <a id="java_native_headers-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/docs/build-ref.html#name">Name</a> | required |  |
-| <a id="java_native_headers-lib"></a>lib |  -   | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required |  |
+| <a id="java_native_headers-lib"></a>lib |  The Java library for which native header files should be generated.   | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required |  |
 
 
 <a id="#java_library_with_native"></a>
