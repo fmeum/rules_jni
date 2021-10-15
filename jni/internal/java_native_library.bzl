@@ -233,10 +233,13 @@ def java_native_library(
         cc_binary_args["tags"] += tags
     if "manual" not in cc_binary_args["tags"]:
         cc_binary_args["tags"].append("manual")
+    cc_binary_args.setdefault("deps", [])
+
+    # Simple concatenation is compatible with select, append is not.
     if java_lib:
-        # Simple concatenation is compatible with select, append is not.
-        cc_binary_args.setdefault("deps", [])
         cc_binary_args["deps"] += [":" + headers_name]
+    else:
+        cc_binary_args["deps"] += ["@fmeum_rules_jni//jni"]
 
     native.cc_binary(
         name = macos_library_name,
