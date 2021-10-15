@@ -24,8 +24,8 @@ static const char* PATH_ENV_SEPARATOR = ";";
 static const char PATH_SEPARATOR = '\\';
 
 static const char* LIBJVM_CANDIDATE_PATHS[] = {
-    "/bin/server/",
-    "/jre/bin/server/",
+    "\\bin\\server\\",
+    "\\jre\\bin\\server\\",
 };
 static const size_t NUM_LIBJVM_CANDIDATE_PATHS =
     sizeof(LIBJVM_CANDIDATE_PATHS) / sizeof(char*);
