@@ -14,10 +14,16 @@
  * limitations under the License.
  */
 
-#include <stddef.h>
+#ifndef RULES_JNI_LIBJVM_STUB_RULES_JNI_INTERNAL_H
+#define RULES_JNI_LIBJVM_STUB_RULES_JNI_INTERNAL_H
 
-#include "rules_jni_internal.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+void rules_jni_init(const char* argv0);
+const char* rules_jni_internal_get_bazel_java_home(void);
+#ifdef __cplusplus
+}
+#endif
 
-const char* rules_jni_internal_get_bazel_java_home(void) { return NULL; }
-
-void rules_jni_init(const char* argv0) {}
+#endif

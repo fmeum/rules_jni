@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
+#ifndef RULES_JNI_LIBJVM_STUB_RULES_JNI_H
+#define RULES_JNI_LIBJVM_STUB_RULES_JNI_H
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 void rules_jni_init(const char* argv0);
 #ifdef __cplusplus
 }
+#endif
+
 #endif

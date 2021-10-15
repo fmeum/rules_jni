@@ -18,7 +18,7 @@
 #include <string>
 
 #include "jni/tools/libjvm_stub/current_java_runtime.h"
-#include "rules_jni.h"
+#include "rules_jni_internal.h"
 #include "tools/cpp/runfiles/runfiles.h"
 
 using ::bazel::tools::cpp::runfiles::Runfiles;

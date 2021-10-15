@@ -18,8 +18,8 @@ load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
 def rlocation_path(ctx, short_path):
     return paths.normalize(ctx.workspace_name + "/" + short_path)
 
-CURRENT_JAVA_RUNTIME_HEADER_TEMPLATE = """#ifndef RULES_JNI_CURRENT_JAVA_RUNTIME_H
-#define RULES_JNI_CURRENT_JAVA_RUNTIME_H
+CURRENT_JAVA_RUNTIME_HEADER_TEMPLATE = """#ifndef RULES_JNI_LIBJVM_STUB_CURRENT_JAVA_RUNTIME_H
+#define RULES_JNI_LIBJVM_STUB_CURRENT_JAVA_RUNTIME_H
 #define RULES_JNI_JAVA_EXECUTABLE_RLOCATION "{}"
 #endif
 """
