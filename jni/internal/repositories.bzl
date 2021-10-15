@@ -16,6 +16,17 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file"
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
 def rules_jni_dependencies():
+    """Adds all external repositories required for rules_jni.
+
+This should be called from a `WORKSPACE` file after the declaration of `fmeum_rules_jni` itself.
+
+Currently, rules_jni depends on:
+
+* [bazel_skylib](https://github.com/bazelbuild/bazel-skylib)
+* [platforms](https://github.com/bazelbuild/platforms)
+* individual files of the [OpenJDK](https://github.com/openjdk/jdk)
+
+"""
     maybe(
         http_archive,
         name = "bazel_skylib",
