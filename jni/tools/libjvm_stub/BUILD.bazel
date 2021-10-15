@@ -75,7 +75,7 @@ cc_library(
     name = "bazel",
     srcs = [
         "bazel.cpp",
-        "rules_jni.h",
+        "rules_jni_internal.h",
     ],
     deps = [
         ":current_java_runtime",
@@ -87,6 +87,6 @@ cc_library(
     name = "release",
     srcs = [
         "release.c",
-        "rules_jni.h",
+        "rules_jni_internal.h",
     ],
 )
