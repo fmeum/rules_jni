@@ -6,10 +6,10 @@ java_library_with_native(
         "NativeMath.java",
     ],
     native_libs = [
-        "//tests/native_loader/src/test/native/com/example/math",
+        "//native_loader/src/test/native/com/example/math",
     ],
     visibility = [
-        "//tests/native_loader/src/test/java/com/example:__pkg__",
-        "//tests/native_loader/src/test/native/com/example/math:__pkg__",
+        "//native_loader/src/test/java/com/example:__pkg__",
+        "//native_loader/src/test/native/com/example/math:__pkg__",
     ],
 )
