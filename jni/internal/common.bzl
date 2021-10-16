@@ -97,7 +97,8 @@ def _stringify_label(label_struct):
     )
 
 def original_java_library_name(name):
-    return "%s_orig_" % name
+    # TODO: Use java_common.stamp_jar to set the correct Target-Label attribute in the manifest.
+    return "%s_remove_this_part_" % name
 
 def original_java_library_label(label_string):
     label_struct = parse_label(
