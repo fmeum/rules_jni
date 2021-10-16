@@ -1,6 +1,5 @@
 load(":current_java_runtime.bzl", "current_java_runtime")
 load("//jni/internal:common.bzl", "merge_cc_infos")
-load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 
 merge_cc_infos(
     name = "libjvm_stub_with_jni",
@@ -48,6 +47,10 @@ cc_library(
         "libjvm_stub.c",
         ":utils",
     ],
+    copts = select({
+        "@platforms//os:windows": ["-I%s/windows" % package_name()],
+        "//conditions:default": ["-I%s/unix" % package_name()],
+    }),
     includes = ["."],
     linkopts = select({
         "@platforms//os:windows": [],
@@ -58,13 +61,12 @@ cc_library(
     ],
 )
 
-copy_file(
+filegroup(
     name = "utils",
-    src = select({
-        "@platforms//os:windows": "utils_windows.h",
-        "//conditions:default": "utils_unix.h",
+    srcs = select({
+        "@platforms//os:windows": ["windows/utils.h"],
+        "//conditions:default": ["unix/utils.h"],
     }),
-    out = "utils.h",
 )
 
 current_java_runtime(
