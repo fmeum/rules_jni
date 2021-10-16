@@ -111,3 +111,11 @@ def original_java_library_label(label_string):
         pkg = label_struct.pkg,
         name = original_java_library_name(label_struct.name),
     ))
+
+def make_root_relative(path, package = None):
+    segments = []
+    if native.repository_name() != "@":
+        segments += ["external", native.repository_name().lstrip("@")]
+    segments += (package or native.package_name()).split("/")
+    segments += path.split("/")
+    return "/".join(segments)
