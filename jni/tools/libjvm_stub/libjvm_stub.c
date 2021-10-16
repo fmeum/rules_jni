@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "jni/tools/libjvm_stub/utils.h"
+#include "utils.h"
 
 #define MSG_PREFIX "rules_jni: "
 
