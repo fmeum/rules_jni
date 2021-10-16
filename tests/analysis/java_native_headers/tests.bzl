@@ -14,7 +14,7 @@
 
 load("@bazel_skylib//lib:unittest.bzl", "analysistest", "asserts")
 load("@bazel_skylib//lib:new_sets.bzl", "sets")
-load("//jni:defs.bzl", "java_native_headers")
+load("@fmeum_rules_jni//jni:defs.bzl", "java_native_headers")
 
 def _provider_test_impl(ctx):
     env = analysistest.begin(ctx)
@@ -42,7 +42,7 @@ def _provider_test_impl(ctx):
 
     system_include_paths = [path for path in compilation_context.system_includes.to_list()]
     asserts.false(env, "." in system_include_paths)
-    asserts.true(env, "jni/internal" in system_include_paths)
+    asserts.true(env, "external/fmeum_rules_jni/jni/internal" in system_include_paths)
 
     asserts.equals(
         env,

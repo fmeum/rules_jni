@@ -13,7 +13,7 @@
 # limitations under the License.
 
 load("@bazel_skylib//lib:unittest.bzl", "analysistest", "asserts")
-load("//jni:defs.bzl", "java_native_library")
+load("@fmeum_rules_jni//jni:defs.bzl", "java_native_library")
 
 def _platform_collision_test_impl(ctx):
     env = analysistest.begin(ctx)

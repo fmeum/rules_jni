@@ -13,7 +13,7 @@
 # limitations under the License.
 
 load("@bazel_skylib//lib:unittest.bzl", "asserts", "unittest")
-load("//jni/internal:common.bzl", "parse_label")
+load("@fmeum_rules_jni//jni/internal:common.bzl", "parse_label")
 
 _PARSE_LABEL_TESTCASES = {
     "@foo": struct(repo = "foo", pkg = "", name = "foo"),

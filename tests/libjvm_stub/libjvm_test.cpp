@@ -53,7 +53,7 @@ int main(int argc, const char** argv) {
   // message via a property.
   std::string class_path =
       "-Djava.class.path=" + runfiles->Rlocation(
-                                 "fmeum_rules_jni/tests/libjvm_stub/"
+                                 "fmeum_rules_jni_tests/libjvm_stub/"
                                  "HelloFromJava_deploy.jar");
   JavaVM* jvm = nullptr;
   JNIEnv* env = nullptr;

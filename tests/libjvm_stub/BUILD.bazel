@@ -11,7 +11,7 @@ cc_test(
         "PATH_OVERRIDE": "",
     },
     deps = [
-        "//jni:libjvm_lite",
+        "@fmeum_rules_jni//jni:libjvm_lite",
     ],
 )
 
@@ -90,8 +90,8 @@ cc_library(
     srcs = ["libjvm_test.cpp"],
     data = [":HelloFromJava_deploy.jar"],
     deps = [
-        "//jni:libjvm",
         "@bazel_tools//tools/cpp/runfiles",
+        "@fmeum_rules_jni//jni:libjvm",
     ],
 )
 
@@ -100,8 +100,8 @@ cc_library(
     srcs = ["libjvm_test.cpp"],
     data = [":HelloFromJava_deploy.jar"],
     deps = [
-        "//jni:libjvm_lite",
         "@bazel_tools//tools/cpp/runfiles",
+        "@fmeum_rules_jni//jni:libjvm_lite",
     ],
 )
 

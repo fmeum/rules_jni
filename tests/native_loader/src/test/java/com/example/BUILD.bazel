@@ -30,9 +30,9 @@ java_test(
     size = "small",
     srcs = ["JniLoaderTest.java"],
     deps = [
-        "//jni/tools/native_loader",
-        "//tests/native_loader/src/test/java/com/example/math",
-        "//tests/native_loader/src/test/java/com/example/os",
+        "//native_loader/src/test/java/com/example/math",
+        "//native_loader/src/test/java/com/example/os",
+        "@fmeum_rules_jni//jni/tools/native_loader",
         "@maven//:junit_junit",
     ],
 )

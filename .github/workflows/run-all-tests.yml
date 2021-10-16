@@ -43,15 +43,21 @@ jobs:
           path: ${{ matrix.cache }}
           key: bazel-disk-cache-${{ matrix.bazel }}-${{ matrix.os }}-${{ matrix.jdk }}
 
-      - name: Build
+      - name: Build main workspace
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         run: bazelisk build --config=ci --disk_cache=${{ matrix.cache }} //...
 
-      - name: Test
+      - name: Run tests in main workspace
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         run: bazelisk test --config=ci --disk_cache=${{ matrix.cache }} //...
+
+      - name: Run tests in @fmeum_rules_jni_tests
+        env:
+          USE_BAZEL_VERSION: ${{ matrix.bazel }}
+        working-directory: ./tests
+        run: bazelisk --bazelrc=../.bazelrc test --config=ci --disk_cache=${{ matrix.cache }} //...
 
       - name: Upload test logs
         if: always()
@@ -59,4 +65,6 @@ jobs:
         with:
           name: testlogs-${{ matrix.bazel}}-${{ matrix.os }}-${{ matrix.jdk }}
           # https://github.com/actions/upload-artifact/issues/92#issuecomment-711107236
-          path: bazel-testlogs*/**/test.log
+          path: |
+            bazel-testlogs*/**/test.log
+            tests/bazel-testlogs*/**/test.log
