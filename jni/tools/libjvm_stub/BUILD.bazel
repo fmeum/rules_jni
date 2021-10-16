@@ -1,5 +1,5 @@
 load(":current_java_runtime.bzl", "current_java_runtime")
-load("//jni/internal:common.bzl", "merge_cc_infos")
+load("//jni/internal:common.bzl", "make_root_relative", "merge_cc_infos")
 
 merge_cc_infos(
     name = "libjvm_stub_with_jni",
@@ -48,8 +48,8 @@ cc_library(
         ":utils",
     ],
     copts = select({
-        "@platforms//os:windows": ["-I%s/windows" % package_name()],
-        "//conditions:default": ["-I%s/unix" % package_name()],
+        "@platforms//os:windows": ["-I" + make_root_relative("windows")],
+        "//conditions:default": ["-I" + make_root_relative("unix")],
     }),
     includes = ["."],
     linkopts = select({
