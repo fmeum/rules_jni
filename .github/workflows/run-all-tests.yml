@@ -19,6 +19,11 @@ jobs:
         bazel: ["4.2.1", "rolling"]
         os: [ubuntu-latest, macos-latest, windows-latest]
         jdk: [8, 11, 17]
+        exclude:
+          - bazel: "rolling"
+            jdk: 8
+          - bazel: "rolling"
+            jdk: 11
         include:
           - os: ubuntu-latest
             cache: "/home/runner/.cache/bazel-disk"
