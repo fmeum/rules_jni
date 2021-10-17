@@ -12,8 +12,8 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "fmeum_rules_jni",
-    sha256 = "c734132f9cc091974b5a1f744b71be3d451a5cc502956d5bf96ab5006612718b",
-    url = "https://github.com/fmeum/rules_jni/releases/download/v0.1.0/rules_jni-v0.1.0.tar.gz",
+    sha256 = "9d17a403ccb8b005fdb490a0e94942f163d55fdbb4a3e51fb135bd44e174d170",
+    url = "https://github.com/fmeum/rules_jni/releases/download/v0.1.1/rules_jni-v0.1.1.tar.gz",
 )
 
 load("@fmeum_rules_jni//jni:repositories.bzl", "rules_jni_dependencies")
