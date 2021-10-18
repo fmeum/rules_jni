@@ -83,9 +83,10 @@ int main(int argc, const char** argv) {
   JavaVMOption options[] = {
       JavaVMOption{const_cast<char*>(class_path.c_str())},
       JavaVMOption{const_cast<char*>("-Dmsg.hello=" HELLO_FROM_JAVA_MSG)},
+      JavaVMOption{const_cast<char*>("-Djdk.attach.allowAttachSelf=true")},
   };
   vm_args.version = JNI_VERSION_1_8;
-  vm_args.nOptions = 2;
+  vm_args.nOptions = 3;
   vm_args.options = options;
   vm_args.ignoreUnrecognized = false;
   jint ret = JNI_GetDefaultJavaVMInitArgs(&vm_args);
