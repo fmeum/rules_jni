@@ -12,8 +12,155 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@bazel_skylib//lib:new_sets.bzl", "sets")
 load("@bazel_skylib//lib:unittest.bzl", "analysistest", "asserts")
 load("@fmeum_rules_jni//jni:defs.bzl", "java_native_library")
+load("@local_config_platform//:constraints.bzl", "HOST_CONSTRAINTS")
+
+MULTI_PLATFORM_TEST_NATIVE_LIBRARY_NAME = "multi_platform_native_lib"
+
+def _multi_platform_test_impl(ctx):
+    env = analysistest.begin(ctx)
+    target_under_test = analysistest.target_under_test(env)
+    files = target_under_test[DefaultInfo].files
+
+    actual_paths = sets.make([file.short_path for file in files.to_list()])
+    lib_prefixes = {
+        "linux": "lib",
+        "macos": "lib",
+        "windows": "",
+    }
+    lib_extensions = {
+        "linux": "so",
+        "macos": "dylib",
+        "windows": "dll",
+    }
+    expected_paths = sets.make([
+        "{package}/{name}_{os}_x86_64/{lib_prefix}{name}.{lib_extension}".format(
+            package = ctx.label.package,
+            name = MULTI_PLATFORM_TEST_NATIVE_LIBRARY_NAME,
+            os = os,
+            lib_prefix = lib_prefixes[os],
+            lib_extension = lib_extensions[os],
+        )
+        for os in ["linux", "macos", "windows"]
+    ])
+    asserts.set_equals(env, expected_paths, actual_paths)
+
+    actions = analysistest.target_actions(env)
+    asserts.equals(env, 3 * ["Symlink"], [action.mnemonic for action in actions])
+
+    # Verify that all artifacts were built in different configurations.
+    file_roots = [file.root.path for action in actions for file in action.inputs.to_list()]
+    asserts.equals(env, 3, len(file_roots))
+    asserts.equals(env, 3, sets.length(sets.make(file_roots)))
+
+    return analysistest.end(env)
+
+multi_platform_test = analysistest.make(
+    _multi_platform_test_impl,
+    config_settings = {
+        "//command_line_option:extra_toolchains": ",".join(
+            [
+                "//analysis/java_native_library:fake_%s_toolchain" % os
+                for os in ["linux", "macos", "windows"]
+            ],
+        ),
+    },
+)
+
+def _get_host_constraint_value(constraint_setting):
+    constraint_prefix = "@platforms//%s:" % constraint_setting
+    for constraint in HOST_CONSTRAINTS:
+        if constraint.startswith(constraint_prefix):
+            return constraint[len(constraint_prefix):]
+    fail("Failed to find value for %s in HOST_CONSTRAINTS: %s" % (constraint_setting, HOST_CONSTRAINTS))
+
+def _get_host_legacy_cpu():
+    cpu = _get_host_constraint_value("cpu")
+    if cpu != "x86_64":
+        fail("This test requires the host CPU to be x86_64, got: %s" % cpu)
+    os = _get_host_constraint_value("os")
+    if os == "linux":
+        return "k8"
+    elif os == "osx":
+        return "darwin_x86_64"
+    elif os == "windows":
+        return "x64_windows"
+    else:
+        fail("This test requires the host OS to be linux, macos or windows, got: %s" % os)
+
+def _test_multi_platform():
+    local_config_cc_toolchain_label = "@local_config_cc//:cc-compiler-%s" % _get_host_legacy_cpu()
+
+    native.platform(
+        name = "multi_platform_linux",
+        constraint_values = [
+            "@platforms//os:linux",
+            "@platforms//cpu:x86_64",
+        ],
+    )
+    native.platform(
+        name = "multi_platform_macos",
+        constraint_values = [
+            "@platforms//os:macos",
+            "@platforms//cpu:x86_64",
+        ],
+    )
+    native.platform(
+        name = "multi_platform_windows",
+        constraint_values = [
+            "@platforms//os:windows",
+            "@platforms//cpu:x86_64",
+        ],
+    )
+
+    # These fake toolchains are simply the host autodetected cc toolchain, but
+    # marked as supporting the given target architecture.
+    native.toolchain(
+        name = "fake_linux_toolchain",
+        target_compatible_with = [
+            "@platforms//os:linux",
+            "@platforms//cpu:x86_64",
+        ],
+        toolchain = local_config_cc_toolchain_label,
+        toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+    )
+    native.toolchain(
+        name = "fake_macos_toolchain",
+        target_compatible_with = [
+            "@platforms//os:macos",
+            "@platforms//cpu:x86_64",
+        ],
+        toolchain = local_config_cc_toolchain_label,
+        toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+    )
+    native.toolchain(
+        name = "fake_windows_toolchain",
+        target_compatible_with = [
+            "@platforms//os:windows",
+            "@platforms//cpu:x86_64",
+        ],
+        toolchain = local_config_cc_toolchain_label,
+        toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
+    )
+    java_native_library(
+        name = MULTI_PLATFORM_TEST_NATIVE_LIBRARY_NAME,
+        platforms = [
+            ":multi_platform_linux",
+            ":multi_platform_macos",
+            ":multi_platform_windows",
+        ],
+        tags = ["manual"],
+    )
+
+    multi_platform_test(
+        name = "multi_platform_test",
+        # Test the providers of the _multi_platform_artifact rule since the
+        # contents of publicly visible java_library wrapping the artifacts
+        # cannot be inspected during analysis time.
+        target_under_test = ":%s_multi_" % MULTI_PLATFORM_TEST_NATIVE_LIBRARY_NAME,
+    )
 
 def _platform_collision_test_impl(ctx):
     env = analysistest.begin(ctx)
@@ -121,12 +268,14 @@ def _test_unsupported_runfiles():
     )
 
 def test_suite(name):
+    _test_multi_platform()
     _test_platform_collision()
     _test_unsupported_runfiles()
 
     native.test_suite(
         name = name,
         tests = [
+            ":multi_platform_test",
             ":platform_collision_test",
             ":unsupported_runfiles_test",
         ],
