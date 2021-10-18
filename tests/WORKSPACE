@@ -27,12 +27,8 @@ load("@rules_jvm_external//:specs.bzl", "maven")
 
 maven_install(
     artifacts = [
-        maven.artifact(
-            "junit",
-            "junit",
-            "4.13.2",
-            testonly = True,
-        ),
+        "junit:junit:4.13.2",
+        "net.bytebuddy:byte-buddy-agent:1.11.20",
     ],
     fail_if_repin_required = True,
     maven_install_json = "//:maven_install.json",
