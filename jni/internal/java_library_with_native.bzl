@@ -16,9 +16,9 @@ load(":common.bzl", "merge_java_infos", "original_java_library_name")
 
 def java_library_with_native(
         name,
-        visibility = None,
         native_libs = None,
         tags = None,
+        visibility = None,
         **java_library_args):
     original_name = original_java_library_name(name)
 
@@ -26,13 +26,9 @@ def java_library_with_native(
     java_library_args.setdefault("deps", [])
     java_library_args["deps"] += ["@fmeum_rules_jni//jni/tools/native_loader"]
 
-    java_library_args.setdefault("tags", [])
-    if tags:
-        java_library_args["tags"] += tags
-    if "manual" not in java_library_args["tags"]:
-        java_library_args["tags"].append("manual")
     native.java_library(
         name = original_name,
+        tags = ["manual"],
         visibility = visibility,
         **java_library_args
     )
