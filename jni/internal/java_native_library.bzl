@@ -226,13 +226,6 @@ def java_native_library(
     unix_library_name = "lib%s.so" % name
     windows_library_name = "%s.dll" % name
 
-    # Label cc_binary targets as manual as they should not be built
-    # unnecessarily in the untransitioned configuration.
-    cc_binary_args.setdefault("tags", [])
-    if tags:
-        cc_binary_args["tags"] += tags
-    if "manual" not in cc_binary_args["tags"]:
-        cc_binary_args["tags"].append("manual")
     cc_binary_args.setdefault("deps", [])
 
     # Simple concatenation is compatible with select, append is not.
@@ -245,6 +238,7 @@ def java_native_library(
         name = macos_library_name,
         linkshared = True,
         linkstatic = True,
+        tags = ["manual"],
         visibility = ["//visibility:private"],
         **cc_binary_args
     )
@@ -252,6 +246,7 @@ def java_native_library(
         name = unix_library_name,
         linkshared = True,
         linkstatic = True,
+        tags = ["manual"],
         visibility = ["//visibility:private"],
         **cc_binary_args
     )
@@ -259,6 +254,7 @@ def java_native_library(
         name = windows_library_name,
         linkshared = True,
         linkstatic = True,
+        tags = ["manual"],
         visibility = ["//visibility:private"],
         **cc_binary_args
     )

@@ -65,7 +65,7 @@ cc_library(
 ## java_library_with_native
 
 <pre>
-java_library_with_native(<a href="#java_library_with_native-name">name</a>, <a href="#java_library_with_native-visibility">visibility</a>, <a href="#java_library_with_native-native_libs">native_libs</a>, <a href="#java_library_with_native-tags">tags</a>, <a href="#java_library_with_native-java_library_args">java_library_args</a>)
+java_library_with_native(<a href="#java_library_with_native-name">name</a>, <a href="#java_library_with_native-native_libs">native_libs</a>, <a href="#java_library_with_native-tags">tags</a>, <a href="#java_library_with_native-visibility">visibility</a>, <a href="#java_library_with_native-java_library_args">java_library_args</a>)
 </pre>
 
 
@@ -76,9 +76,9 @@ java_library_with_native(<a href="#java_library_with_native-name">name</a>, <a h
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
 | <a id="java_library_with_native-name"></a>name |  <p align="center"> - </p>   |  none |
-| <a id="java_library_with_native-visibility"></a>visibility |  <p align="center"> - </p>   |  <code>None</code> |
 | <a id="java_library_with_native-native_libs"></a>native_libs |  <p align="center"> - </p>   |  <code>None</code> |
 | <a id="java_library_with_native-tags"></a>tags |  <p align="center"> - </p>   |  <code>None</code> |
+| <a id="java_library_with_native-visibility"></a>visibility |  <p align="center"> - </p>   |  <code>None</code> |
 | <a id="java_library_with_native-java_library_args"></a>java_library_args |  <p align="center"> - </p>   |  none |
 
 
