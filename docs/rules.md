@@ -2,12 +2,12 @@
 
 
 
-<a id="#java_native_headers"></a>
+<a id="#jni_headers"></a>
 
-## java_native_headers
+## jni_headers
 
 <pre>
-java_native_headers(<a href="#java_native_headers-name">name</a>, <a href="#java_native_headers-lib">lib</a>)
+jni_headers(<a href="#jni_headers-name">name</a>, <a href="#jni_headers-lib">lib</a>)
 </pre>
 
 
@@ -31,14 +31,14 @@ This rule also directly exports the JNI header, which can be included via:
 *Example:*
 
 ```starlark
-load("@fmeum_rules_jni//jni:defs.bzl", "java_native_headers")
+load("@fmeum_rules_jni//jni:defs.bzl", "jni_headers")
 
 java_library(
     name = "os_utils",
     ...
 )
 
-java_native_headers(
+jni_headers(
     name = "os_utils_hdrs",
     lib = ":os_utils",
 )
@@ -56,16 +56,16 @@ cc_library(
 
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
-| <a id="java_native_headers-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/docs/build-ref.html#name">Name</a> | required |  |
-| <a id="java_native_headers-lib"></a>lib |  The Java library for which native header files should be generated.   | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required |  |
+| <a id="jni_headers-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/docs/build-ref.html#name">Name</a> | required |  |
+| <a id="jni_headers-lib"></a>lib |  The Java library for which native header files should be generated.   | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required |  |
 
 
-<a id="#java_library_with_native"></a>
+<a id="#cc_jni_library"></a>
 
-## java_library_with_native
+## cc_jni_library
 
 <pre>
-java_library_with_native(<a href="#java_library_with_native-name">name</a>, <a href="#java_library_with_native-native_libs">native_libs</a>, <a href="#java_library_with_native-tags">tags</a>, <a href="#java_library_with_native-visibility">visibility</a>, <a href="#java_library_with_native-java_library_args">java_library_args</a>)
+cc_jni_library(<a href="#cc_jni_library-name">name</a>, <a href="#cc_jni_library-platforms">platforms</a>, <a href="#cc_jni_library-tags">tags</a>, <a href="#cc_jni_library-visibility">visibility</a>, <a href="#cc_jni_library-cc_binary_args">cc_binary_args</a>)
 </pre>
 
 
@@ -75,19 +75,19 @@ java_library_with_native(<a href="#java_library_with_native-name">name</a>, <a h
 
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
-| <a id="java_library_with_native-name"></a>name |  <p align="center"> - </p>   |  none |
-| <a id="java_library_with_native-native_libs"></a>native_libs |  <p align="center"> - </p>   |  <code>None</code> |
-| <a id="java_library_with_native-tags"></a>tags |  <p align="center"> - </p>   |  <code>None</code> |
-| <a id="java_library_with_native-visibility"></a>visibility |  <p align="center"> - </p>   |  <code>None</code> |
-| <a id="java_library_with_native-java_library_args"></a>java_library_args |  <p align="center"> - </p>   |  none |
+| <a id="cc_jni_library-name"></a>name |  <p align="center"> - </p>   |  none |
+| <a id="cc_jni_library-platforms"></a>platforms |  <p align="center"> - </p>   |  <code>None</code> |
+| <a id="cc_jni_library-tags"></a>tags |  <p align="center"> - </p>   |  <code>None</code> |
+| <a id="cc_jni_library-visibility"></a>visibility |  <p align="center"> - </p>   |  <code>None</code> |
+| <a id="cc_jni_library-cc_binary_args"></a>cc_binary_args |  <p align="center"> - </p>   |  none |
 
 
-<a id="#java_native_library"></a>
+<a id="#java_jni_library"></a>
 
-## java_native_library
+## java_jni_library
 
 <pre>
-java_native_library(<a href="#java_native_library-name">name</a>, <a href="#java_native_library-java_lib">java_lib</a>, <a href="#java_native_library-platforms">platforms</a>, <a href="#java_native_library-tags">tags</a>, <a href="#java_native_library-visibility">visibility</a>, <a href="#java_native_library-cc_binary_args">cc_binary_args</a>)
+java_jni_library(<a href="#java_jni_library-name">name</a>, <a href="#java_jni_library-native_libs">native_libs</a>, <a href="#java_jni_library-tags">tags</a>, <a href="#java_jni_library-visibility">visibility</a>, <a href="#java_jni_library-java_library_args">java_library_args</a>)
 </pre>
 
 
@@ -97,11 +97,10 @@ java_native_library(<a href="#java_native_library-name">name</a>, <a href="#java
 
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
-| <a id="java_native_library-name"></a>name |  <p align="center"> - </p>   |  none |
-| <a id="java_native_library-java_lib"></a>java_lib |  <p align="center"> - </p>   |  <code>None</code> |
-| <a id="java_native_library-platforms"></a>platforms |  <p align="center"> - </p>   |  <code>None</code> |
-| <a id="java_native_library-tags"></a>tags |  <p align="center"> - </p>   |  <code>None</code> |
-| <a id="java_native_library-visibility"></a>visibility |  <p align="center"> - </p>   |  <code>None</code> |
-| <a id="java_native_library-cc_binary_args"></a>cc_binary_args |  <p align="center"> - </p>   |  none |
+| <a id="java_jni_library-name"></a>name |  <p align="center"> - </p>   |  none |
+| <a id="java_jni_library-native_libs"></a>native_libs |  <p align="center"> - </p>   |  <code>None</code> |
+| <a id="java_jni_library-tags"></a>tags |  <p align="center"> - </p>   |  <code>None</code> |
+| <a id="java_jni_library-visibility"></a>visibility |  <p align="center"> - </p>   |  <code>None</code> |
+| <a id="java_jni_library-java_library_args"></a>java_library_args |  <p align="center"> - </p>   |  none |
 
 

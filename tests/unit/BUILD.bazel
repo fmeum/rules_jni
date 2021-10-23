@@ -1,3 +1,0 @@
-load(":common_test.bzl", "common_test_suite")
-
-common_test_suite(name = "common_tests")

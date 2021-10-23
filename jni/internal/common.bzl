@@ -54,64 +54,6 @@ merge_java_infos = rule(
     provides = [JavaInfo],
 )
 
-def _parse_same_repo_label(label, current_pkg):
-    if label.startswith("//"):
-        pkg_end = label.find(":")
-        if pkg_end != -1:
-            pkg = label[len("//"):pkg_end]
-            name = label[pkg_end + len(":"):]
-        else:
-            pkg = label[len("//"):]
-            name = pkg.split("/")[-1]
-    else:
-        pkg = current_pkg
-        name = label.lstrip(":")
-
-    return pkg, name
-
-def parse_label(label, current_repo, current_pkg):
-    if label.startswith("@"):
-        repo_end = label.find("//")
-        if repo_end != -1:
-            repo = label[len("@"):repo_end]
-            remainder = label[repo_end:]
-        else:
-            repo = label[len("@"):]
-            remainder = "//:" + repo
-    else:
-        repo = current_repo
-        remainder = label
-
-    pkg, name = _parse_same_repo_label(remainder, current_pkg)
-    return struct(
-        repo = repo,
-        pkg = pkg,
-        name = name,
-    )
-
-def _stringify_label(label_struct):
-    return "@{repo}//{pkg}:{name}".format(
-        repo = label_struct.repo,
-        pkg = label_struct.pkg,
-        name = label_struct.name,
-    )
-
-def original_java_library_name(name):
-    # TODO: Use java_common.stamp_jar to set the correct Target-Label attribute in the manifest.
-    return "%s_remove_this_part_" % name
-
-def original_java_library_label(label_string):
-    label_struct = parse_label(
-        label_string,
-        current_repo = native.repository_name().lstrip("@"),
-        current_pkg = native.package_name(),
-    )
-    return _stringify_label(struct(
-        repo = label_struct.repo,
-        pkg = label_struct.pkg,
-        name = original_java_library_name(label_struct.name),
-    ))
-
 def make_root_relative(path, package = None):
     segments = []
     if native.repository_name() != "@":

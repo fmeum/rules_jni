@@ -20,7 +20,6 @@ cc_library(
         "@platforms//os:windows": ["windows"],
         "//conditions:default": ["unix"],
     }),
-    visibility = ["//jni:__pkg__"],
 )
 
 copy_file(

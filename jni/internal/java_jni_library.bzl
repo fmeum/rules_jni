@@ -12,15 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load(":common.bzl", "merge_java_infos", "original_java_library_name")
+load(":common.bzl", "merge_java_infos")
+load(":jni_headers.bzl", "jni_headers")
 
-def java_library_with_native(
+def java_jni_library(
         name,
         native_libs = None,
         tags = None,
         visibility = None,
         **java_library_args):
-    original_name = original_java_library_name(name)
+    original_name = "%s_remove_this_part_" % name
+    headers_name = "%s.hdrs" % name
 
     # Simple concatenation is compatible with select, append is not.
     java_library_args.setdefault("deps", [])
@@ -29,8 +31,15 @@ def java_library_with_native(
     native.java_library(
         name = original_name,
         tags = ["manual"],
-        visibility = visibility,
+        visibility = ["//visibility:private"],
         **java_library_args
+    )
+
+    jni_headers(
+        name = headers_name,
+        lib = ":" + original_name,
+        tags = ["manual"],
+        visibility = visibility,
     )
 
     merge_java_infos(

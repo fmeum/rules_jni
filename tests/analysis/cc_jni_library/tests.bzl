@@ -14,7 +14,7 @@
 
 load("@bazel_skylib//lib:new_sets.bzl", "sets")
 load("@bazel_skylib//lib:unittest.bzl", "analysistest", "asserts")
-load("@fmeum_rules_jni//jni:defs.bzl", "java_native_library")
+load("@fmeum_rules_jni//jni:defs.bzl", "cc_jni_library")
 load("@local_config_platform//:constraints.bzl", "HOST_CONSTRAINTS")
 
 MULTI_PLATFORM_TEST_NATIVE_LIBRARY_NAME = "multi_platform_native_lib"
@@ -62,7 +62,7 @@ multi_platform_test = analysistest.make(
     config_settings = {
         "//command_line_option:extra_toolchains": ",".join(
             [
-                "//analysis/java_native_library:fake_%s_toolchain" % os
+                "//analysis/cc_jni_library:fake_%s_toolchain" % os
                 for os in ["linux", "macos", "windows"]
             ],
         ),
@@ -144,7 +144,7 @@ def _test_multi_platform():
         toolchain = local_config_cc_toolchain_label,
         toolchain_type = "@bazel_tools//tools/cpp:toolchain_type",
     )
-    java_native_library(
+    cc_jni_library(
         name = MULTI_PLATFORM_TEST_NATIVE_LIBRARY_NAME,
         platforms = [
             ":multi_platform_linux",
@@ -216,7 +216,7 @@ def _test_platform_collision():
             "@platforms//cpu:x86_64",
         ],
     )
-    java_native_library(
+    cc_jni_library(
         name = "platform_collision_native_lib",
         platforms = select({
             "@platforms//os:linux": [
@@ -256,7 +256,7 @@ def _test_unsupported_runfiles():
         name = "unsupported_runfiles_cc_lib",
         data = [":tests.bzl"],
     )
-    java_native_library(
+    cc_jni_library(
         name = "unsupported_runfiles_native_lib",
         deps = [":unsupported_runfiles_cc_lib"],
         tags = ["manual"],

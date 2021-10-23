@@ -13,14 +13,15 @@
 # limitations under the License.
 
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
+load(":transitions.bzl", "return_to_original_target_platforms_transition")
 
-def _java_native_headers_impl(ctx):
+def _jni_headers_impl(ctx):
     # Giving the include directory a name with a header extension ensures
     # compatibility with Bazel 4.0.0, which only considers the extension and not
     # whether an artifact is a tree artifact (aka a directory) when validating
     # header files (see ad652f12a6).
     include_dir = ctx.actions.declare_directory(ctx.attr.name + ".h")
-    native_headers_jar = ctx.attr.lib[JavaInfo].outputs.native_headers
+    native_headers_jar = ctx.attr.lib[0][JavaInfo].outputs.native_headers
 
     args = ctx.actions.args()
     args.add("x")
@@ -62,7 +63,7 @@ def _java_native_headers_impl(ctx):
         cc_info_with_jni,
     ]
 
-java_native_headers = rule(
+jni_headers = rule(
     doc = """
 Generates the native headers for a `java_library` and exposes it to `cc_*` rules.
 
@@ -84,14 +85,14 @@ This rule also directly exports the JNI header, which can be included via:
 *Example:*
 
 ```starlark
-load("@fmeum_rules_jni//jni:defs.bzl", "java_native_headers")
+load("@fmeum_rules_jni//jni:defs.bzl", "jni_headers")
 
 java_library(
     name = "os_utils",
     ...
 )
 
-java_native_headers(
+jni_headers(
     name = "os_utils_hdrs",
     lib = ":os_utils",
 )
@@ -103,12 +104,16 @@ cc_library(
 )
 ```
 """,
-    implementation = _java_native_headers_impl,
+    implementation = _jni_headers_impl,
     attrs = {
         "lib": attr.label(
             doc = "The Java library for which native header files should be generated.",
+            cfg = return_to_original_target_platforms_transition,
             mandatory = True,
             providers = [JavaInfo],
+        ),
+        "_allowlist_function_transition": attr.label(
+            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
         ),
         "_cc_toolchain": attr.label(default = Label("@bazel_tools//tools/cpp:current_cc_toolchain")),
         "_jni": attr.label(
