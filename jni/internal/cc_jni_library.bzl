@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load(":common.bzl", "original_java_library_label")
-load(":java_native_headers.bzl", "java_native_headers")
+load(":jni_headers.bzl", "jni_headers")
 load(":os_cpu_utils.bzl", "SELECT_TARGET_CPU", "SELECT_TARGET_OS")
+load(":transitions.bzl", "multi_platform_transition")
 
 SinglePlatformArtifactInfo = provider(
     fields = ["cpu", "file", "os", "platform"],
@@ -62,35 +62,6 @@ _single_platform_artifact = rule(
     provides = [SinglePlatformArtifactInfo],
 )
 
-_COMMAND_LINE_OPTION_PLATFORMS = "//command_line_option:platforms"
-_SETTING_PRE_TRANSITION_PLATFORMS = "@fmeum_rules_jni//jni/internal:pre_transition_platforms"
-
-def _multi_platform_transition_impl(settings, attrs):
-    if not attrs.platforms:
-        return {
-            _COMMAND_LINE_OPTION_PLATFORMS: settings[_COMMAND_LINE_OPTION_PLATFORMS],
-            _SETTING_PRE_TRANSITION_PLATFORMS: settings[_SETTING_PRE_TRANSITION_PLATFORMS],
-        }
-    return [
-        {
-            _COMMAND_LINE_OPTION_PLATFORMS: [target_platform],
-            _SETTING_PRE_TRANSITION_PLATFORMS: [str(label) for label in settings[_COMMAND_LINE_OPTION_PLATFORMS]],
-        }
-        for target_platform in attrs.platforms
-    ]
-
-_multi_platform_transition = transition(
-    implementation = _multi_platform_transition_impl,
-    inputs = [
-        _COMMAND_LINE_OPTION_PLATFORMS,
-        _SETTING_PRE_TRANSITION_PLATFORMS,
-    ],
-    outputs = [
-        _COMMAND_LINE_OPTION_PLATFORMS,
-        _SETTING_PRE_TRANSITION_PLATFORMS,
-    ],
-)
-
 _CONFLICTING_PLATFORMS_MESSAGE = """'{identifier}' is produced by multiple platforms:
     {platform1}
     {platform2}
@@ -131,7 +102,7 @@ _multi_platform_artifact = rule(
     implementation = _multi_platform_artifact_impl,
     attrs = {
         "artifact": attr.label(
-            cfg = _multi_platform_transition,
+            cfg = multi_platform_transition,
             mandatory = True,
             providers = [SinglePlatformArtifactInfo],
         ),
@@ -145,51 +116,6 @@ _multi_platform_artifact = rule(
     },
 )
 
-def _reset_platforms_transition_impl(settings, attrs):
-    if settings[_SETTING_PRE_TRANSITION_PLATFORMS]:
-        return {
-            _SETTING_PRE_TRANSITION_PLATFORMS: [],
-            _COMMAND_LINE_OPTION_PLATFORMS: settings[_SETTING_PRE_TRANSITION_PLATFORMS],
-        }
-    else:
-        return {
-            _SETTING_PRE_TRANSITION_PLATFORMS: settings[_SETTING_PRE_TRANSITION_PLATFORMS],
-            _COMMAND_LINE_OPTION_PLATFORMS: settings[_COMMAND_LINE_OPTION_PLATFORMS],
-        }
-
-_reset_platforms_transition = transition(
-    implementation = _reset_platforms_transition_impl,
-    inputs = [
-        _COMMAND_LINE_OPTION_PLATFORMS,
-        _SETTING_PRE_TRANSITION_PLATFORMS,
-    ],
-    outputs = [
-        _COMMAND_LINE_OPTION_PLATFORMS,
-        _SETTING_PRE_TRANSITION_PLATFORMS,
-    ],
-)
-
-def _reset_platforms_impl(ctx):
-    return [
-        ctx.attr.target[0][DefaultInfo],
-        ctx.attr.target[0][CcInfo],
-    ]
-
-_reset_platforms = rule(
-    implementation = _reset_platforms_impl,
-    attrs = {
-        "target": attr.label(
-            cfg = _reset_platforms_transition,
-            mandatory = True,
-            providers = [CcInfo],
-        ),
-        "_allowlist_function_transition": attr.label(
-            default = "@bazel_tools//tools/allowlists/function_transition_allowlist",
-        ),
-    },
-    provides = [CcInfo],
-)
-
 def _maven_resource_prefix_if_present():
     # The equivalent for src/*/native of:
     # https://github.com/bazelbuild/bazel/blob/fad21dae0b01d5f9b2274542c89f4c8163c2ff36/src/main/java/com/google/devtools/build/lib/bazel/rules/java/BazelJavaSemantics.java#L652
@@ -199,29 +125,12 @@ def _maven_resource_prefix_if_present():
             return "/".join(segments[:i + 3])
     return None
 
-def java_native_library(
+def cc_jni_library(
         name,
-        java_lib = None,
         platforms = None,
         tags = None,
         visibility = None,
         **cc_binary_args):
-    if java_lib:
-        headers_internal_name = "%s_headers_orig_" % name
-        headers_name = "%s_headers" % name
-        java_native_headers(
-            name = headers_internal_name,
-            lib = original_java_library_label(java_lib),
-            tags = ["manual"],
-            visibility = ["//visibility:private"],
-        )
-        _reset_platforms(
-            name = headers_name,
-            tags = ["manual"],
-            target = ":" + headers_internal_name,
-            visibility = visibility,
-        )
-
     macos_library_name = "lib%s.dylib" % name
     unix_library_name = "lib%s.so" % name
     windows_library_name = "%s.dll" % name
@@ -229,10 +138,7 @@ def java_native_library(
     cc_binary_args.setdefault("deps", [])
 
     # Simple concatenation is compatible with select, append is not.
-    if java_lib:
-        cc_binary_args["deps"] += [":" + headers_name]
-    else:
-        cc_binary_args["deps"] += ["@fmeum_rules_jni//jni"]
+    cc_binary_args["deps"] += ["@fmeum_rules_jni//jni"]
 
     native.cc_binary(
         name = macos_library_name,

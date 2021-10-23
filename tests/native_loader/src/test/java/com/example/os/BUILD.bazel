@@ -1,6 +1,6 @@
-load("@fmeum_rules_jni//jni:defs.bzl", "java_library_with_native")
+load("@fmeum_rules_jni//jni:defs.bzl", "java_jni_library")
 
-java_library_with_native(
+java_jni_library(
     name = "os",
     srcs = [
         "OsUtils.java",
@@ -10,6 +10,6 @@ java_library_with_native(
     ],
     visibility = [
         "//native_loader/src/test/java/com/example:__pkg__",
-        "//native_loader/src/test/native/com/example/os:__pkg__",
+        "//native_loader/src/test/native/com/example/os:__subpackages__",
     ],
 )

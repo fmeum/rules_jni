@@ -22,14 +22,14 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 /**
- * Static helper methods that load native libraries created with {@code java_native_library} rule of
+ * Static helper methods that load native libraries created with {@code cc_jni_library} rule of
  * <a href="https://github.com/fmeum/rules_jni">{@code rules_jni}</a>.
  */
 public class RulesJni {
   private static Path tempDir;
 
   /**
-   * Loads a native library created with the {@code java_native_library} rule from the resource
+   * Loads a native library created with the {@code cc_jni_library} rule from the resource
    * directory of the class
    * {@code inSamePackageAs}.
    *
@@ -39,7 +39,7 @@ public class RulesJni {
    * All temporary files created during the extraction of the native library are cleaned up at JVM
    * exit.
    *
-   * @param name the name of the {@code java_native_library} target that generates the native
+   * @param name the name of the {@code cc_jni_library} target that generates the native
    *     library to be loaded.
    * @param inSamePackageAs a class that is contained in the same Java (or Bazel) package as the
    *     native library.
@@ -57,7 +57,7 @@ public class RulesJni {
   }
 
   /**
-   * Loads a native library created with the {@code java_native_library} rule from the resource
+   * Loads a native library created with the {@code cc_jni_library} rule from the resource
    * directory specified by the absolute path {@code absolutePathToPackage}.
    *
    * The correct version of the native library for the current OS and CPU architecture is chosen
@@ -66,7 +66,7 @@ public class RulesJni {
    * All temporary files created during the extraction of the native library are cleaned up at JVM
    * exit.
    *
-   * @param name the name of the {@code java_native_library} target that generates the native
+   * @param name the name of the {@code cc_jni_library} target that generates the native
    *     library to be loaded.
    * @param absolutePathToPackage a class that is contained in the same Java (or Bazel) package as
    *     the native library.

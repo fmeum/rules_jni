@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("//jni/internal:java_library_with_native.bzl", _java_library_with_native = "java_library_with_native")
-load("//jni/internal:java_native_headers.bzl", _java_native_headers = "java_native_headers")
-load("//jni/internal:java_native_library.bzl", _java_native_library = "java_native_library")
+load("//jni/internal:java_jni_library.bzl", _java_jni_library = "java_jni_library")
+load("//jni/internal:jni_headers.bzl", _jni_headers = "jni_headers")
+load("//jni/internal:cc_jni_library.bzl", _cc_jni_library = "cc_jni_library")
 
-java_library_with_native = _java_library_with_native
-java_native_headers = _java_native_headers
-java_native_library = _java_native_library
+java_jni_library = _java_jni_library
+jni_headers = _jni_headers
+cc_jni_library = _cc_jni_library

@@ -6,7 +6,7 @@ cc_library(
         "//native_loader/src/test/native/com/example/os:__pkg__",
     ],
     deps = [
-        "//native_loader/src/test/native/com/example/os:os_headers",
+        "//native_loader/src/test/java/com/example/os:os.hdrs",
     ],
     # Required to keep the symbols for native methods only called from Java.
     alwayslink = True,
