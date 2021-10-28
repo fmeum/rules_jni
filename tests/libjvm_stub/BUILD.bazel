@@ -5,10 +5,11 @@ cc_test(
         "hermetic_release_failure_test.c",
     ],
     env = {
-        "RULES_JNI_TRACE": "1",
+        "HERMETIC": "1",
         # Setting PATH in env directly does not work, so we let the test
         # override it with this value.
         "PATH_OVERRIDE": "",
+        "RULES_JNI_TRACE": "1",
     },
     deps = [
         "@fmeum_rules_jni//jni:libjvm_lite",
@@ -19,10 +20,11 @@ cc_test(
     name = "hermetic_test",
     size = "small",
     env = {
-        "RULES_JNI_TRACE": "1",
+        "HERMETIC": "1",
         # Setting PATH in env directly does not work, so we let the test
         # override it with this value.
         "PATH_OVERRIDE": "",
+        "RULES_JNI_TRACE": "1",
     },
     deps = [
         ":libjvm_test_lib",
@@ -33,6 +35,9 @@ cc_test(
     name = "java_home_release_test",
     size = "small",
     env = {
+        # Setting PATH in env directly does not work, so we let the test
+        # override it with this value.
+        "PATH_OVERRIDE": "",
         "RULES_JNI_TRACE": "1",
     },
     env_inherit = [
@@ -47,6 +52,9 @@ cc_test(
     name = "java_home_test",
     size = "small",
     env = {
+        # Setting PATH in env directly does not work, so we let the test
+        # override it with this value.
+        "PATH_OVERRIDE": "",
         "RULES_JNI_TRACE": "1",
     },
     env_inherit = [

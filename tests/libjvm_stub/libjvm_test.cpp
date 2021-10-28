@@ -14,6 +14,9 @@
 
 #include <jni.h>
 #include <rules_jni.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 #include <codecvt>
 #include <cstdlib>
@@ -24,8 +27,15 @@
 
 #define HELLO_FROM_JAVA_MSG "Hello_from_Java!"
 
+void clear_env(const char* name) {
+#ifdef _WIN32
+  SetEnvironmentVariable(name, nullptr);
+#else
+  unsetenv(name);
+#endif
+}
+
 int main(int argc, const char** argv) {
-  rules_jni_init(argv[0]);
   // Override PATH with PATH_OVERRIDE, if set.
   if (getenv("PATH_OVERRIDE") != nullptr) {
     const char* path_override = getenv("PATH_OVERRIDE");
@@ -47,6 +57,18 @@ int main(int argc, const char** argv) {
                 << runfiles_error << std::endl;
       return EXIT_FAILURE;
     }
+  }
+
+  // If we do not want to test finding the Bazel Java toolchain in the runfiles,
+  // we have to ensure that runfiles cannot be detected when calling into
+  // libjvm. Else, ensure that they are found.
+  if (getenv("HERMETIC") != nullptr) {
+    rules_jni_init(argv[0]);
+  } else {
+    clear_env("RUNFILES_MANIFEST_FILE");
+    clear_env("RUNFILES_DIR");
+    clear_env("TEST_SRCDIR");
+    rules_jni_init("does_not_exist");
   }
 
   // Configure the JVM by adding the test JAR to the classpath and passing a
