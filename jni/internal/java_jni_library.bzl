@@ -19,6 +19,33 @@ def java_jni_library(
         name,
         native_libs = [],
         **java_library_args):
+    """A Java library that bundles one or more native libraries created with [`cc_jni_library`](#cc_jni_library).
+
+    To load a native library referenced in the `native_libs` argument, use the static methods of the
+    [`RulesJni`](https://fmeum.github.io/rules_jni_javadocs/com/github/fmeum/rules_jni/RulesJni.html) class, which is
+    accessible for `srcs` of this target due to an implicit dependency on
+    [`@fmeum_rules_jni//jni/tools/native_loader`](targets.md#native_loader). These methods automatically choose the
+    correct version of the library for the current OS and CPU architecture, if available.
+
+    The native libraries referenced in the `native_libs` argument are added as resources and are thus included in the
+    deploy JARs of any [`java_binary`](https://docs.bazel.build/versions/main/be/java.html#java_binary) depending on
+    this target.
+
+    ### Implicit output targets
+
+    - `<name>.hdrs`: The auto-generated JNI headers for this library.
+
+      This target can be added to the `deps` of a
+      [`cc_library`](https://docs.bazel.build/versions/main/be/c-cpp.html#cc_library) or
+      [`cc_jni_library`](#cc_jni_library). See [`jni_headers`](#jni_headers) for a more detailed description of the
+      underlying rule.
+
+    Args:
+      name: A unique name for this target.
+      native_libs: A list of [`cc_jni_library`](#cc_jni_library) targets to include in this Java library.
+      **java_library_args: Any arguments to a
+        [`java_library`](https://docs.bazel.build/versions/main/be/java.html#java_library).
+    """
     original_name = "%s_remove_this_part_" % name
     headers_name = "%s.hdrs" % name
 

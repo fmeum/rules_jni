@@ -129,6 +129,42 @@ def cc_jni_library(
         name,
         platforms = [],
         **cc_binary_args):
+    """A native library that can be loaded by a Java application at runtime.
+
+    Add this target to the `native_libs` of a [`java_jni_library`](#java_jni_library).
+
+    The native libraries are exposed as Java resources, which are placed in a Java package determined from the Bazel
+    package of this target according to the
+    [Maven standard directory layout](https://maven.apache.org/guides/introduction/introduction-to-the-standard-directory-layout.html).
+    If the library should be included in the `com/example` subdirectory of a deploy JAR, which corresponds to the Java
+    package `com.example`, place it under one of the following Bazel package structures:
+    * `**/src/*/native/com/example` (preferred)
+    * `**/src/*/resources/com/example`
+    * `**/src/*/java/com/example`
+    * `**/java/com/example`
+
+    *Note:* Building a native library for multiple platforms by setting the `platforms` attribute to a non-empty list of
+    platforms requires either remote execution or cross-compilation toolchains for the target platforms. As both require
+    a more sophisticated Bazel setup, the following simpler process can be helpful for smaller or open-source projects:
+
+    1. Leave the `platforms` attribute empty or unspecified.
+    2. Build the deploy JAR of the Java library or application with all native libraries included separately for each
+       target platform, for example using a CI platform.
+    3. Manually (outside Bazel) merge the deploy JARs. The `.class` files will be identical and can thus safely be
+       replaced, but the resulting JAR will include all versions of the native library and the correct version will be
+       loaded at runtime.
+
+    An example of such a CI workflow can be found [here](https://github.com/CodeIntelligenceTesting/jazzer/blob/d1835d6fa2ebfb7b2661cfaaa8acb8bbf42bb486/.github/workflows/release.yml).
+
+    Args:
+      name: A unique name for this target.
+      platforms: A list of [`platform`s](https://docs.bazel.build/versions/main/be/platform.html#platform) for which
+        this native library should be built. If the list is empty (the default), the library is only built for the
+        current target platform.
+      **cc_binary_args: Any arguments to a
+        [`cc_library`](https://docs.bazel.build/versions/main/be/c-cpp.html#cc_library), except for:
+        `linkshared` (always `True`), `linkstatic` (always `True`), `data` (runfiles are not supported)
+    """
     macos_library_name = "lib%s.dylib" % name
     unix_library_name = "lib%s.so" % name
     windows_library_name = "%s.dll" % name
