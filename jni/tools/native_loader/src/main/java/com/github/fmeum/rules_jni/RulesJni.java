@@ -22,16 +22,17 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 /**
- * Static helper methods that load native libraries created with {@code cc_jni_library} rule of
+ * Static helper methods that load native libraries created with the {@code cc_jni_library} rule of
  * <a href="https://github.com/fmeum/rules_jni">{@code rules_jni}</a>.
  */
 public class RulesJni {
   private static Path tempDir;
 
+  private RulesJni() {}
+
   /**
    * Loads a native library created with the {@code cc_jni_library} rule from the resource
-   * directory of the class
-   * {@code inSamePackageAs}.
+   * directory of the class {@code inSamePackageAs}.
    *
    * The correct version of the native library for the current OS and CPU architecture is chosen
    * automatically.
