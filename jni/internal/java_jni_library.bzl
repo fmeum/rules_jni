@@ -17,12 +17,14 @@ load(":jni_headers.bzl", "jni_headers")
 
 def java_jni_library(
         name,
-        native_libs = None,
-        tags = None,
-        visibility = None,
+        native_libs = [],
         **java_library_args):
     original_name = "%s_remove_this_part_" % name
     headers_name = "%s.hdrs" % name
+
+    # Arguments to set on the visible target, not the intermediate java_library.
+    tags = java_library_args.pop("tags", default = None)
+    visibility = java_library_args.pop("visibility", default = None)
 
     # Simple concatenation is compatible with select, append is not.
     java_library_args.setdefault("deps", [])
@@ -46,7 +48,7 @@ def java_jni_library(
         name = name,
         libs = [
             ":" + original_name,
-        ] + (native_libs if native_libs else []),
+        ] + native_libs,
         tags = tags,
         visibility = visibility,
     )

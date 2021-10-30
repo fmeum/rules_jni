@@ -65,7 +65,7 @@ cc_library(
 ## cc_jni_library
 
 <pre>
-cc_jni_library(<a href="#cc_jni_library-name">name</a>, <a href="#cc_jni_library-platforms">platforms</a>, <a href="#cc_jni_library-tags">tags</a>, <a href="#cc_jni_library-visibility">visibility</a>, <a href="#cc_jni_library-cc_binary_args">cc_binary_args</a>)
+cc_jni_library(<a href="#cc_jni_library-name">name</a>, <a href="#cc_jni_library-platforms">platforms</a>, <a href="#cc_jni_library-cc_binary_args">cc_binary_args</a>)
 </pre>
 
 
@@ -76,9 +76,7 @@ cc_jni_library(<a href="#cc_jni_library-name">name</a>, <a href="#cc_jni_library
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
 | <a id="cc_jni_library-name"></a>name |  <p align="center"> - </p>   |  none |
-| <a id="cc_jni_library-platforms"></a>platforms |  <p align="center"> - </p>   |  <code>None</code> |
-| <a id="cc_jni_library-tags"></a>tags |  <p align="center"> - </p>   |  <code>None</code> |
-| <a id="cc_jni_library-visibility"></a>visibility |  <p align="center"> - </p>   |  <code>None</code> |
+| <a id="cc_jni_library-platforms"></a>platforms |  <p align="center"> - </p>   |  <code>[]</code> |
 | <a id="cc_jni_library-cc_binary_args"></a>cc_binary_args |  <p align="center"> - </p>   |  none |
 
 
@@ -87,7 +85,7 @@ cc_jni_library(<a href="#cc_jni_library-name">name</a>, <a href="#cc_jni_library
 ## java_jni_library
 
 <pre>
-java_jni_library(<a href="#java_jni_library-name">name</a>, <a href="#java_jni_library-native_libs">native_libs</a>, <a href="#java_jni_library-tags">tags</a>, <a href="#java_jni_library-visibility">visibility</a>, <a href="#java_jni_library-java_library_args">java_library_args</a>)
+java_jni_library(<a href="#java_jni_library-name">name</a>, <a href="#java_jni_library-native_libs">native_libs</a>, <a href="#java_jni_library-java_library_args">java_library_args</a>)
 </pre>
 
 
@@ -98,9 +96,7 @@ java_jni_library(<a href="#java_jni_library-name">name</a>, <a href="#java_jni_l
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
 | <a id="java_jni_library-name"></a>name |  <p align="center"> - </p>   |  none |
-| <a id="java_jni_library-native_libs"></a>native_libs |  <p align="center"> - </p>   |  <code>None</code> |
-| <a id="java_jni_library-tags"></a>tags |  <p align="center"> - </p>   |  <code>None</code> |
-| <a id="java_jni_library-visibility"></a>visibility |  <p align="center"> - </p>   |  <code>None</code> |
+| <a id="java_jni_library-native_libs"></a>native_libs |  <p align="center"> - </p>   |  <code>[]</code> |
 | <a id="java_jni_library-java_library_args"></a>java_library_args |  <p align="center"> - </p>   |  none |
 
 
