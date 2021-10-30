@@ -58,11 +58,27 @@ Currently, rules_jni depends on:
         urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-17-ga/src/java.base/windows/native/include/jni_md.h"],
     )
     maybe(
+        http_file,
+        name = "com_github_openjdk_license",
+        downloaded_file_path = "LICENSE",
+        sha256 = "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
+        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-17-ga/LICENSE"],
+    )
+    maybe(
         http_archive,
         name = "platforms",
         sha256 = "079945598e4b6cc075846f7fd6a9d0857c33a7afc0de868c2ccb96405225135d",
         urls = [
             "https://mirror.bazel.build/github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
             "https://github.com/bazelbuild/platforms/releases/download/0.0.4/platforms-0.0.4.tar.gz",
+        ],
+    )
+    maybe(
+        http_archive,
+        name = "rules_license",
+        sha256 = "a5edffc810c74e32a9a7ef5f9591bc05d1362b244b9e22323f38cbbbaba41281",
+        urls = [
+            "https://mirror.bazel.build/github.com/bazelbuild/rules_license/releases/download/0.0.2/rules_license-0.0.2.tar.gz",
+            "https://github.com/bazelbuild/rules_license/releases/download/0.0.2/rules_license-0.0.2.tar.gz",
         ],
     )
