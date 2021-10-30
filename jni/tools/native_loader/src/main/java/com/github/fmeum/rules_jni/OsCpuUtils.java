@@ -14,12 +14,14 @@
 
 package com.github.fmeum.rules_jni;
 
-public class OsCpuUtils {
+class OsCpuUtils {
   public static final String VERBOSE_OS = System.getProperty("os.name");
   public static final String CANONICAL_OS = toCanonicalOs(VERBOSE_OS);
 
   public static final String VERBOSE_CPU = System.getProperty("os.arch");
   public static final String CANONICAL_CPU = toCanonicalCpu(VERBOSE_CPU);
+
+  private OsCpuUtils() {}
 
   private static String toCanonicalOs(String verboseOs) {
     if (verboseOs.startsWith("Mac OS X"))
