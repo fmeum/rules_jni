@@ -127,17 +127,18 @@ def _maven_resource_prefix_if_present():
 
 def cc_jni_library(
         name,
-        platforms = None,
-        tags = None,
-        visibility = None,
+        platforms = [],
         **cc_binary_args):
     macos_library_name = "lib%s.dylib" % name
     unix_library_name = "lib%s.so" % name
     windows_library_name = "%s.dll" % name
 
-    cc_binary_args.setdefault("deps", [])
+    # Arguments to set on the visible target, not the intermediate cc_binary.
+    tags = cc_binary_args.pop("tags", default = None)
+    visibility = cc_binary_args.pop("visibility", default = None)
 
     # Simple concatenation is compatible with select, append is not.
+    cc_binary_args.setdefault("deps", [])
     cc_binary_args["deps"] += ["@fmeum_rules_jni//jni"]
 
     native.cc_binary(
@@ -184,7 +185,7 @@ def cc_jni_library(
         name = multi_platform_artifact_name,
         artifact = ":" + single_platform_artifact_name,
         original_name = name,
-        platforms = platforms if platforms else [],
+        platforms = platforms,
         tags = ["manual"],
         visibility = ["//visibility:private"],
     )
