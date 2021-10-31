@@ -89,3 +89,11 @@ To get detailed runtime logs from this location procedure, set the environment v
 **Note:** `libjvm_lite` is very lightweight and written in C89. It only depends on a C standard library, as well as on
 `libdl` on Unix. However, it will not automatically use the current Bazel Java runtime. If you want this behavior, use
 [`libjvm`](#libjvm) instead.
+
+## `native_loader`
+
+**Full label**: `@fmeum_rules_jni//jni/tools/native_loader`
+
+This library can be added to the `deps` of a `java_*` target and offers static methods that can be used to load native
+libraries created with [`cc_jni_library`](rules.md#cc_jni_library) at runtime. See its
+[javadocs](https://fmeum.github.io/rules_jni_javadocs/com/github/fmeum/rules_jni/RulesJni.html) for details.
