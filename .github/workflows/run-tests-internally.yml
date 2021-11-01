@@ -1,0 +1,47 @@
+name: Build and test internally
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *'
+
+  workflow_dispatch:
+
+jobs:
+
+  build_and_test_internally:
+    runs-on: ubuntu-latest
+    env:
+      BAZELISK_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
+      - name: Mount Bazel disk cache
+        uses: actions/cache@v2
+        with:
+          path: "/home/runner/.cache/bazel-disk"
+          key: bazel-disk-cache-internal
+
+      - name: Build from main workspace
+        run: bazelisk build --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" //... @fmeum_rules_jni_tests//...
+
+      - name: Run tests from main workspace
+        run: bazelisk test --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" //... @fmeum_rules_jni_tests//...
+
+      - name: Upload test logs
+        if: always()
+        uses: actions/upload-artifact@v2
+        with:
+          name: testlogs-internal
+          # https://github.com/actions/upload-artifact/issues/92#issuecomment-711107236
+          path: |
+            ${{ github.workspace }}/bazel-testlogs*/**/test.log
