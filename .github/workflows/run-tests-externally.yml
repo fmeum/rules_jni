@@ -1,4 +1,4 @@
-name: Build all targets and run all tests
+name: Test externally
 
 on:
   push:
@@ -12,7 +12,7 @@ on:
 
 jobs:
 
-  build_and_test:
+  test_externally:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -48,21 +48,11 @@ jobs:
           path: ${{ matrix.cache }}
           key: bazel-disk-cache-${{ matrix.bazel }}-${{ matrix.os }}-${{ matrix.jdk }}
 
-      - name: Build main workspace
-        env:
-          USE_BAZEL_VERSION: ${{ matrix.bazel }}
-        run: bazelisk build --config=ci --disk_cache=${{ matrix.cache }} //...
-
-      - name: Run tests in main workspace
-        env:
-          USE_BAZEL_VERSION: ${{ matrix.bazel }}
-        run: bazelisk test --config=ci --disk_cache=${{ matrix.cache }} //...
-
-      - name: Run tests in @fmeum_rules_jni_tests
+      - name: Run tests externally
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests
-        run: bazelisk --bazelrc=../.bazelrc test --config=ci --disk_cache=${{ matrix.cache }} //...
+        run: bazelisk test --disk_cache=${{ matrix.cache }} //...
 
       - name: Upload test logs
         if: always()
@@ -70,6 +60,4 @@ jobs:
         with:
           name: testlogs-${{ matrix.bazel}}-${{ matrix.os }}-${{ matrix.jdk }}
           # https://github.com/actions/upload-artifact/issues/92#issuecomment-711107236
-          path: |
-            ${{ github.workspace }}/bazel-testlogs*/**/test.log
-            ${{ github.workspace }}/tests/bazel-testlogs*/**/test.log
+          path: ${{ github.workspace }}/tests/bazel-testlogs*/**/test.log

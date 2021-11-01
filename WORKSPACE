@@ -9,6 +9,18 @@ local_repository(
     path = "tests",
 )
 
+load("@fmeum_rules_jni_tests//:repositories.bzl", "rules_jni_tests_dependencies")
+
+rules_jni_tests_dependencies()
+
+load("@fmeum_rules_jni_tests//:init.bzl", "rules_jni_tests_init")
+
+rules_jni_tests_init()
+
+load("@fmeum_rules_jni_tests//:maven.bzl", "rules_jni_tests_maven_install")
+
+rules_jni_tests_maven_install()
+
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
