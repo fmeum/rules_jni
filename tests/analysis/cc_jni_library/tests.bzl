@@ -19,12 +19,17 @@ load("@local_config_platform//:constraints.bzl", "HOST_CONSTRAINTS")
 
 MULTI_PLATFORM_TEST_NATIVE_LIBRARY_NAME = "multi_platform_native_lib"
 
+def _trim_prefix(str, prefix):
+    if str.startswith(prefix):
+        return str[len(prefix):]
+    return str
+
 def _multi_platform_test_impl(ctx):
     env = analysistest.begin(ctx)
     target_under_test = analysistest.target_under_test(env)
     files = target_under_test[DefaultInfo].files
 
-    actual_paths = sets.make([file.short_path for file in files.to_list()])
+    actual_paths = sets.make([_trim_prefix(file.short_path, "../fmeum_rules_jni_tests/") for file in files.to_list()])
     lib_prefixes = {
         "linux": "lib",
         "macos": "lib",
@@ -62,7 +67,7 @@ multi_platform_test = analysistest.make(
     config_settings = {
         "//command_line_option:extra_toolchains": ",".join(
             [
-                "//analysis/cc_jni_library:fake_%s_toolchain" % os
+                "@fmeum_rules_jni_tests//analysis/cc_jni_library:fake_%s_toolchain" % os
                 for os in ["linux", "macos", "windows"]
             ],
         ),

@@ -42,7 +42,12 @@ def _provider_test_impl(ctx):
 
     system_include_paths = [path for path in compilation_context.system_includes.to_list()]
     asserts.false(env, "." in system_include_paths)
-    asserts.true(env, "external/fmeum_rules_jni/jni/internal" in system_include_paths)
+
+    # Paths differ depending on whether bazel test is run from the main or the tests workspace.
+    if ctx.workspace_name == "fmeum_rules_jni":
+        asserts.true(env, "jni/internal" in system_include_paths)
+    else:
+        asserts.true(env, "external/fmeum_rules_jni/jni/internal" in system_include_paths)
 
     asserts.equals(
         env,
