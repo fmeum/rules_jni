@@ -45,8 +45,10 @@ cc_library(
     name = "libjvm_stub_lib",
     srcs = [
         "libjvm_stub.c",
-        ":utils",
-    ],
+    ] + select({
+        "@platforms//os:windows": ["windows/utils.h"],
+        "//conditions:default": ["unix/utils.h"],
+    }),
     copts = select({
         "@platforms//os:windows": ["-I" + make_root_relative("windows")],
         "//conditions:default": ["-I" + make_root_relative("unix")],
@@ -59,14 +61,6 @@ cc_library(
     deps = [
         "//jni",
     ],
-)
-
-filegroup(
-    name = "utils",
-    srcs = select({
-        "@platforms//os:windows": ["windows/utils.h"],
-        "//conditions:default": ["unix/utils.h"],
-    }),
 )
 
 current_java_runtime(
