@@ -16,10 +16,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        bazel: ["4.2.1", "rolling"]
+        bazel: ["4.0.0", "stable", "rolling"]
         os: [ubuntu-latest, macos-latest, windows-latest]
         jdk: [8, 11, 17]
         exclude:
+          - bazel: "4.0.0"
+            jdk: 11
+          - bazel: "4.0.0"
+            jdk: 17
           - bazel: "rolling"
             jdk: 8
           - bazel: "rolling"
