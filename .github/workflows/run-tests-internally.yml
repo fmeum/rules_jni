@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BAZELISK_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    name: Build and test internally (ubuntu-latest, Bazel latest, JDK 17)
 
     steps:
       - uses: actions/checkout@v2
@@ -31,10 +32,14 @@ jobs:
           path: "/home/runner/.cache/bazel-disk"
           key: bazel-disk-cache-internal
 
-      - name: Build from main workspace
+      - name: Build from main workspace with layering_check
+        env:
+          USE_BAZEL_VERSION: "latest"
         run: bazelisk build --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" //... @fmeum_rules_jni_tests//...
 
       - name: Run tests from main workspace
+        env:
+          USE_BAZEL_VERSION: "latest"
         run: bazelisk test --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" //... @fmeum_rules_jni_tests//...
 
       - name: Upload test logs

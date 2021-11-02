@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        bazel: ["4.0.0", "stable", "rolling"]
+        bazel: ["4.0.0", "latest", "rolling"]
         os: [ubuntu-latest, macos-latest, windows-latest]
         jdk: [8, 11, 17]
         exclude:
@@ -35,6 +35,7 @@ jobs:
             cache: "/private/var/tmp/bazel-disk"
           - os: windows-latest
             cache: "C:\\tmp\\bazel-disk"
+    name: Test externally (${{ matrix.os }}, Bazel ${{ matrix.bazel }}, JDK ${{ matrix.jdk }})
     env:
       BAZELISK_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
