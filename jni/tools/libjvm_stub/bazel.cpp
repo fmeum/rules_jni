@@ -54,9 +54,20 @@ static std::string get_bazel_java_home() {
   }
   std::ifstream java_executable(java_executable_path);
   if (!java_executable.good()) {
-    printf("rules_jni: Bazel-provided java executable does not exist at: %s\n",
-           java_executable_path.c_str());
-    exit(EXIT_FAILURE);
+    // This case can happen when the binary using libjvm_stub is itself launched
+    // from another, top-level binary that does not set the variables used for
+    // runfiles discovery. If the top-level binary uses a runfiles manifest to
+    // find the current binary, it will execute it using a path that points into
+    // the Bazel cache. Since the contents of the cache are not hermetic, an
+    // adjacent out-of-date .runfiles directory or MANIFEST may exist as a left-
+    // over from a previous direct run of the current binary. Since there is no
+    // way to detect this scenario, fall back to a system-provided JDK but print
+    // a warning.
+    fprintf(stderr,
+            "rules_jni: falling back to system JDK, java executable in "
+            "runfiles not found at:\n%s\n",
+            java_executable_path.c_str());
+    return "";
   }
   if (ends_with(java_executable_path, "/bin/java")) {
     return java_executable_path.substr(0, java_executable_path.size() - 9);
@@ -68,10 +79,9 @@ static std::string get_bazel_java_home() {
   if (ends_with(java_executable_path, "\\bin\\java.exe")) {
     return java_executable_path.substr(0, java_executable_path.size() - 13);
   }
-  printf(
-      "rules_jni: Bazel-provided java executable path has unexpected suffix: "
-      "%s\n",
-      java_executable_path.c_str());
+  fprintf(stderr,
+          "rules_jni: java executable in runfiles has unexpected suffix:\n%s\n",
+          java_executable_path.c_str());
   exit(EXIT_FAILURE);
 }
 
