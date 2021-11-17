@@ -1,1 +1,5 @@
 import ../.bazelrc
+
+# Requires Bazel 5.
+build:bzlmod --experimental_enable_bzlmod
+build:bzlmod --registry=https://bcr.bazel.build
