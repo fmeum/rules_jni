@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        bazel: ["4.0.0", "latest", "rolling"]
+        bazel: [4.0.0, latest, rolling]
         os: [ubuntu-latest, macos-latest, windows-latest]
         jdk: [8, 11, 17]
         exclude:
@@ -35,6 +35,8 @@ jobs:
             cache: "/private/var/tmp/bazel-disk"
           - os: windows-latest
             cache: "C:\\tmp\\bazel-disk"
+          - bazel: rolling
+            bazel_extra_args: "--config=bzlmod"
     name: Test externally (${{ matrix.os }}, Bazel ${{ matrix.bazel }}, JDK ${{ matrix.jdk }})
     env:
       BAZELISK_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -57,7 +59,7 @@ jobs:
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests
-        run: bazelisk test --disk_cache=${{ matrix.cache }} //...
+        run: bazelisk test --disk_cache=${{ matrix.cache }} ${{ matrix.bazel_extra_args }} //...
 
       - name: Upload test logs
         if: always()
