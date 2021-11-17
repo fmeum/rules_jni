@@ -1,0 +1,14 @@
+module(
+    name = "fmeum_rules_jni_tests",
+    version = "0.3.0",
+    compatibility_level = 1,
+)
+
+bazel_dep(name = "fmeum_rules_jni", version = "0.3.0")
+local_path_override(
+    module_name = "fmeum_rules_jni",
+    path = "..",
+)
+
+bazel_dep(name = "bazel_skylib", version = "1.0.3")
+bazel_dep(name = "platforms", version = "0.0.4")
