@@ -118,6 +118,6 @@ java_binary(
     srcs = ["src/test/java/com/example/HelloFromJava.java"],
     create_executable = False,
     deps = [
-        "@maven//:net_bytebuddy_byte_buddy_agent",
+        "@byte_buddy_agent//jar",
     ],
 )

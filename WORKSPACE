@@ -1,29 +1,16 @@
 workspace(name = "fmeum_rules_jni")
 
+load("//bzlmod:local_repository.bzl", "starlarkified_local_repository")
 load("//jni:repositories.bzl", "rules_jni_dependencies")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
 
 rules_jni_dependencies()
 
-load("//bzlmod:local_repository.bzl", "starlarkified_local_repository")
-
+# Direct development dependencies of @fmeum_rules_jni.
 starlarkified_local_repository(
     name = "fmeum_rules_jni_tests",
     path = "tests",
 )
-
-load("@fmeum_rules_jni_tests//:repositories.bzl", "rules_jni_tests_dependencies")
-
-rules_jni_tests_dependencies()
-
-load("@fmeum_rules_jni_tests//:init.bzl", "rules_jni_tests_init")
-
-rules_jni_tests_init()
-
-load("@fmeum_rules_jni_tests//:maven.bzl", "rules_jni_tests_maven_install")
-
-rules_jni_tests_maven_install()
-
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "io_bazel_stardoc",
@@ -41,10 +28,24 @@ http_archive(
     url = "https://github.com/bazelbuild/rules_jvm_external/archive/4.1.zip",
 )
 
-load("@io_bazel_stardoc//:setup.bzl", "stardoc_repositories")
+# Transitive dependencies required for @fmeum_rules_jni_tests.
+http_jar(
+    name = "junit",
+    sha256 = "8e495b634469d64fb8acfa3495a065cbacc8a0fff55ce1e31007be4c16dc57d3",
+    urls = [
+        "https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar",
+    ],
+)
 
-stardoc_repositories()
+http_jar(
+    name = "byte_buddy_agent",
+    sha256 = "1f83b9d2370d9a223fb31c3eb7f30bd74a75165c0630e9bc164355eb34cb6988",
+    urls = [
+        "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.20/byte-buddy-agent-1.11.20.jar",
+    ],
+)
 
-load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
-
-bazel_skylib_workspace()
+register_toolchains(
+    "@bazel_skylib//toolchains/unittest:cmd_toolchain",
+    "@bazel_skylib//toolchains/unittest:bash_toolchain",
+)

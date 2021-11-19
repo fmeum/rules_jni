@@ -1,5 +1,7 @@
 workspace(name = "fmeum_rules_jni_tests")
 
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
+
 local_repository(
     name = "fmeum_rules_jni",
     path = "../",
@@ -9,14 +11,23 @@ load("@fmeum_rules_jni//jni:repositories.bzl", "rules_jni_dependencies")
 
 rules_jni_dependencies()
 
-load(":repositories.bzl", "rules_jni_tests_dependencies")
+http_jar(
+    name = "junit",
+    sha256 = "8e495b634469d64fb8acfa3495a065cbacc8a0fff55ce1e31007be4c16dc57d3",
+    urls = [
+        "https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar",
+    ],
+)
 
-rules_jni_tests_dependencies()
+http_jar(
+    name = "byte_buddy_agent",
+    sha256 = "1f83b9d2370d9a223fb31c3eb7f30bd74a75165c0630e9bc164355eb34cb6988",
+    urls = [
+        "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.20/byte-buddy-agent-1.11.20.jar",
+    ],
+)
 
-load(":init.bzl", "rules_jni_tests_init")
-
-rules_jni_tests_init()
-
-load(":maven.bzl", "rules_jni_tests_maven_install")
-
-rules_jni_tests_maven_install()
+register_toolchains(
+    "@bazel_skylib//toolchains/unittest:cmd_toolchain",
+    "@bazel_skylib//toolchains/unittest:bash_toolchain",
+)

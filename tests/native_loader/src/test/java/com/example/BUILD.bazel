@@ -33,6 +33,6 @@ java_test(
         "//native_loader/src/test/java/com/example/math",
         "//native_loader/src/test/java/com/example/os",
         "@fmeum_rules_jni//jni/tools/native_loader",
-        "@maven//:junit_junit",
+        "@junit//jar",
     ],
 )
