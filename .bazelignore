@@ -1,4 +1,1 @@
-tests/bazel-bin
-tests/bazel-out
-tests/bazel-testlogs
-tests/bazel-tests
+tests

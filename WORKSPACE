@@ -4,7 +4,9 @@ load("//jni:repositories.bzl", "rules_jni_dependencies")
 
 rules_jni_dependencies()
 
-local_repository(
+load("//bzlmod:local_repository.bzl", "starlarkified_local_repository")
+
+starlarkified_local_repository(
     name = "fmeum_rules_jni_tests",
     path = "tests",
 )
