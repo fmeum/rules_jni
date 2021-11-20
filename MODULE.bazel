@@ -7,11 +7,41 @@ module(
 bazel_dep(name = "bazel_skylib", version = "1.0.3")
 bazel_dep(name = "platforms", version = "0.0.4")
 
-download_jni_headers = use_extension("@fmeum_rules_jni//bzlmod:extensions.bzl", "download_jni_headers")
+download_jni_headers = use_extension(
+    "@fmeum_rules_jni//bzlmod:extensions.bzl",
+    "download_jni_headers",
+)
 
 use_repo(
     download_jni_headers,
     "com_github_openjdk_jdk_jni_h",
     "com_github_openjdk_jdk_unix_jni_md_h",
     "com_github_openjdk_jdk_windows_jni_md_h",
+)
+
+bazel_dep(name = "rules_cc", version = "0.0.1", dev_dependency = True)
+bazel_dep(name = "rules_java", version = "4.0.0", dev_dependency = True)
+bazel_dep(name = "stardoc", version = "0.5.0", repo_name = "io_bazel_stardoc", dev_dependency = True)
+
+cc_configure = use_extension(
+    "@rules_cc//bzlmod:extensions.bzl",
+    "cc_configure",
+    dev_dependency = True,
+)
+use_repo(
+    cc_configure,
+    "local_config_cc",
+)
+
+install_dev_dependencies = use_extension(
+    "@fmeum_rules_jni//bzlmod:dev_extensions.bzl",
+    "install_dev_dependencies",
+    dev_dependency = True,
+)
+use_repo(
+    install_dev_dependencies,
+    "fmeum_rules_jni_tests",
+    "rules_jvm_external",
+    "junit",
+    "byte_buddy_agent",
 )
