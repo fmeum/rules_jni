@@ -34,13 +34,13 @@ jobs:
 
       - name: Build from main workspace with layering_check
         env:
-          USE_BAZEL_VERSION: "latest"
-        run: bazelisk build --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" //... @fmeum_rules_jni_tests//...
+          USE_BAZEL_VERSION: "rolling"
+        run: bazelisk build --config=layering_check --config=bzlmod --disk_cache="/home/runner/.cache/bazel-disk" //... @fmeum_rules_jni_tests//...
 
       - name: Run tests from main workspace
         env:
-          USE_BAZEL_VERSION: "latest"
-        run: bazelisk test --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" //... @fmeum_rules_jni_tests//...
+          USE_BAZEL_VERSION: "rolling"
+        run: bazelisk test --config=layering_check --config=bzlmod --disk_cache="/home/runner/.cache/bazel-disk" //... @fmeum_rules_jni_tests//...
 
       - name: Upload test logs
         if: always()
