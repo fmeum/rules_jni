@@ -29,7 +29,8 @@ def _multi_platform_test_impl(ctx):
     target_under_test = analysistest.target_under_test(env)
     files = target_under_test[DefaultInfo].files
 
-    actual_paths = sets.make([_trim_prefix(file.short_path, "../fmeum_rules_jni_tests/") for file in files.to_list()])
+    repo_name = ctx.label.workspace_name
+    actual_paths = sets.make([_trim_prefix(file.short_path, "../%s/" % repo_name) for file in files.to_list()])
     lib_prefixes = {
         "linux": "lib",
         "macos": "lib",
