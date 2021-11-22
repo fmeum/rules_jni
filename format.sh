@@ -11,4 +11,4 @@ buildifier -r .
 
 # Licence headers
 # go get -u github.com/google/addlicense
-addlicense -c "Fabian Meumertzheim" docs/ jni/ tests/
+addlicense -c "Fabian Meumertzheim" bzlmod/ docs/ jni/ tests/
