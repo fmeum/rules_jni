@@ -55,7 +55,7 @@ def java_jni_library(
 
     # Simple concatenation is compatible with select, append is not.
     java_library_args.setdefault("deps", [])
-    java_library_args["deps"] += ["@fmeum_rules_jni//jni/tools/native_loader"]
+    java_library_args["deps"] += [Label("//jni/tools/native_loader")]
 
     native.java_library(
         name = original_name,

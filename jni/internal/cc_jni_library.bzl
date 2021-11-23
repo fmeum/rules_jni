@@ -175,7 +175,7 @@ def cc_jni_library(
 
     # Simple concatenation is compatible with select, append is not.
     cc_binary_args.setdefault("deps", [])
-    cc_binary_args["deps"] += ["@fmeum_rules_jni//jni"]
+    cc_binary_args["deps"] += [Label("//jni")]
 
     native.cc_binary(
         name = macos_library_name,
