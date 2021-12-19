@@ -16,17 +16,24 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        bazel: [4.0.0, latest, last_green]
+        bazel: [4.0.0, 5.0.0rc3, last_green]
+        bazel_mode: [workspace, module]
         os: [ubuntu-latest, macos-latest, windows-latest]
         jdk: [8, 11, 17]
         exclude:
-          - bazel: "4.0.0"
+          - bazel: 4.0.0
             jdk: 11
-          - bazel: "4.0.0"
+          - bazel: 4.0.0
             jdk: 17
-          - bazel: "last_green"
+          - bazel: 4.0.0
+            bazel_mode: module
+          - bazel: last_green
             jdk: 8
-          - bazel: "last_green"
+          - bazel: last_green
+            jdk: 11
+          - bazel_mode: module
+            jdk: 8
+          - bazel_mode: module
             jdk: 11
         include:
           - os: ubuntu-latest
@@ -35,9 +42,9 @@ jobs:
             cache: "/private/var/tmp/bazel-disk"
           - os: windows-latest
             cache: "C:\\tmp\\bazel-disk"
-          - bazel: last_green
+          - bazel_mode: module
             bazel_extra_args: "--config=bzlmod"
-    name: Test externally (${{ matrix.os }}, Bazel ${{ matrix.bazel }}, JDK ${{ matrix.jdk }})
+    name: Test externally (${{ matrix.os }}, Bazel ${{ matrix.bazel }} ${{ matrix.bazel_mode }}, JDK ${{ matrix.jdk }})
     env:
       BAZELISK_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
