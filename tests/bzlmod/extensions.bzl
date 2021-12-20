@@ -13,13 +13,8 @@
 # limitations under the License.
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
-load(":local_repository.bzl", "starlarkified_local_repository")
 
 def _install_dev_dependencies(ctx):
-    starlarkified_local_repository(
-        name = "fmeum_rules_jni_tests",
-        path = "tests",
-    )
     http_archive(
         name = "rules_jvm_external",
         sha256 = "f36441aa876c4f6427bfb2d1f2d723b48e9d930b62662bf723ddfb8fc80f0140",

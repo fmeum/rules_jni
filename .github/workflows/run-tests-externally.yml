@@ -62,11 +62,16 @@ jobs:
           path: ${{ matrix.cache }}
           key: bazel-disk-cache-${{ matrix.bazel }}-${{ matrix.os }}-${{ matrix.jdk }}
 
+      - name: Clear WORKSPACE
+        if: matrix.bazel_mode == 'module'
+        working-directory: ./tests
+        run: echo 'workspace(name = "fmeum_rules_jni_tests")' > WORKSPACE
+
       - name: Run tests externally
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests
-        run: bazelisk test --disk_cache=${{ matrix.cache }} ${{ matrix.bazel_extra_args }} //...
+        run: bazelisk test --config=layering_check --disk_cache=${{ matrix.cache }} ${{ matrix.bazel_extra_args }} //...
 
       - name: Upload test logs
         if: always()
