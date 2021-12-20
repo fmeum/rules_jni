@@ -1,13 +1,12 @@
 workspace(name = "fmeum_rules_jni")
 
-load("//bzlmod:local_repository.bzl", "starlarkified_local_repository")
 load("//jni:repositories.bzl", "rules_jni_dependencies")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
 
 rules_jni_dependencies()
 
 # Direct development dependencies of @fmeum_rules_jni.
-starlarkified_local_repository(
+local_repository(
     name = "fmeum_rules_jni_tests",
     path = "tests",
 )
