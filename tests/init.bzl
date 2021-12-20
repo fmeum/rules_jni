@@ -23,7 +23,7 @@ def rules_jni_tests_init():
             "net.bytebuddy:byte-buddy-agent:1.11.20",
         ],
         fail_if_repin_required = True,
-        maven_install_json = "@fmeum_rules_jni_tests//:maven_install.json",
+        maven_install_json = Label("//:maven_install.json"),
         repositories = [
             "https://repo1.maven.org/maven2",
         ],
