@@ -4,9 +4,9 @@ module(
     compatibility_level = 1,
 )
 
-bazel_dep(name = "fmeum_rules_jni", version = "0.3.1")
+bazel_dep(name = "rules_jni", version = "0.3.1", repo_name = "fmeum_rules_jni")
 local_path_override(
-    module_name = "fmeum_rules_jni",
+    module_name = "rules_jni",
     path = "..",
 )
 
