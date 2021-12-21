@@ -12,15 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_jar")
 
-def _install_dev_dependencies(ctx):
-    http_archive(
-        name = "rules_jvm_external",
-        sha256 = "f36441aa876c4f6427bfb2d1f2d723b48e9d930b62662bf723ddfb8fc80f0140",
-        strip_prefix = "rules_jvm_external-4.1",
-        url = "https://github.com/bazelbuild/rules_jvm_external/archive/4.1.zip",
-    )
+def _install_test_dependencies(ctx):
     http_jar(
         name = "junit",
         sha256 = "8e495b634469d64fb8acfa3495a065cbacc8a0fff55ce1e31007be4c16dc57d3",
@@ -37,5 +31,5 @@ def _install_dev_dependencies(ctx):
     )
 
 install_dev_dependencies = module_extension(
-    implementation = _install_dev_dependencies,
+    implementation = _install_test_dependencies,
 )

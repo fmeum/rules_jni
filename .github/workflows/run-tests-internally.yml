@@ -18,10 +18,6 @@ jobs:
       matrix:
         bazel_mode: [workspace, module]
         include:
-          - bazel_mode: workspace
-            bazel_extra_args: "@fmeum_rules_jni_tests//..."
-          # Find a way to run the tests with bzlmod.
-          # https://github.com/bazelbuild/bazel-central-registry/pull/47#discussion_r772534256
           - bazel_mode: module
             bazel_extra_args: "--config=bzlmod"
     env:
@@ -50,12 +46,12 @@ jobs:
       - name: Build from main workspace with layering_check
         env:
           USE_BAZEL_VERSION: "last_green"
-        run: bazelisk build --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" ${{ matrix.bazel_extra_args }} //...
+        run: bazelisk build --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" ${{ matrix.bazel_extra_args }} //... @fmeum_rules_jni_tests//...
 
       - name: Run tests from main workspace
         env:
           USE_BAZEL_VERSION: "last_green"
-        run: bazelisk test --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" ${{ matrix.bazel_extra_args }} //...
+        run: bazelisk test --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" ${{ matrix.bazel_extra_args }} //... @fmeum_rules_jni_tests//...
 
       - name: Upload test logs
         if: always()

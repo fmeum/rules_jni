@@ -11,7 +11,6 @@ download_jni_headers = use_extension(
     "@fmeum_rules_jni//bzlmod:extensions.bzl",
     "download_jni_headers",
 )
-
 use_repo(
     download_jni_headers,
     "com_github_openjdk_jdk_jni_h",
@@ -19,4 +18,19 @@ use_repo(
     "com_github_openjdk_jdk_windows_jni_md_h",
 )
 
+bazel_dep(name = "fmeum_rules_jni_tests", version = "0.3.1", dev_dependency = True)
+local_path_override(
+    module_name = "fmeum_rules_jni_tests",
+    path = "tests",
+)
+
 bazel_dep(name = "stardoc", version = "0.5.0", repo_name = "io_bazel_stardoc", dev_dependency = True)
+
+install_dev_dependencies = use_extension(
+    "@fmeum_rules_jni//bzlmod:dev_extensions.bzl",
+    "install_dev_dependencies",
+)
+use_repo(
+    install_dev_dependencies,
+    "rules_jvm_external",
+)
