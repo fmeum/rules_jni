@@ -77,6 +77,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: testlogs-${{ matrix.bazel}}-${{ matrix.os }}-${{ matrix.jdk }}
+          name: testlogs-${{ matrix.bazel}}-${{ matrix.bazel_mode }}-${{ matrix.os }}-${{ matrix.jdk }}
           # https://github.com/actions/upload-artifact/issues/92#issuecomment-711107236
           path: ${{ github.workspace }}/tests/bazel-testlogs*/**/test.log

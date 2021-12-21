@@ -52,6 +52,9 @@ jobs:
           USE_BAZEL_VERSION: "last_green"
         run: bazelisk build --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" ${{ matrix.bazel_extra_args }} //...
 
+      - name: Config
+        run: ls -R bazel-rules_jni/external
+
       - name: Run tests from main workspace
         env:
           USE_BAZEL_VERSION: "last_green"
@@ -61,7 +64,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: testlogs-internal
+          name: testlogs-internal-${{ matrix.bazel_mode }}
           # https://github.com/actions/upload-artifact/issues/92#issuecomment-711107236
           path: |
             ${{ github.workspace }}/bazel-testlogs*/**/test.log
