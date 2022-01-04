@@ -1,6 +1,7 @@
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("@bazel_skylib//rules:common_settings.bzl", "string_list_flag")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+load(":common.bzl", "make_root_relative")
 
 cc_library(
     name = "jni",
@@ -18,7 +19,7 @@ cc_library(
     }),
     includes = select({
         "@platforms//os:windows": ["windows"],
-        "//conditions:default": ["unix"],
+        "//conditions:default": ["unix", make_root_relative("unix")],
     }),
 )
 

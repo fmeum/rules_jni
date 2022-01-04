@@ -60,4 +60,6 @@ def make_root_relative(path, package = None):
         segments += ["external", native.repository_name().lstrip("@")]
     segments += (package or native.package_name()).split("/")
     segments += path.split("/")
-    return "/".join(segments)
+    result = "/".join(segments)
+    print(result)
+    return result
