@@ -18,7 +18,6 @@
 #include <windows.h>
 #endif
 
-#include <codecvt>
 #include <cstdlib>
 #include <iostream>
 #include <locale>
@@ -144,16 +143,10 @@ int main(int argc, const char** argv) {
     return EXIT_FAILURE;
   }
 
-  // Convert the returned string from UTF-16 to UTF-8 and verify it.
-  static_assert(sizeof(jchar) == sizeof(char16_t),
-                "jchar cannot be converted to char16_t");
-  const jchar* hello_from_java_cstr =
-      env->GetStringChars(hello_from_java_jni, nullptr);
-  std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t>
-      utf16_to_utf8;
-  std::string hello_from_java = utf16_to_utf8.to_bytes(
-      reinterpret_cast<const char16_t*>(hello_from_java_cstr));
-  env->ReleaseStringChars(hello_from_java_jni, hello_from_java_cstr);
+  const char* hello_from_java_cstr =
+      env->GetStringUTFChars(hello_from_java_jni, nullptr);
+  std::string hello_from_java(hello_from_java_cstr);
+  env->ReleaseStringUTFChars(hello_from_java_jni, hello_from_java_cstr);
   if (hello_from_java != HELLO_FROM_JAVA_MSG) {
     std::cerr << "helloFromJava() returned unexpected value: "
               << hello_from_java << std::endl;
