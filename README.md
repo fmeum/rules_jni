@@ -32,6 +32,15 @@ load("@fmeum_rules_jni//jni:repositories.bzl", "rules_jni_dependencies")
 rules_jni_dependencies()
 ```
 
+If you are using Bazel 5 with [bzlmod](https://docs.bazel.build/versions/main/bzlmod.html), add the following to your
+`MODULE.bazel`:
+
+```starlark
+bazel_dep(name = "rules_jni", version = "0.4.0")
+# Alternatively, to keep using the repository as @fmeum_rules_jni, use:
+bazel_dep(name = "rules_jni", version = "0.4.0", repo_name = "fmeum_rules_jni")
+```
+
 ## Documentation
 
 See the documentation for [targets](docs/targets.md), [rules](docs/rules.md)

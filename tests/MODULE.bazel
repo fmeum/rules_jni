@@ -1,10 +1,10 @@
 module(
     name = "fmeum_rules_jni_tests",
-    version = "0.3.1",
+    version = "0.4.0",
     compatibility_level = 1,
 )
 
-bazel_dep(name = "rules_jni", version = "0.3.1", repo_name = "fmeum_rules_jni")
+bazel_dep(name = "rules_jni", version = "0.4.0", repo_name = "fmeum_rules_jni")
 local_path_override(
     module_name = "rules_jni",
     path = "..",
