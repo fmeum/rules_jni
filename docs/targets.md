@@ -43,7 +43,7 @@ runtime when its first symbol is accessed. Concretely, it does the following in 
     1. Depend on `@fmeum_rules_jni//jni:libjvm` directly from your top-level `cc_binary`.
     2. Add `#include <rules_jni.h>`.
     3. Call `rules_jni_init(const char* argv0)` from your `main` function, providing `argv[0]` as the argument.
-   
+
    If you want this lookup to succeed also for binaries executed by other binaries that are themselves run from Bazel,
    [set the environment variables required for runfiles discovery](https://github.com/bazelbuild/bazel/blob/e8a066e9e625a136363338d10f03ed14c26dedfa/tools/cpp/runfiles/runfiles_src.h#L58).
 
@@ -52,7 +52,9 @@ runtime when its first symbol is accessed. Concretely, it does the following in 
 3. If `JAVA_HOME` is set, find the `jvm` shared library relative to it at well-known locations, exiting if it cannot be
    found.
 
-4. If `PATH` is set, find the Java binary (`java` or `java.exe`) on it and try to load the `jvm` shared library from
+4. (macOS only) Execute `/usr/libexec/java_home` and use its output as a replacement for `JAVA_HOME`.
+
+5. If `PATH` is set, find the Java binary (`java` or `java.exe`) on it and try to load the `jvm` shared library from
    well-known locations relative to it, exiting if it cannot be found.
 
 To get detailed runtime logs from this location procedure, set the environment variable `RULES_JNI_TRACE` to a non-empty

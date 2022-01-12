@@ -11,6 +11,12 @@ cc_test(
         "PATH_OVERRIDE": "",
         "RULES_JNI_TRACE": "1",
     },
+    target_compatible_with = select({
+        # Skip on macOS since the /usr/libexec/java_home fallback means that
+        # a JDK will still be found without PATH and JAVA_HOME.
+        "@platforms//os:macos": ["@platforms//:incompatible"],
+        "//conditions:default": [],
+    }),
     deps = [
         "@fmeum_rules_jni//jni:libjvm_lite",
     ],
