@@ -40,6 +40,7 @@ jobs:
             cache: "/home/runner/.cache/bazel-disk"
           - os: macos-latest
             cache: "/private/var/tmp/bazel-disk"
+            bazel_macos_args: "--xcode_version_config=//.github:host_xcodes"
           - os: windows-latest
             cache: "C:\\tmp\\bazel-disk"
           - bazel_mode: module
@@ -71,7 +72,7 @@ jobs:
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests
-        run: bazelisk test --config=layering_check --disk_cache=${{ matrix.cache }} ${{ matrix.bazel_extra_args }} //...
+        run: bazelisk test --config=layering_check --disk_cache=${{ matrix.cache }} ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //...
 
       - name: Upload test logs
         if: always()
