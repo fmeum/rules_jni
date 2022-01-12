@@ -42,4 +42,5 @@ int main(int argc, const char** argv) {
   JNI_GetDefaultJavaVMInitArgs(&vm_args);
   // Should not be reached.
   exit_code = EXIT_FAILURE;
+  return exit_code;
 }
