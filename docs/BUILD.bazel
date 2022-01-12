@@ -32,8 +32,7 @@ _STARDOC_RULES = [
 [
     diff_test(
         name = "%s_test" % stardoc_rule,
-        # TODO: Restore once bazel_skylib 1.1.1 is available in the BCR.
-        # failure_message = "Please run:\n    bazel run //docs:update",
+        failure_message = "Please run:\n    bazel run //docs:update",
         file1 = "%s.md" % stardoc_rule,
         file2 = "%s_gen.md" % stardoc_rule,
         target_compatible_with = select({
