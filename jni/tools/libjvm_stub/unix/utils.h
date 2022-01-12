@@ -18,6 +18,10 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef __APPLE__
+#include <string.h>
+#include <sys/syslimits.h>
+#endif
 #include <unistd.h>
 
 static const char* JAVA_EXECUTABLE = "/java";
@@ -40,6 +44,44 @@ static const size_t NUM_LIBJVM_CANDIDATE_PATHS =
 static const size_t MAX_CANDIDATE_PATH_LENGTH = 22;
 
 static int executable_exists(const char* path) { return access(path, X_OK); }
+
+#ifdef __APPLE__
+static char* our_strdup(const char* src);
+#endif
+
+/* The returned string has to be freed by the caller. */
+static char* get_java_home_fallback() {
+#ifdef __APPLE__
+  char* res = NULL;
+  FILE* pipe = NULL;
+  char buffer[PATH_MAX];
+
+  /* java_home prints the JAVA_HOME of the default installation to stdout.
+   * Silence warnings by redirecting stderr to /dev/null. */
+  pipe = popen("/usr/libexec/java_home 2> /dev/null", "r");
+  if (pipe == NULL) {
+    goto cleanup;
+  }
+
+  res = fgets(buffer, sizeof(buffer), pipe);
+  if (res == NULL || strcmp(res, "") == 0) {
+    goto cleanup;
+  }
+
+  /* The output of java_home is terminated by a newline. Skip over it. */
+  res[strlen(res) - 1] = '\0';
+  res = strdup(res);
+
+cleanup:
+  if (pipe != NULL) {
+    pclose(pipe);
+  }
+
+  return res;
+#else
+  return NULL;
+#endif
+}
 
 static void* load_library(const char* path) {
   return dlopen(path, RTLD_LAZY | RTLD_LOCAL);

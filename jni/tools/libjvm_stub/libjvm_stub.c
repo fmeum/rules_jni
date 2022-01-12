@@ -189,6 +189,7 @@ cleanup:
 /* The returned string has to be freed by the caller. */
 static char* find_java_home() {
   const char* java_home_env;
+  char* java_home_fallback = NULL;
   char* java_executable_path = NULL;
   char* pos;
   size_t separator_count_from_end;
@@ -203,6 +204,12 @@ static char* find_java_home() {
       exit(EXIT_FAILURE);
     }
     return res;
+  }
+
+  java_home_fallback = get_java_home_fallback();
+  if (java_home_fallback != NULL) {
+    trace("get_java_home_fallback() returned: %s", java_home_fallback);
+    return java_home_fallback;
   }
 
   java_executable_path = find_java_executable();

@@ -41,6 +41,8 @@ static int executable_exists(const char* path) {
   return 0;
 }
 
+static char* get_java_home_fallback() { return NULL; }
+
 static void* load_library(const char* path) { return LoadLibrary(path); }
 
 static void* load_symbol(void* library_handle, const char* symbol) {
