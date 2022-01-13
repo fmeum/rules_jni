@@ -68,7 +68,7 @@ multi_platform_test = analysistest.make(
     config_settings = {
         "//command_line_option:extra_toolchains": ",".join(
             [
-                "@fmeum_rules_jni_tests//analysis/cc_jni_library:fake_%s_toolchain" % os
+                str(Label("//analysis/cc_jni_library:fake_%s_toolchain" % os))
                 for os in ["linux", "macos", "windows"]
             ],
         ),
