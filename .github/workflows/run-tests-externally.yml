@@ -72,7 +72,7 @@ jobs:
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests
-        run: bazelisk test --config=layering_check --disk_cache=${{ matrix.cache }} ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //...
+        run: bazelisk test --config=layering_check --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //...
 
       - name: Upload test logs
         if: always()
@@ -80,4 +80,6 @@ jobs:
         with:
           name: testlogs-${{ matrix.bazel}}-${{ matrix.os }}-${{ matrix.jdk }}
           # https://github.com/actions/upload-artifact/issues/92#issuecomment-711107236
-          path: ${{ github.workspace }}/tests/bazel-testlogs*/**/test.log
+          path: |
+            ${{ github.workspace }}/tests/bazel-testlogs*/**/test.log
+            ${{ github.workspace }}/profile.gz
