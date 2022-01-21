@@ -16,7 +16,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        bazel: [4.0.0, 5.0.0rc3, last_green]
+        bazel: [4.0.0, latest, last_green]
         bazel_mode: [workspace, module]
         os: [ubuntu-latest, macos-latest, windows-latest]
         jdk: [8, 11, 17]
