@@ -74,11 +74,6 @@ jobs:
         working-directory: ./tests
         run: bazelisk test --config=layering_check --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //...
 
-      - name: Print local_config_cc/BUILD
-        if: ${{ always() && matrix.os == 'macos-latest' }}
-        working-directory: ./tests
-        run: cat $(bazelisk info output_base)/external/local_config_cc/BUILD
-
       - name: Upload test logs
         if: always()
         uses: actions/upload-artifact@v2
