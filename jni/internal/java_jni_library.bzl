@@ -53,6 +53,9 @@ def java_jni_library(
     tags = java_library_args.pop("tags", default = None)
     visibility = java_library_args.pop("visibility", default = None)
 
+    # Arguments to be set on all targets.
+    testonly = java_library_args.pop("testonly", default = None)
+
     java_library_deps_arg = "deps" if java_library_args.get("srcs") else "runtime_deps"
 
     # Simple concatenation is compatible with select, append is not.
@@ -63,6 +66,7 @@ def java_jni_library(
         name = original_name,
         tags = ["manual"],
         visibility = ["//visibility:private"],
+        testonly = testonly,
         **java_library_args
     )
 
@@ -70,6 +74,7 @@ def java_jni_library(
         name = headers_name,
         lib = ":" + original_name,
         tags = ["manual"],
+        testonly = testonly,
         visibility = visibility,
     )
 
@@ -79,5 +84,6 @@ def java_jni_library(
             ":" + original_name,
         ] + native_libs,
         tags = tags,
+        testonly = testonly,
         visibility = visibility,
     )

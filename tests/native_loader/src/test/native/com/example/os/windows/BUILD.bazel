@@ -1,5 +1,6 @@
 cc_library(
     name = "os_impl",
+    testonly = True,
     srcs = ["os.cpp"],
     tags = ["manual"],
     visibility = [
