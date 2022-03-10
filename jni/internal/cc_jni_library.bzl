@@ -173,6 +173,9 @@ def cc_jni_library(
     tags = cc_binary_args.pop("tags", default = None)
     visibility = cc_binary_args.pop("visibility", default = None)
 
+    # Arguments to be set on all targets.
+    testonly = cc_binary_args.pop("testonly", default = None)
+
     # Simple concatenation is compatible with select, append is not.
     cc_binary_args.setdefault("deps", [])
     cc_binary_args["deps"] += [Label("//jni")]
@@ -182,6 +185,7 @@ def cc_jni_library(
         linkshared = True,
         linkstatic = True,
         tags = ["manual"],
+        testonly = testonly,
         visibility = ["//visibility:private"],
         **cc_binary_args
     )
@@ -190,6 +194,7 @@ def cc_jni_library(
         linkshared = True,
         linkstatic = True,
         tags = ["manual"],
+        testonly = testonly,
         visibility = ["//visibility:private"],
         **cc_binary_args
     )
@@ -198,6 +203,7 @@ def cc_jni_library(
         linkshared = True,
         linkstatic = True,
         tags = ["manual"],
+        testonly = testonly,
         visibility = ["//visibility:private"],
         **cc_binary_args
     )
@@ -213,6 +219,7 @@ def cc_jni_library(
         cpu = SELECT_TARGET_CPU,
         os = SELECT_TARGET_OS,
         tags = ["manual"],
+        testonly = testonly,
         visibility = ["//visibility:private"],
     )
 
@@ -223,6 +230,7 @@ def cc_jni_library(
         original_name = name,
         platforms = platforms,
         tags = ["manual"],
+        testonly = testonly,
         visibility = ["//visibility:private"],
     )
 
@@ -231,5 +239,6 @@ def cc_jni_library(
         resources = [":" + multi_platform_artifact_name],
         resource_strip_prefix = _maven_resource_prefix_if_present(),
         tags = tags,
+        testonly = testonly,
         visibility = visibility,
     )

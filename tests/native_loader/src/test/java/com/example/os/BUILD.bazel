@@ -2,6 +2,7 @@ load("@fmeum_rules_jni//jni:defs.bzl", "java_jni_library")
 
 java_jni_library(
     name = "os",
+    testonly = True,
     srcs = [
         "OsUtils.java",
     ],
