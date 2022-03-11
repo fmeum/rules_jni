@@ -61,6 +61,10 @@ def _jni_headers_impl(ctx):
     return [
         DefaultInfo(files = depset([include_dir])),
         cc_info_with_jni,
+        coverage_common.instrumented_files_info(
+            ctx,
+            dependency_attributes = ["lib"],
+        ),
     ]
 
 jni_headers = rule(

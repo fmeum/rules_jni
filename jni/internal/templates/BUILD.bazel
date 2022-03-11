@@ -1,0 +1,4 @@
+exports_files([
+    "native_library_coverage.tmpl.c",
+    "native_library_coverage.tmpl.java",
+])

@@ -5,6 +5,33 @@ java_library(
         "RulesJni.java",
     ],
     visibility = ["//jni/tools/native_loader:__pkg__"],
+    deps = select({
+        "//jni/internal:collect_coverage": [":coverage_helper"],
+        "//conditions:default": [":noop_coverage_helper"],
+    }) + [
+        "//jni/tools/native_loader/src/main/java/com/github/fmeum/rules_jni:native_library_info",
+    ],
+)
+
+java_library(
+    name = "coverage_helper",
+    srcs = [
+        "CoverageHelper.java",
+    ],
+    resource_strip_prefix = "external",
+    resources = [
+        "@bazel_tools//tools/test:collect_cc_coverage.sh",
+    ],
+    deps = [
+        ":native_library_info",
+    ],
+)
+
+java_library(
+    name = "noop_coverage_helper",
+    srcs = [
+        "NoopCoverageHelper.java",
+    ],
     deps = [
         ":native_library_info",
     ],

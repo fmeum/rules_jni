@@ -37,11 +37,20 @@ bzl_library(
         "@bazel_tools//tools/build_defs/repo:http.bzl",
         "@bazel_tools//tools/build_defs/repo:utils.bzl",
         "@bazel_tools//tools/cpp:toolchain_utils.bzl",
+        "@bazel_tools//tools/jdk:toolchain_utils.bzl",
     ],
 )
 
 string_list_flag(
     name = "pre_transition_platforms",
     build_setting_default = [],
+    visibility = ["//visibility:public"],
+)
+
+config_setting(
+    name = "collect_coverage",
+    values = {
+        "collect_code_coverage": "true",
+    },
     visibility = ["//visibility:public"],
 )

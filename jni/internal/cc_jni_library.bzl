@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load(":coverage.bzl", "cc_jni_coverage_helper_library", "java_jni_coverage_helper_library")
 load(":jni_headers.bzl", "jni_headers")
 load(":os_cpu_utils.bzl", "SELECT_TARGET_CPU", "SELECT_TARGET_OS")
 load(":transitions.bzl", "multi_platform_transition")
@@ -43,6 +44,10 @@ def _single_platform_artifact_impl(ctx):
             file = files[0],
             os = ctx.attr.os,
             platform = ctx.fragments.platform.platform,
+        ),
+        coverage_common.instrumented_files_info(
+            ctx,
+            dependency_attributes = ["artifact"],
         ),
     ]
 
@@ -94,9 +99,15 @@ def _multi_platform_artifact_impl(ctx):
         )
         files.append(out)
 
-    return DefaultInfo(
-        files = depset(files),
-    )
+    return [
+        DefaultInfo(
+            files = depset(files),
+        ),
+        coverage_common.instrumented_files_info(
+            ctx,
+            dependency_attributes = ["artifact"],
+        ),
+    ]
 
 _multi_platform_artifact = rule(
     implementation = _multi_platform_artifact_impl,
@@ -176,9 +187,26 @@ def cc_jni_library(
     # Arguments to be set on all targets.
     testonly = cc_binary_args.pop("testonly", default = None)
 
+    java_coverage_helper_name = "%s_java_coverage_helper" % name
+    java_jni_coverage_helper_library(
+        name = java_coverage_helper_name,
+        library_name = name,
+    )
+
+    cc_coverage_helper_name = "%s_cc_coverage_helper" % name
+    cc_jni_coverage_helper_library(
+        name = cc_coverage_helper_name,
+        library_name = name,
+    )
+
     # Simple concatenation is compatible with select, append is not.
     cc_binary_args.setdefault("deps", [])
-    cc_binary_args["deps"] += [Label("//jni")]
+    cc_binary_args["deps"] += [
+        Label("//jni"),
+    ] + select({
+        "@fmeum_rules_jni//jni/internal:collect_coverage": [":" + cc_coverage_helper_name],
+        "//conditions:default": [],
+    })
 
     native.cc_binary(
         name = macos_library_name,
@@ -238,6 +266,10 @@ def cc_jni_library(
         name = name,
         resources = [":" + multi_platform_artifact_name],
         resource_strip_prefix = _maven_resource_prefix_if_present(),
+        runtime_deps = select({
+            "@fmeum_rules_jni//jni/internal:collect_coverage": [":" + java_coverage_helper_name],
+            "//conditions:default": [],
+        }),
         tags = tags,
         testonly = testonly,
         visibility = visibility,

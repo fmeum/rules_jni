@@ -50,12 +50,12 @@ jobs:
       - name: Build from main workspace with layering_check
         env:
           USE_BAZEL_VERSION: "last_green"
-        run: bazelisk build --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" ${{ matrix.bazel_extra_args }} //...
+        run: bazelisk build --config=ci --disk_cache="/home/runner/.cache/bazel-disk" ${{ matrix.bazel_extra_args }} //...
 
       - name: Run tests from main workspace
         env:
           USE_BAZEL_VERSION: "last_green"
-        run: bazelisk test --config=layering_check --disk_cache="/home/runner/.cache/bazel-disk" ${{ matrix.bazel_extra_args }} //...
+        run: bazelisk test --config=ci --disk_cache="/home/runner/.cache/bazel-disk" ${{ matrix.bazel_extra_args }} //...
 
       - name: Upload test logs
         if: always()

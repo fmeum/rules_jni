@@ -6,8 +6,8 @@ build --incompatible_strict_action_env
 test --noincompatible_strict_action_env
 
 # Required for layering_check.
-build:layering_check --repo_env=CC=clang
-build:layering_check --features=layering_check
+build:ci --repo_env=CC=clang
+build:ci --features=layering_check
 
 # Requires Bazel 5.
 build:bzlmod --experimental_enable_bzlmod

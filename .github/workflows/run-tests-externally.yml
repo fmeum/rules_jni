@@ -72,7 +72,17 @@ jobs:
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests
-        run: bazelisk test --config=layering_check --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //...
+        run: bazelisk test --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //...
+
+      - name: Check coverage
+        if: matrix.os == 'ubuntu-latest'
+        env:
+          USE_BAZEL_VERSION: ${{ matrix.bazel }}
+        working-directory: ./tests
+        run: |
+          sudo apt install clang-10 llvm-10
+          bazelisk coverage --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //... -- -//libjvm_stub/...
+          ./verify_coverage.sh
 
       - name: Upload test logs
         if: always()
