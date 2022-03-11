@@ -1,4 +1,4 @@
-// Copyright 2021 Fabian Meumertzheim
+// Copyright 2022 Fabian Meumertzheim
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,21 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.example.os;
+package com.github.fmeum.rules_jni;
 
-import com.github.fmeum.rules_jni.RulesJni;
+import java.io.File;
 
-public class OsUtils {
-  public static boolean hasJniOnLoadBeenCalled = false;
+class NativeLibraryInfo {
+  public final String canonicalPath;
+  public final File tempFile;
 
-  static {
-    String packagePath = OsUtils.class.getPackage().getName().replace(".", "/");
-    RulesJni.loadLibrary("os", "/" + packagePath);
-    // Verify that loading the library twice does not result in errors.
-    RulesJni.loadLibrary("os", OsUtils.class);
+  NativeLibraryInfo(String canonicalPath, File tempFile) {
+    this.canonicalPath = canonicalPath;
+    this.tempFile = tempFile;
   }
-
-  public static native int setenv(String name, String value);
-
-  private OsUtils() {}
 }

@@ -1,0 +1,16 @@
+java_library(
+    name = "native_loader",
+    srcs = [
+        "OsCpuUtils.java",
+        "RulesJni.java",
+    ],
+    visibility = ["//jni/tools/native_loader:__pkg__"],
+    deps = [
+        ":native_library_info",
+    ],
+)
+
+java_library(
+    name = "native_library_info",
+    srcs = ["NativeLibraryInfo.java"],
+)

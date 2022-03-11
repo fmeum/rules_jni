@@ -29,13 +29,24 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved) {
     env->ExceptionDescribe();
     exit(1);
   }
-  jfieldID has_jni_on_load_been_called =
+  jfieldID has_jni_on_load_been_called_field =
       env->GetStaticFieldID(os_utils, "hasJniOnLoadBeenCalled", "Z");
   if (env->ExceptionCheck()) {
     env->ExceptionDescribe();
     exit(1);
   }
-  env->SetStaticBooleanField(os_utils, has_jni_on_load_been_called, true);
+  jboolean has_jni_on_load_been_called =
+      env->GetStaticBooleanField(os_utils, has_jni_on_load_been_called_field);
+  if (env->ExceptionCheck()) {
+    env->ExceptionDescribe();
+    exit(1);
+  }
+  if (has_jni_on_load_been_called) {
+    std::cerr << "JNI_OnLoad of native library 'os' has been called twice"
+              << std::endl;
+    exit(1);
+  }
+  env->SetStaticBooleanField(os_utils, has_jni_on_load_been_called_field, true);
   if (env->ExceptionCheck()) {
     env->ExceptionDescribe();
     exit(1);

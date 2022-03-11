@@ -14,19 +14,25 @@
 
 package com.github.fmeum.rules_jni;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
+import java.util.*;
 
 /**
  * Static helper methods that load native libraries created with the {@code cc_jni_library} rule of
  * <a href="https://github.com/fmeum/rules_jni">{@code rules_jni}</a>.
  */
-public class RulesJni {
+public final class RulesJni {
+  private static final Map<String, NativeLibraryInfo> LOADED_LIBS = new HashMap<>();
+
   private static Path tempDir;
+
+  static {
+    Runtime.getRuntime().addShutdownHook(new Thread(RulesJni::atExit));
+  }
 
   private RulesJni() {}
 
@@ -54,7 +60,7 @@ public class RulesJni {
   public static void loadLibrary(String name, Class<?> inSamePackageAs) {
     URL libraryResource = inSamePackageAs.getResource(libraryRelativePath(name));
     failOnNullResource(libraryResource, name);
-    loadLibrary(libraryResource);
+    loadLibrary(name, libraryResource);
   }
 
   /**
@@ -84,18 +90,25 @@ public class RulesJni {
     URL libraryResource =
         RulesJni.class.getResource(absolutePathToPackage + "/" + libraryRelativePath(name));
     failOnNullResource(libraryResource, name);
-    loadLibrary(libraryResource);
+    loadLibrary(name, libraryResource);
   }
 
-  synchronized private static void loadLibrary(URL libraryResource) {
+  synchronized private static void loadLibrary(String name, URL libraryResource) {
+    if (LOADED_LIBS.containsKey(name)) {
+      if (!libraryResource.toString().equals(LOADED_LIBS.get(name).canonicalPath)) {
+        throw new UnsatisfiedLinkError(String.format(
+            "Cannot load two native libraries with same basename ('%s') from different paths\nFirst library: %s\nSecond library: %s\n",
+            name, LOADED_LIBS.get(name).canonicalPath, libraryResource));
+      }
+      return;
+    }
     try {
       Path tempDir = getOrCreateTempDir();
       Path tempFile = Files.createTempFile(tempDir, null, null);
+      LOADED_LIBS.put(name, new NativeLibraryInfo(libraryResource.toString(), tempFile.toFile()));
       try (InputStream in = libraryResource.openStream()) {
         Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
         System.load(tempFile.toAbsolutePath().toString());
-      } finally {
-        tempFile.toFile().deleteOnExit();
       }
     } catch (IOException e) {
       throw new UnsatisfiedLinkError(e.getMessage());
@@ -105,7 +118,6 @@ public class RulesJni {
   private static Path getOrCreateTempDir() throws IOException {
     if (tempDir == null) {
       tempDir = Files.createTempDirectory("rules_jni.");
-      tempDir.toFile().deleteOnExit();
     }
     return tempDir;
   }
@@ -120,10 +132,17 @@ public class RulesJni {
 
   private static void failOnNullResource(URL resource, String name) {
     if (resource == null) {
-      throw new UnsatisfiedLinkError(
-          String.format("Can't find native library '%s' for OS '%s' (\"%s\") and CPU '%s' (\"%s\")",
-              name, OsCpuUtils.CANONICAL_OS, OsCpuUtils.VERBOSE_OS, OsCpuUtils.CANONICAL_CPU,
-              OsCpuUtils.VERBOSE_CPU));
+      throw new UnsatisfiedLinkError(String.format(
+          "Failed to find native library '%s' for OS '%s' (\"%s\") and CPU '%s' (\"%s\")", name,
+          OsCpuUtils.CANONICAL_OS, OsCpuUtils.VERBOSE_OS, OsCpuUtils.CANONICAL_CPU,
+          OsCpuUtils.VERBOSE_CPU));
+    }
+  }
+
+  private static void atExit() {
+    LOADED_LIBS.values().stream().map(l -> l.tempFile).forEach(File::delete);
+    if (tempDir != null) {
+      tempDir.toFile().delete();
     }
   }
 }
