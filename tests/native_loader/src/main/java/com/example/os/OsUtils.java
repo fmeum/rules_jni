@@ -27,4 +27,6 @@ public class OsUtils {
   }
 
   public static native int setenv(String name, String value);
+
+  private OsUtils() {}
 }

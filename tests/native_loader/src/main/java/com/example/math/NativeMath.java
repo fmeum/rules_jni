@@ -28,4 +28,6 @@ public class NativeMath {
 
   public static native int increment(int arg);
   public static native int add(int arg1, int arg2);
+
+  private NativeMath() {}
 }
