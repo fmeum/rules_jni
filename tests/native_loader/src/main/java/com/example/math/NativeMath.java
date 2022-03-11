@@ -21,7 +21,7 @@ public class NativeMath {
   static {
     RulesJni.loadLibrary("math", NativeMath.class);
     // Verify that loading the library twice does not result in errors.
-    RulesJni.loadLibrary("math", NativeMath.class);
+    RulesJni.loadLibrary("math", "/com/example/math");
   }
 
   @Native private final static int incrementBy = 1;

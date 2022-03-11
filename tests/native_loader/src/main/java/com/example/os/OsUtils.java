@@ -23,7 +23,7 @@ public class OsUtils {
     String packagePath = OsUtils.class.getPackage().getName().replace(".", "/");
     RulesJni.loadLibrary("os", "/" + packagePath);
     // Verify that loading the library twice does not result in errors.
-    RulesJni.loadLibrary("os", "/" + packagePath);
+    RulesJni.loadLibrary("os", OsUtils.class);
   }
 
   public static native int setenv(String name, String value);
