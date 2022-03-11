@@ -1,5 +1,5 @@
-java_library(
+alias(
     name = "native_loader",
-    srcs = glob(["src/main/java/com/github/fmeum/rules_jni/*.java"]),
+    actual = "//jni/tools/native_loader/src/main/java/com/github/fmeum/rules_jni:native_loader",
     visibility = ["//visibility:public"],
 )
