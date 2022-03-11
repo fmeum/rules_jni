@@ -26,6 +26,10 @@ def _merge_cc_infos_impl(ctx):
     return [
         _merge_default_infos(ctx, [lib[DefaultInfo] for lib in ctx.attr.libs]),
         cc_common.merge_cc_infos(direct_cc_infos = [lib[CcInfo] for lib in ctx.attr.libs]),
+        coverage_common.instrumented_files_info(
+            ctx,
+            dependency_attributes = ["libs"],
+        ),
     ]
 
 merge_cc_infos = rule(
@@ -42,6 +46,10 @@ def _merge_java_infos_impl(ctx):
     return [
         _merge_default_infos(ctx, [lib[DefaultInfo] for lib in ctx.attr.libs]),
         java_common.merge([lib[JavaInfo] for lib in ctx.attr.libs]),
+        coverage_common.instrumented_files_info(
+            ctx,
+            dependency_attributes = ["libs"],
+        ),
     ]
 
 merge_java_infos = rule(
@@ -61,3 +69,23 @@ def make_root_relative(path, package = None):
     segments += (package or native.package_name()).split("/")
     segments += path.split("/")
     return "/".join(segments)
+
+def _force_java_identifier_char(c):
+    if c.isalnum():
+        return c
+    else:
+        return "_"
+
+_INT_MIN = -2147483648
+
+def _hash(string):
+    return str(hash(string) - _INT_MIN)
+
+def java_identifier(name):
+    safe_name = "".join([_force_java_identifier_char(c) for c in name.elems()])
+    if not safe_name or safe_name[0].isdigit():
+        safe_name = "_" + safe_name
+    return safe_name + "_" + _hash(name)
+
+def jni_escaped_identifier(name):
+    return java_identifier(name).replace("_", "_1")

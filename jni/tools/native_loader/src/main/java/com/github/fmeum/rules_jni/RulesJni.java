@@ -143,9 +143,17 @@ public final class RulesJni {
   }
 
   private static void atExit() {
-    LOADED_LIBS.values().stream().map(l -> l.tempFile).forEach(File::delete);
-    if (tempDir != null) {
-      tempDir.toFile().delete();
+    boolean skipCleanup = Boolean.parseBoolean(System.getenv("RULES_JNI_SKIP_CLEANUP"));
+    if (skipCleanup) {
+      System.err.println(
+          "[rules_jni] Not cleaning up temporary directory as requested: " + tempDir);
+    }
+    CoverageHelper.collectNativeLibrariesCoverage(LOADED_LIBS);
+    if (!skipCleanup) {
+      LOADED_LIBS.values().stream().map(l -> l.tempFile).forEach(File::delete);
+      if (tempDir != null) {
+        tempDir.toFile().delete();
+      }
     }
   }
 }
