@@ -14,7 +14,7 @@
 
 package com.github.fmeum.rules_jni;
 
-class OsCpuUtils {
+final class OsCpuUtils {
   public static final String VERBOSE_OS = System.getProperty("os.name");
   public static final String CANONICAL_OS = toCanonicalOs(VERBOSE_OS);
 

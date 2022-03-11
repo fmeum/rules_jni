@@ -22,7 +22,6 @@ import org.junit.Test;
 import org.junit.function.ThrowingRunnable;
 
 public class JniLoaderTest {
-  @SuppressWarnings("ConstantConditions")
   @Test
   public void testFailuresCases() {
     Assert.assertThrows(
