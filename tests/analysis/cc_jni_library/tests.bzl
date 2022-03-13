@@ -54,7 +54,10 @@ def _multi_platform_test_impl(ctx):
     asserts.set_equals(env, expected_paths, actual_paths)
 
     actions = analysistest.target_actions(env)
-    asserts.equals(env, 3 * ["Symlink"], [action.mnemonic for action in actions])
+    coverage_mnemonics = []
+    if ctx.coverage_instrumented(target_under_test):
+        coverage_mnemonics = ["BaselineCoverage"]
+    asserts.equals(env, 3 * ["Symlink"] + coverage_mnemonics, [action.mnemonic for action in actions])
 
     # Verify that all artifacts were built in different configurations.
     file_roots = [file.root.path for action in actions for file in action.inputs.to_list()]
