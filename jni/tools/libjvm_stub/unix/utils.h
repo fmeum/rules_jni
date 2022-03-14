@@ -45,9 +45,16 @@ static const size_t MAX_CANDIDATE_PATH_LENGTH = 22;
 
 static int executable_exists(const char* path) { return access(path, X_OK); }
 
-#ifdef __APPLE__
 static char* our_strdup(const char* src);
-#endif
+
+/* The returned string has to be freed by the caller. */
+static char* get_env_copy(const char* key) {
+  const char* value = getenv(key);
+  if (value == NULL) {
+    return NULL;
+  }
+  return our_strdup(value);
+}
 
 /* The returned string has to be freed by the caller. */
 static char* get_java_home_fallback() {
