@@ -70,7 +70,7 @@ static char* get_java_home_fallback() {
 
   /* The output of java_home is terminated by a newline. Skip over it. */
   res[strlen(res) - 1] = '\0';
-  res = strdup(res);
+  res = our_strdup(res);
 
 cleanup:
   if (pipe != NULL) {
