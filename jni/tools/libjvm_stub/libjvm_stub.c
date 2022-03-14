@@ -105,6 +105,10 @@ static int try_load_libjvm_under_basepath(const char* basepath) {
   max_path_length =
       basepath_length + MAX_CANDIDATE_PATH_LENGTH + strlen(LIBJVM_BASENAME) + 1;
   path = (char*)malloc(max_path_length);
+  if (path == NULL) {
+    perror(MSG_PREFIX "Failed to allocate buffer for libjvm path");
+    exit(EXIT_FAILURE);
+  }
   strcpy(path, basepath);
 
   for (i = 0; i < NUM_LIBJVM_CANDIDATE_PATHS; ++i) {
@@ -119,9 +123,7 @@ static int try_load_libjvm_under_basepath(const char* basepath) {
   }
 
 cleanup:
-  if (path != NULL) {
-    free(path);
-  }
+  free(path);
   return res;
 }
 
@@ -266,9 +268,7 @@ static void init() {
   res = try_load_libjvm_under_basepath(java_home);
 
 cleanup:
-  if (java_home != NULL) {
-    free(java_home);
-  }
+  free(java_home);
 
   if (res < 0) {
     fprintf(stderr,
