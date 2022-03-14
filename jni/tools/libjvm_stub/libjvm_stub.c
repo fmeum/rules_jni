@@ -25,7 +25,7 @@
 
 #include "utils.h"
 
-#define MSG_PREFIX "rules_jni: "
+#define MSG_PREFIX "[rules_jni]: "
 
 char* rules_jni_internal_get_bazel_java_home();
 
