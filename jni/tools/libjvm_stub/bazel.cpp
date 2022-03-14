@@ -13,9 +13,11 @@
 // limitations under the License.
 
 #include <algorithm>
+#include <cstdlib>
 #include <fstream>
-#include <iostream>
 #include <string>
+#include <utility>
+#include <vector>
 
 #include "jni/tools/libjvm_stub/current_java_runtime.h"
 #include "rules_jni_internal.h"
@@ -25,14 +27,30 @@ using ::bazel::tools::cpp::runfiles::Runfiles;
 
 static const char* rules_jni_arg0 = "";
 
-void rules_jni_init(const char* argv0) { rules_jni_arg0 = argv0; }
-
 static Runfiles* get_runfiles() {
   Runfiles* runfiles = Runfiles::CreateForTest();
   if (runfiles != nullptr) {
     return runfiles;
   }
   return Runfiles::Create(rules_jni_arg0);
+}
+
+void rules_jni_init(const char* argv0) {
+  rules_jni_arg0 = argv0;
+  Runfiles* runfiles = get_runfiles();
+  if (runfiles != nullptr) {
+    std::vector<std::pair<std::string, std::string>> envvars =
+        runfiles->EnvVars();
+    // Setting the runfiles variables for the current process is the only way
+    // to get them to the Java runfiles library.
+    for (const std::pair<std::string, std::string>& envvar : envvars) {
+#ifdef _WIN32
+      _putenv_s(envvar.first.c_str(), envvar.second.c_str());
+#else
+      setenv(envvar.first.c_str(), envvar.second.c_str(), 1);
+#endif
+    }
+  }
 }
 
 static bool ends_with(const std::string& str, const std::string& suffix) {
