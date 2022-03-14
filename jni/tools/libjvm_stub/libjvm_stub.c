@@ -130,24 +130,18 @@ cleanup:
 /* The returned string has to be freed by the caller. */
 static char* find_java_executable() {
   char* java_path_candidate = NULL;
-  const char* path_env;
-  char* path_env_copy = NULL;
+  char* path_env;
   const char* path_env_entry;
   char* res = NULL;
 
-  path_env = getenv("PATH");
+  path_env = get_env_copy("PATH");
   if (path_env == NULL) {
     trace("PATH not set");
     goto cleanup;
   }
   trace("PATH is set: %s", path_env);
-  path_env_copy = our_strdup(path_env);
-  if (path_env_copy == NULL) {
-    perror(MSG_PREFIX "Failed to allocate copy of PATH");
-    exit(EXIT_FAILURE);
-  }
 
-  path_env_entry = strtok(path_env_copy, PATH_ENV_SEPARATOR);
+  path_env_entry = strtok(path_env, PATH_ENV_SEPARATOR);
   while (path_env_entry) {
     java_path_candidate =
         (char*)malloc(strlen(path_env_entry) + strlen(JAVA_EXECUTABLE) + 1);
@@ -179,32 +173,22 @@ static char* find_java_executable() {
   trace("java executable not found in PATH");
 
 cleanup:
-  if (path_env_copy != NULL) {
-    free(path_env_copy);
-  }
-  if (java_path_candidate != NULL) {
-    free(java_path_candidate);
-  }
+  free(path_env);
+  free(java_path_candidate);
   return res;
 }
 
 /* The returned string has to be freed by the caller. */
 static char* find_java_home() {
-  const char* java_home_env;
   char* java_home_fallback = NULL;
   char* java_executable_path = NULL;
   char* pos;
   size_t separator_count_from_end;
   char* res = NULL;
 
-  java_home_env = getenv("JAVA_HOME");
-  if (java_home_env != NULL) {
-    trace("JAVA_HOME is set: %s", java_home_env);
-    res = our_strdup(java_home_env);
-    if (res == NULL) {
-      perror(MSG_PREFIX "Failed to allocate copy of JAVA_HOME");
-      exit(EXIT_FAILURE);
-    }
+  res = get_env_copy("JAVA_HOME");
+  if (res != NULL) {
+    trace("JAVA_HOME is set: %s", res);
     return res;
   }
 

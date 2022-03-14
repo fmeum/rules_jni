@@ -41,6 +41,28 @@ static int executable_exists(const char* path) {
   return 0;
 }
 
+/* The returned string has to be freed by the caller. */
+static char* get_env_copy(const char* key) {
+  /* On Windows, getenv does not see variables set with SetEnvironmentVariable.
+   * https://curl.se/mail/lib-2020-01/0006.html */
+  DWORD size = GetEnvironmentVariableA(key, NULL, 0);
+  char* value;
+  if (size == 0) {
+    /* We treat any error as indicating that the variable is not set. If it were
+     * empty, the returned size would have been 1 instead to account for the
+     * terminating null character. */
+    return NULL;
+  }
+  value = (char*)malloc(size);
+  if (value == NULL) {
+    return NULL;
+  }
+  if (GetEnvironmentVariableA(key, value, size) == 0) {
+    return NULL;
+  }
+  return value;
+}
+
 static char* get_java_home_fallback() { return NULL; }
 
 static void* load_library(const char* path) { return LoadLibrary(path); }
