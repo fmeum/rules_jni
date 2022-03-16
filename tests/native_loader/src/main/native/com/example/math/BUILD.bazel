@@ -6,9 +6,9 @@ cc_jni_library(
         "math.c",
     ],
     visibility = [
-        "//native_loader/src/test/java/com/example/math:__pkg__",
+        "//native_loader/src/main/java/com/example/math:__pkg__",
     ],
     deps = [
-        "//native_loader/src/test/java/com/example/math:math.hdrs",
+        "//native_loader/src/main/java/com/example/math:math.hdrs",
     ],
 )
