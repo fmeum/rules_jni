@@ -1,0 +1,24 @@
+load("@fmeum_rules_jni//jni:defs.bzl", "cc_jni_library")
+
+cc_jni_library(
+    name = "os",
+    testonly = True,
+    srcs = [
+        "onload.cpp",
+    ],
+    platforms = select({
+        "@platforms//os:linux": ["//native_loader:linux_x86_64"],
+        "@platforms//os:macos": ["//native_loader:macos_x86_64"],
+        "@platforms//os:windows": ["//native_loader:windows_x86_64"],
+    }),
+    visibility = [
+        "//native_loader/src/main/java/com/example/os:__pkg__",
+        "//native_loader/src/main/native/com/example/os:__subpackages__",
+    ],
+    deps = select({
+        "@platforms//os:windows": ["//native_loader/src/main/native/com/example/os/windows:os_impl"],
+        "//conditions:default": ["//native_loader/src/main/native/com/example/os/unix:os_impl"],
+    }) + [
+        "//native_loader/src/main/java/com/example/os:os.hdrs",
+    ],
+)

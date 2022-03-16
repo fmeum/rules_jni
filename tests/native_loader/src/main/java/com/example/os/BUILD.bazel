@@ -1,15 +1,16 @@
 load("@fmeum_rules_jni//jni:defs.bzl", "java_jni_library")
 
 java_jni_library(
-    name = "math",
+    name = "os",
+    testonly = True,
     srcs = [
-        "NativeMath.java",
+        "OsUtils.java",
     ],
     native_libs = [
-        "//native_loader/src/test/native/com/example/math",
+        "//native_loader/src/main/native/com/example/os",
     ],
     visibility = [
+        "//native_loader/src/main/native/com/example/os:__subpackages__",
         "//native_loader/src/test/java/com/example:__pkg__",
-        "//native_loader/src/test/native/com/example/math:__pkg__",
     ],
 )
