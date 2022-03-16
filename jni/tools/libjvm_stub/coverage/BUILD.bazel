@@ -1,0 +1,12 @@
+java_binary(
+    name = "CoverageAgent",
+    srcs = ["src/main/java/com/github/fmeum/rules_jni/libjvm_stub/CoverageAgent.java"],
+    create_executable = False,
+    deploy_manifest_lines = [
+        "Premain-Class: com.github.fmeum.rules_jni.libjvm_stub.CoverageAgent",
+    ],
+    visibility = ["//jni/tools/libjvm_stub:__pkg__"],
+    deps = [
+        "@bazel_tools//tools/jdk:JacocoCoverageRunner",
+    ],
+)

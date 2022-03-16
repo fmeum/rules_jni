@@ -72,6 +72,9 @@ cc_test(
     env_inherit = [
         "JAVA_HOME",
     ],
+    tags = [
+        "no-coverage",
+    ],
     deps = [
         ":libjvm_release_test_lib",
     ],
@@ -102,6 +105,9 @@ cc_test(
     },
     env_inherit = [
         "PATH",
+    ],
+    tags = [
+        "no-coverage",
     ],
     deps = [
         ":libjvm_release_test_lib",
