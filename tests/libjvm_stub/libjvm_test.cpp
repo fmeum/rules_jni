@@ -34,15 +34,18 @@ void clear_env(const char* name) {
 #endif
 }
 
+void set_env(const char* name, const char* value) {
+#ifdef _WIN32
+  _putenv_s(name, value);
+#else
+  setenv(name, value, 1);
+#endif
+}
+
 int main(int argc, const char** argv) {
   // Override PATH with PATH_OVERRIDE, if set.
   if (getenv("PATH_OVERRIDE") != nullptr) {
-    const char* path_override = getenv("PATH_OVERRIDE");
-#ifdef _WIN32
-    _putenv_s("PATH", path_override);
-#else
-    setenv("PATH", path_override, 1);
-#endif
+    set_env("PATH", getenv("PATH_OVERRIDE"));
   }
 
   // Set up the Bazel runfiles library to get the path to the JAR.
@@ -67,6 +70,13 @@ int main(int argc, const char** argv) {
     clear_env("RUNFILES_MANIFEST_FILE");
     clear_env("RUNFILES_DIR");
     clear_env("TEST_SRCDIR");
+    // Let rules_jni_init find the coverage agent even though we intentionally
+    // cleared all runfiles variables.
+    set_env("RULES_JNI_COVERAGE_AGENT_JAR",
+            runfiles
+                ->Rlocation("fmeum_rules_jni/jni/tools/libjvm_stub/coverage/"
+                            "CoverageAgent_deploy.jar")
+                .c_str());
     rules_jni_init("does_not_exist");
   }
 

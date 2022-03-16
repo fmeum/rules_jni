@@ -73,6 +73,14 @@ cc_library(
         "bazel.cpp",
         "rules_jni_internal.h",
     ],
+    data = select({
+        "//jni/internal:collect_coverage": ["//jni/tools/libjvm_stub/coverage:CoverageAgent_deploy.jar"],
+        "//conditions:default": [],
+    }),
+    local_defines = select({
+        "//jni/internal:collect_coverage": ["RULES_JNI_COLLECT_COVERAGE=true"],
+        "//conditions:default": ["RULES_JNI_COLLECT_COVERAGE=false"],
+    }),
     deps = [
         ":current_java_runtime",
         "@bazel_tools//tools/cpp/runfiles",

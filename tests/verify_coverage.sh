@@ -15,7 +15,9 @@
 
 report=bazel-out/_coverage/_coverage_report.dat
 
-find native_loader/src/main -type f \( -name '*.java' -o -name '*.cpp' -o -name '*.c' \) -print0 | while read -r -d $'\0' file
+find native_loader/src/main libjvm_stub -type f \
+ \( -name '*.java' -o -name '*.cpp' -o -name '*.c' -a ! -name 'hermetic_release_failure_test.c' \) \
+ -print0 | while read -r -d $'\0' file
 do
   pattern=$(basename "$file")
   if grep -q "$pattern" "$report";
