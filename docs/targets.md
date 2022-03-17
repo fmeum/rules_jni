@@ -22,9 +22,6 @@ current target platform.
 This library can be added to the `deps` of a `cc_*` target that requires access to
 the [Java Invocation API](https://docs.oracle.com/en/java/javase/17/docs/specs/jni/invocation.html).
 
-**Note:** Every `cc_binary` that transitively depends on this library should also directly depend on it and call
-`rules_jni_init` from its `main` function, providing `argv[0]`. This ensures that
-
 This target serves as a drop-in replacement for the `jvm` shared library contained in JDKs and JREs, which is
 called `jvm.dll`, `libjvm.dylib`
 or `libjvm.so` depending on the OS. These libraries are usually not available in the standard locations searched by the
@@ -37,12 +34,13 @@ runtime when its first symbol is accessed. Concretely, it does the following in 
    finds a runfiles directory or manifest, locate the current Bazel Java runtime in the runfiles and look for the `jvm`
    shared library relative to it at well-known locations. If it cannot be found, print a warning and continue.
 
-   **Note:** If you want this behavior also for binaries executed via `bazel run` or directly from `bazel-bin`, you have
-   to:
+   **Note:** To ensure that the current Bazel Java runtime is also found if the binary is executed via `bazel run` or
+   directly from `bazel-bin` and to ensure that Java code can find its runfiles, do the following:
 
-    1. Depend on `@fmeum_rules_jni//jni:libjvm` directly from your top-level `cc_binary`.
+    1. Depend on `@fmeum_rules_jni//jni:libjvm` directly from the top-level `cc_binary`.
     2. Add `#include <rules_jni.h>`.
-    3. Call `rules_jni_init(const char* argv0)` from your `main` function, providing `argv[0]` as the argument.
+    3. Call `rules_jni_init(const char* argv0)` from the `main` function, providing `argv[0]` as the argument. This
+       call is **not thread-safe** as it modifies the environment.
 
    If you want this lookup to succeed also for binaries executed by other binaries that are themselves run from Bazel,
    [set the environment variables required for runfiles discovery](https://github.com/bazelbuild/bazel/blob/e8a066e9e625a136363338d10f03ed14c26dedfa/tools/cpp/runfiles/runfiles_src.h#L58).
