@@ -23,6 +23,8 @@
 #include "rules_jni_internal.h"
 #include "tools/cpp/runfiles/runfiles.h"
 
+#define MSG_PREFIX "[rules_jni]: "
+
 using ::bazel::tools::cpp::runfiles::Runfiles;
 
 static const char* rules_jni_arg0 = "";
@@ -82,7 +84,8 @@ static std::string get_bazel_java_home() {
     // way to detect this scenario, fall back to a system-provided JDK but print
     // a warning.
     fprintf(stderr,
-            "rules_jni: falling back to system JDK, java executable in "
+            MSG_PREFIX
+            "falling back to system JDK, java executable in "
             "runfiles not found at:\n%s\n",
             java_executable_path.c_str());
     return "";
@@ -98,7 +101,7 @@ static std::string get_bazel_java_home() {
     return java_executable_path.substr(0, java_executable_path.size() - 13);
   }
   fprintf(stderr,
-          "rules_jni: java executable in runfiles has unexpected suffix:\n%s\n",
+          MSG_PREFIX "java executable in runfiles has unexpected suffix:\n%s\n",
           java_executable_path.c_str());
   exit(EXIT_FAILURE);
 }
