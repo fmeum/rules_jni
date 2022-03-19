@@ -78,17 +78,9 @@ int main(int argc, const char** argv) {
 
   // Configure the JVM by adding the test JAR to the classpath and passing a
   // message via a property.
-  // TODO: Since the name of the current repository differs when the tests are
-  //       loaded as a module extension, we pass in multiple paths of which only
-  //       ever one will be valid. Use rules_runfiles instead once it becomes
-  //       available as a Bazel module.
-  std::string jar_path_workspace =
+  std::string jar_path =
       runfiles->Rlocation("fmeum_rules_jni_tests/" HELLO_FROM_JAVA_JAR_PATH);
-  std::string jar_path_module = runfiles->Rlocation(
-      ".install_dev_dependencies.fmeum_rules_jni_"
-      "tests/" HELLO_FROM_JAVA_JAR_PATH);
-  std::string class_path = "-Djava.class.path=" + jar_path_workspace +
-                           CLASSPATH_SEPARATOR + jar_path_module;
+  std::string class_path = "-Djava.class.path=" + jar_path;
   JavaVM* jvm = nullptr;
   JNIEnv* env = nullptr;
   JavaVMInitArgs vm_args;
