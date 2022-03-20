@@ -14,28 +14,19 @@
 
 package com.example;
 
-import java.lang.instrument.Instrumentation;
-import net.bytebuddy.agent.ByteBuddyAgent;
+import java.time.LocalDateTime;
 
 public class HelloFromJava {
-  public static String helloFromJava() {
-    // On Windows, the library search path is governed by PATH. If we are in a test that clears out
-    // PATH, the native "instrument" agentlib that takes care of attaching a Java agent cannot be
-    // loaded as its dynamic dependencies cannot be found. Hence, we do not fail in this case.
-    String path = System.getenv("PATH");
-    boolean shouldBeAbleToAttachAgent =
-        !System.getProperty("os.name").startsWith("Windows") || (path != null && !path.isEmpty());
-    try {
-      Instrumentation instrumentation = ByteBuddyAgent.install();
-      if (shouldBeAbleToAttachAgent && instrumentation == null) {
-        System.err.println("Failed to attach a Java agent");
-        System.exit(1);
-      };
-    } catch (IllegalStateException e) {
-      if (shouldBeAbleToAttachAgent) {
-        throw e;
-      }
+  public static String helloFromJava(String name) {
+    String greeting;
+    int hour = LocalDateTime.now().getHour();
+    if (hour >= 5 && hour < 12) {
+      greeting = "Morning";
+    } else if (hour >= 12 && hour < 17) {
+      greeting = "Afternoon";
+    } else {
+      greeting = "Evening";
     }
-    return System.getProperty("msg.hello");
+    return String.format("Good %s, %s!", greeting, name);
   }
 }

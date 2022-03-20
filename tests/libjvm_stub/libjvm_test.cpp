@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <jni.h>
 #include <rules_jni.h>
 #ifdef _WIN32
 #include <windows.h>
@@ -20,17 +19,12 @@
 
 #include <cstdlib>
 #include <iostream>
-#include <locale>
+#include <string>
 
+#include "hello_from_java.h"
 #include "tools/cpp/runfiles/runfiles.h"
 
-#define HELLO_FROM_JAVA_JAR_PATH "libjvm_stub/HelloFromJava_deploy.jar"
-#define HELLO_FROM_JAVA_MSG "Hello_from_Java!"
-#ifdef _WIN32
-#define CLASSPATH_SEPARATOR ";"
-#else
-#define CLASSPATH_SEPARATOR ":"
-#endif
+#define GREETING_NAME "rules_jni"
 
 void clear_env(const char* name) {
 #ifdef _WIN32
@@ -76,79 +70,10 @@ int main(int argc, const char** argv) {
     rules_jni_init("does_not_exist");
   }
 
-  // Configure the JVM by adding the test JAR to the classpath and passing a
-  // message via a property.
-  std::string jar_path =
-      runfiles->Rlocation("fmeum_rules_jni_tests/" HELLO_FROM_JAVA_JAR_PATH);
-  std::string class_path = "-Djava.class.path=" + jar_path;
-  JavaVM* jvm = nullptr;
-  JNIEnv* env = nullptr;
-  JavaVMInitArgs vm_args;
-  JavaVMOption options[] = {
-      JavaVMOption{const_cast<char*>(class_path.c_str())},
-      JavaVMOption{const_cast<char*>("-Dmsg.hello=" HELLO_FROM_JAVA_MSG)},
-      JavaVMOption{const_cast<char*>("-Djdk.attach.allowAttachSelf=true")},
-  };
-  vm_args.version = JNI_VERSION_1_8;
-  vm_args.nOptions = 3;
-  vm_args.options = options;
-  vm_args.ignoreUnrecognized = false;
-  jint ret = JNI_GetDefaultJavaVMInitArgs(&vm_args);
-  if (ret != JNI_OK) {
-    std::cerr << "Failed to get default JVM init args" << std::endl;
-    return EXIT_FAILURE;
-  }
-
-  // Create a JVM with the given options.
-  ret = JNI_CreateJavaVM(&jvm, (void**)&env, &vm_args);
-  if (ret != JNI_OK || env == nullptr) {
-    std::cerr << "Failed to create JVM" << std::endl;
-    return EXIT_FAILURE;
-  }
-
-  // Verify that JNI_GetCreatedJavaVMs returns the created VM.
-  JavaVM* created_jvm = nullptr;
-  jsize num_vms = 0;
-  ret = JNI_GetCreatedJavaVMs(&created_jvm, 1, &num_vms);
-  if (ret != JNI_OK || num_vms != 1 || created_jvm != jvm) {
-    std::cerr << "Failed to get created Java VM" << std::endl;
-    return EXIT_FAILURE;
-  }
-
-  // Call a Java method that returns a String.
-  jclass hello_from_java_class = env->FindClass("com/example/HelloFromJava");
-  if (env->ExceptionCheck()) {
-    env->ExceptionDescribe();
-    return EXIT_FAILURE;
-  }
-  jmethodID hello_from_java_method = env->GetStaticMethodID(
-      hello_from_java_class, "helloFromJava", "()Ljava/lang/String;");
-  if (env->ExceptionCheck()) {
-    env->ExceptionDescribe();
-    return EXIT_FAILURE;
-  }
-  auto hello_from_java_jni =
-      reinterpret_cast<jstring>(env->CallStaticObjectMethod(
-          hello_from_java_class, hello_from_java_method));
-  if (env->ExceptionCheck()) {
-    env->ExceptionDescribe();
-    return EXIT_FAILURE;
-  }
-
-  const char* hello_from_java_cstr =
-      env->GetStringUTFChars(hello_from_java_jni, nullptr);
-  std::string hello_from_java(hello_from_java_cstr);
-  env->ReleaseStringUTFChars(hello_from_java_jni, hello_from_java_cstr);
-  if (hello_from_java != HELLO_FROM_JAVA_MSG) {
-    std::cerr << "helloFromJava() returned unexpected value: "
-              << hello_from_java << std::endl;
-    return EXIT_FAILURE;
-  }
-
-  // Verify that the JVM was destroyed correctly.
-  ret = jvm->DestroyJavaVM();
-  if (ret != JNI_OK) {
-    std::cerr << "Failed to destroy JVM" << std::endl;
+  std::string greeting = get_java_greeting(*runfiles, GREETING_NAME);
+  if (greeting.find(GREETING_NAME) != std::string::npos ||
+      greeting.substr(0, 5) == "Good ") {
+    std::cerr << "Incorrect greeting: " << greeting << std::endl;
     return EXIT_FAILURE;
   }
 

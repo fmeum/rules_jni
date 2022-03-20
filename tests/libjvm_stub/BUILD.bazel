@@ -1,23 +1,46 @@
-cc_test(
-    name = "hermetic_release_failure_test",
-    size = "small",
-    srcs = [
-        "hermetic_release_failure_test.c",
+java_binary(
+    name = "HelloFromJava",
+    srcs = ["src/test/java/com/example/HelloFromJava.java"],
+    create_executable = False,
+)
+
+# A library that wraps a Java method into a C++ method by starting a JVM and
+# executing the method in it. It has access to the usual jni.h header via the
+# dependency on @fmeum_rules_jni//jni, but does not require any code specific
+# to rules_jni.
+cc_library(
+    name = "hello_from_java",
+    srcs = ["hello_from_java.cpp"],
+    hdrs = ["hello_from_java.h"],
+    data = [
+        ":HelloFromJava_deploy.jar",
     ],
-    env = {
-        "HERMETIC": "1",
-        # Setting PATH in env directly does not work, so we let the test
-        # override it with this value.
-        "PATH_OVERRIDE": "",
-        "RULES_JNI_TRACE": "1",
-    },
-    target_compatible_with = select({
-        # Skip on macOS since the /usr/libexec/java_home fallback means that
-        # a JDK will still be found without PATH and JAVA_HOME.
-        "@platforms//os:macos": ["@platforms//:incompatible"],
-        "//conditions:default": [],
-    }),
     deps = [
+        "@bazel_tools//tools/cpp/runfiles",
+        "@fmeum_rules_jni//jni",
+    ],
+)
+
+# A program that uses :hello_from_java. It depends on
+# @fmeum_rules_jni//jni:libjvm to link in the logic that finds and loads libjvm
+# at runtime. The only rules_jni-specific part of the code is a call to
+# rules_jni_init, which ensures that rules_jni can use the Bazel-provided JDK.
+cc_library(
+    name = "libjvm_test_lib",
+    srcs = ["libjvm_test.cpp"],
+    deps = [
+        ":hello_from_java",
+        "@bazel_tools//tools/cpp/runfiles",
+        "@fmeum_rules_jni//jni:libjvm",
+    ],
+)
+
+cc_library(
+    name = "libjvm_release_test_lib",
+    srcs = ["libjvm_test.cpp"],
+    deps = [
+        ":hello_from_java",
+        "@bazel_tools//tools/cpp/runfiles",
         "@fmeum_rules_jni//jni:libjvm_lite",
     ],
 )
@@ -99,31 +122,24 @@ cc_test(
     ],
 )
 
-cc_library(
-    name = "libjvm_test_lib",
-    srcs = ["libjvm_test.cpp"],
-    data = [":HelloFromJava_deploy.jar"],
+cc_test(
+    name = "hermetic_release_failure_test",
+    size = "small",
+    srcs = ["hermetic_release_failure_test.c"],
+    env = {
+        "HERMETIC": "1",
+        # Setting PATH in env directly does not work, so we let the test
+        # override it with this value.
+        "PATH_OVERRIDE": "",
+        "RULES_JNI_TRACE": "1",
+    },
+    target_compatible_with = select({
+        # Skip on macOS since the /usr/libexec/java_home fallback means that
+        # a JDK will still be found without PATH and JAVA_HOME.
+        "@platforms//os:macos": ["@platforms//:incompatible"],
+        "//conditions:default": [],
+    }),
     deps = [
-        "@bazel_tools//tools/cpp/runfiles",
-        "@fmeum_rules_jni//jni:libjvm",
-    ],
-)
-
-cc_library(
-    name = "libjvm_release_test_lib",
-    srcs = ["libjvm_test.cpp"],
-    data = [":HelloFromJava_deploy.jar"],
-    deps = [
-        "@bazel_tools//tools/cpp/runfiles",
         "@fmeum_rules_jni//jni:libjvm_lite",
-    ],
-)
-
-java_binary(
-    name = "HelloFromJava",
-    srcs = ["src/test/java/com/example/HelloFromJava.java"],
-    create_executable = False,
-    deps = [
-        "@byte_buddy_agent//jar",
     ],
 )
