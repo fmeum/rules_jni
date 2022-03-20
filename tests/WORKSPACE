@@ -19,14 +19,6 @@ http_jar(
     ],
 )
 
-http_jar(
-    name = "byte_buddy_agent",
-    sha256 = "1f83b9d2370d9a223fb31c3eb7f30bd74a75165c0630e9bc164355eb34cb6988",
-    urls = [
-        "https://repo1.maven.org/maven2/net/bytebuddy/byte-buddy-agent/1.11.20/byte-buddy-agent-1.11.20.jar",
-    ],
-)
-
 register_toolchains(
     "@bazel_skylib//toolchains/unittest:cmd_toolchain",
     "@bazel_skylib//toolchains/unittest:bash_toolchain",
