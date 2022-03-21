@@ -31,7 +31,7 @@ std::string get_java_greeting(const Runfiles& runfiles,
   // Configure the JVM by adding the test JAR to the classpath and passing a
   // message via a property.
   std::string jar_path = runfiles.Rlocation(HELLO_FROM_JAVA_JAR_PATH);
-  std::string class_path = "'-cp " + jar_path + "'";
+  std::string class_path = "-Djava.class.path=" + jar_path;
   JavaVM* jvm = nullptr;
   JNIEnv* env = nullptr;
   JavaVMInitArgs vm_args;
