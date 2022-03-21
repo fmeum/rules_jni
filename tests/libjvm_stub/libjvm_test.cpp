@@ -71,8 +71,8 @@ int main(int argc, const char** argv) {
   }
 
   std::string greeting = get_java_greeting(*runfiles, GREETING_NAME);
-  if (greeting.find(GREETING_NAME) != std::string::npos ||
-      greeting.substr(0, 5) == "Good ") {
+  if (greeting.find(GREETING_NAME) == std::string::npos ||
+      greeting.substr(0, 5) != "Good ") {
     std::cerr << "Incorrect greeting: " << greeting << std::endl;
     return EXIT_FAILURE;
   }
