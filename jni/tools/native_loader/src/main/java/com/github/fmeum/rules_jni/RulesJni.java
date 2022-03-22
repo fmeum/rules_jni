@@ -104,7 +104,10 @@ public final class RulesJni {
     }
     try {
       Path tempDir = getOrCreateTempDir();
-      Path tempFile = Files.createTempFile(tempDir, null, null);
+      String mappedName = System.mapLibraryName(name);
+      int lastDot = mappedName.lastIndexOf('.');
+      Path tempFile = Files.createTempFile(
+          tempDir, mappedName.substring(0, lastDot) + "_", mappedName.substring(lastDot));
       LOADED_LIBS.put(name, new NativeLibraryInfo(libraryResource.toString(), tempFile.toFile()));
       try (InputStream in = libraryResource.openStream()) {
         Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
