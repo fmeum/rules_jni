@@ -48,7 +48,8 @@ final class CoverageHelper {
     // files into a temporary directory and generate the report there.
     Path tempCoverageDir;
     try {
-      tempCoverageDir = Files.createTempDirectory("rules_jni_coverage.");
+      tempCoverageDir =
+          Files.createTempDirectory(Paths.get(System.getenv("TEST_TMPDIR")), "rules_jni_coverage.");
     } catch (IOException e) {
       error(e);
       // Not reached.
