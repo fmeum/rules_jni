@@ -42,17 +42,36 @@ final class CoverageHelper {
       writeCoverageFile(libraryName);
     }
 
-    Path tempDir;
+    // collect_cc_coverage.sh emits its output at a fixed location relative to COVERAGE_DIR. In
+    // order to ensure that multiple instances of rules_jni (in multiple java_binary targets or
+    // shaded) do not interfere with each other when collecting coverage, copy all raw coverage
+    // files into a temporary directory and generate the report there.
+    Path tempCoverageDir;
     try {
-      tempDir = Files.createTempDirectory("rules_jni_coverage.");
+      tempCoverageDir = Files.createTempDirectory("rules_jni_coverage.");
     } catch (IOException e) {
       error(e);
       // Not reached.
       return;
     }
+
+    Path coverageDir = Paths.get(System.getenv("COVERAGE_DIR"));
+    File[] profrawFiles = coverageDir.toFile().listFiles((file, s) -> s.endsWith(".profraw"));
+    if (profrawFiles != null) {
+      try {
+        for (File profrawFile : profrawFiles) {
+          Files.copy(profrawFile.toPath(), tempCoverageDir.resolve(profrawFile.getName()));
+        }
+      } catch (IOException e) {
+        error(e);
+        // Not reached.
+        return;
+      }
+    }
+
     Path collectCcCoverageScript = null;
     try {
-      collectCcCoverageScript = Files.createTempFile(tempDir, "collect_cc_coverage", ".sh");
+      collectCcCoverageScript = Files.createTempFile(tempCoverageDir, "collect_cc_coverage", ".sh");
       try (InputStream stream = CoverageHelper.class.getResourceAsStream(
                "/bazel_tools/tools/test/collect_cc_coverage.sh")) {
         if (stream == null) {
@@ -78,17 +97,11 @@ final class CoverageHelper {
             .stream()
             .map(lib -> objectsBasePath.relativize(lib.tempFile.toPath()).toString())
             .collect(Collectors.joining("\n", "", "\n"));
-    Path coverageOutput = Paths.get(System.getenv("COVERAGE_DIR"), "_cc_coverage.dat");
-    if (coverageOutput.toFile().exists()) {
-      error("coverage report at " + coverageOutput
-          + " already exists, replacing it could lead to incorrect result\n"
-          + "Please file an issue at https://github.com/fmeum/rules_jni/issues/new describing your setup.");
-    }
     try {
       Path runtimeObjectsListFile =
-          Files.createTempFile(tempDir, null, RUNTIME_OBJECTS_LIST_SUFFIX);
+          Files.createTempFile(tempCoverageDir, null, RUNTIME_OBJECTS_LIST_SUFFIX);
       Files.write(runtimeObjectsListFile, runtimeObjectsList.getBytes(StandardCharsets.UTF_8));
-      Path coverageManifestFile = Files.createTempFile(tempDir, null, null);
+      Path coverageManifestFile = Files.createTempFile(tempCoverageDir, null, null);
       Files.write(coverageManifestFile,
           (runtimeObjectsListFile.toAbsolutePath() + "\n").getBytes(StandardCharsets.UTF_8));
       ProcessBuilder processBuilder =
@@ -98,20 +111,21 @@ final class CoverageHelper {
               .inheritIO();
       processBuilder.environment().put(
           "COVERAGE_MANIFEST", coverageManifestFile.toAbsolutePath().toString());
+      processBuilder.environment().put("COVERAGE_DIR", tempCoverageDir.toAbsolutePath().toString());
       processBuilder.start().waitFor();
     } catch (IOException | InterruptedException e) {
       error(e);
     }
 
-    if (!coverageOutput.toFile().exists()) {
-      error("coverage report at " + coverageOutput + " failed to generate");
+    Path tempCoverageOutput = tempCoverageDir.resolve("_cc_coverage.dat");
+    if (!tempCoverageOutput.toFile().exists()) {
+      error("coverage report at " + tempCoverageOutput + " failed to generate");
       // Not reached.
       return;
     }
     try {
-      Path uniqueCoverageOutput =
-          Files.createTempFile(coverageOutput.getParent(), "_cc_coverage.", ".dat");
-      Files.move(coverageOutput, uniqueCoverageOutput, StandardCopyOption.REPLACE_EXISTING);
+      Path uniqueCoverageOutput = Files.createTempFile(coverageDir, "_cc_coverage.", ".dat");
+      Files.move(tempCoverageOutput, uniqueCoverageOutput, StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
       e.printStackTrace();
     }
