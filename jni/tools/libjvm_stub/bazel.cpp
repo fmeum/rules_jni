@@ -32,12 +32,12 @@ using ::bazel::tools::cpp::runfiles::Runfiles;
 
 static const char* rules_jni_arg0 = "";
 
-static Runfiles* get_runfiles() {
+static std::unique_ptr<Runfiles> get_runfiles() {
   Runfiles* runfiles = Runfiles::CreateForTest();
   if (runfiles != nullptr) {
-    return runfiles;
+    return std::unique_ptr<Runfiles>(runfiles);
   }
-  return Runfiles::Create(rules_jni_arg0);
+  return std::unique_ptr<Runfiles>(Runfiles::Create(rules_jni_arg0));
 }
 
 static void set_env(const std::string& key, const std::string& value) {
@@ -50,7 +50,7 @@ static void set_env(const std::string& key, const std::string& value) {
 
 void rules_jni_init(const char* argv0) {
   rules_jni_arg0 = argv0;
-  Runfiles* runfiles = get_runfiles();
+  auto runfiles = get_runfiles();
   if (runfiles != nullptr) {
     std::vector<std::pair<std::string, std::string>> envvars =
         runfiles->EnvVars();
@@ -116,7 +116,7 @@ static bool ends_with(const std::string& str, const std::string& suffix) {
 }
 
 static std::string get_bazel_java_home() {
-  Runfiles* runfiles = get_runfiles();
+  auto runfiles = get_runfiles();
   if (runfiles == nullptr) {
     return "";
   }
