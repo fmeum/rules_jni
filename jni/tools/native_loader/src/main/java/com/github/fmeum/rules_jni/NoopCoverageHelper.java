@@ -21,5 +21,6 @@ import java.util.Map;
  * A no-op implementation of CoverageHelper used then coverage is not enabled.
  */
 final class CoverageHelper {
+  static void initCoverage(String libraryName) {}
   static void collectNativeLibrariesCoverage(Map<String, NativeLibraryInfo> loadedLibs) {}
 }
