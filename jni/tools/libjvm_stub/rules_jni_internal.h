@@ -17,11 +17,16 @@
 #ifndef RULES_JNI_LIBJVM_STUB_RULES_JNI_INTERNAL_H
 #define RULES_JNI_LIBJVM_STUB_RULES_JNI_INTERNAL_H
 
+#include <jni.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 void rules_jni_init(const char* argv0);
 const char* rules_jni_internal_get_bazel_java_home(void);
+jint rules_jni_create_java_vm_for_coverage(
+    jint (*create_java_vm)(JavaVM**, void**, void*), JavaVM** pvm, void** penv,
+    void* args);
 #ifdef __cplusplus
 }
 #endif

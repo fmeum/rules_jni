@@ -21,3 +21,9 @@
 const char* rules_jni_internal_get_bazel_java_home(void) { return NULL; }
 
 void rules_jni_init(const char* argv0) {}
+
+jint rules_jni_create_java_vm_for_coverage(
+    jint (*create_java_vm)(JavaVM**, void**, void*), JavaVM** pvm, void** penv,
+    void* args) {
+  return create_java_vm(pvm, penv, args);
+}
