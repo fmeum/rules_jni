@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "rules_jni_internal.h"
+
 // clang-format: off
 #define _JNI_IMPLEMENTATION_
 #include <jni.h>
@@ -26,8 +28,6 @@
 #include "utils.h"
 
 #define MSG_PREFIX "[rules_jni]: "
-
-char* rules_jni_internal_get_bazel_java_home();
 
 typedef jint (*JNI_GetDefaultJavaVMInitArgs_t)(void*);
 typedef jint (*JNI_CreateJavaVM_t)(JavaVM**, void**, void*);
@@ -277,7 +277,12 @@ JNIEXPORT jint JNICALL JNI_CreateJavaVM(JavaVM** pvm, void** penv, void* args) {
   if (JNI_CreateJavaVM_ == NULL) {
     init();
   }
+#ifdef RULES_JNI_COLLECT_COVERAGE
+  return rules_jni_create_java_vm_for_coverage(JNI_CreateJavaVM_, pvm, penv,
+                                               args);
+#else
   return JNI_CreateJavaVM_(pvm, penv, args);
+#endif
 }
 
 JNIEXPORT jint JNICALL JNI_GetCreatedJavaVMs(JavaVM** pvm, jsize sbuf,

@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <string>
 #include <utility>
@@ -60,52 +61,22 @@ void rules_jni_init(const char* argv0) {
       set_env(envvar.first, envvar.second);
     }
   }
-  if (RULES_JNI_COLLECT_COVERAGE) {
-    std::string coverage_agent;
-    if (runfiles != nullptr) {
-      coverage_agent = runfiles->Rlocation(
-          "fmeum_rules_jni/jni/tools/libjvm_stub/coverage/"
-          "CoverageAgent_deploy.jar");
-    } else if (getenv(RULES_JNI_COVERAGE_AGENT_JAR) != nullptr) {
-      // This should only every happen in tests.
-      coverage_agent = getenv(RULES_JNI_COVERAGE_AGENT_JAR);
-    }
-    if (coverage_agent.empty()) {
-      fprintf(stderr, MSG_PREFIX "failed to find CoverageAgent");
-      exit(EXIT_FAILURE);
-    }
-    // The JVM prepends JAVA_TOOL_OPTIONS to the options passed to the
-    // CreateJavaVM call. By prepending our agent to the variable, we ensure
-    // that the coverage setup code runs as early as possible. The agent is
-    // essentially just a startup hook and does not perform any logic other
-    // than executing Bazel's JacocoCoverageRunner's main function.
-    // Note: The value of JAVA_TOOL_OPTIONS may be changed by the program
-    // between the call to rules_jni_init and the call to CreateJavaVM. If it
-    // is overwritten, this is arguably a bug in the program and if it is not,
-    // coverage will still be collected. This seems better than the
-    // alternative of modifying the environment right before the stub makes
-    // the actual call to CreateJavaVM as setenv on Linux is inherently unsafe
-    // to call after the very early, synchronous setup stage of a program.
-    std::string java_agent_option = "'-javaagent:" + coverage_agent + "'";
-    const char* java_tool_options = getenv(JAVA_TOOL_OPTIONS);
-    if (java_tool_options == nullptr) {
-      set_env(JAVA_TOOL_OPTIONS, java_agent_option);
-    } else {
-      set_env(JAVA_TOOL_OPTIONS, java_agent_option + " " + java_tool_options);
-    }
-    // We have to ensure that JacocoCoverageRunner#getMainClass always returns
-    // our empty main method as CreateJavaVM is not expected to actually run
-    // any main classes. There are two cases:
-    // 1. Our agent deploy jar is the only jar on the classpath. In this case,
-    // the insideDeployJar parameter may be true, but since we do not define
-    // the Coverage-Main-Class attribute in the agent's manifest, the function
-    // will return the value of JACOCO_MAIN_CLASS set below.
-    // 2. Our agent is not the only jar on the classpath. In this case,
-    // metadataFiles in JacocoCoverageRunner#main will have length at least 2
-    // and thus insideDeployJar will always be false.
-    set_env(JACOCO_MAIN_CLASS,
-            "com.github.fmeum.rules_jni.libjvm_stub.CoverageAgent");
-  }
+#ifdef RULES_JNI_COLLECT_COVERAGE
+  // We have to ensure that JacocoCoverageRunner#getMainClass always returns
+  // our empty main method as CreateJavaVM is not expected to actually run
+  // any main classes. There are two cases:
+  //
+  // 1. Our agent deploy jar is the only jar on the classpath. In this case,
+  // the insideDeployJar parameter may be true, but since we do not define
+  // the Coverage-Main-Class attribute in the agent's manifest, the function
+  // will return the value of JACOCO_MAIN_CLASS set below.
+  //
+  // 2. Our agent is not the only jar on the classpath. In this case,
+  // metadataFiles in JacocoCoverageRunner#main will have length at least 2
+  // and thus insideDeployJar will always be false.
+  set_env(JACOCO_MAIN_CLASS,
+          "com.github.fmeum.rules_jni.libjvm_stub.CoverageAgent");
+#endif
 }
 
 static bool ends_with(const std::string& str, const std::string& suffix) {
@@ -161,11 +132,68 @@ static std::string get_bazel_java_home() {
 
 static std::string bazel_java_home;
 
-extern "C" const char* rules_jni_internal_get_bazel_java_home() {
+const char* rules_jni_internal_get_bazel_java_home() {
   bazel_java_home = get_bazel_java_home();
   if (!bazel_java_home.empty()) {
     return bazel_java_home.c_str();
   } else {
     return nullptr;
   }
+}
+
+static std::string coverage_agent;
+
+jint rules_jni_create_java_vm_for_coverage(
+    jint (*create_java_vm)(JavaVM** pvm, void** penv, void* args), JavaVM** pvm,
+    void** penv, void* args) {
+  if (args == nullptr) {
+    return create_java_vm(pvm, penv, args);
+  }
+
+  if (coverage_agent.empty()) {
+    auto runfiles = get_runfiles();
+    if (runfiles != nullptr) {
+      coverage_agent = runfiles->Rlocation(
+          RULES_JNI_REPOSITORY
+          "/jni/tools/libjvm_stub/coverage/CoverageAgent_deploy.jar");
+    } else if (getenv(RULES_JNI_COVERAGE_AGENT_JAR) != nullptr) {
+      // This should only every happen in tests.
+      coverage_agent = getenv(RULES_JNI_COVERAGE_AGENT_JAR);
+    }
+  }
+  if (coverage_agent.empty()) {
+    fprintf(stderr, MSG_PREFIX "failed to find CoverageAgent");
+    exit(EXIT_FAILURE);
+  }
+  std::string coverage_agent_classpath_arg_str =
+      "-javaagent:" + coverage_agent + "=classpath";
+  JavaVMOption coverage_agent_classpath_arg = {
+      const_cast<char*>(coverage_agent_classpath_arg_str.c_str()), nullptr};
+  std::string coverage_agent_collect_arg_str =
+      "-javaagent:" + coverage_agent + "=collect";
+  JavaVMOption coverage_agent_collect_arg = {
+      const_cast<char*>(coverage_agent_collect_arg_str.c_str()), nullptr};
+
+  auto* old_args = static_cast<JavaVMInitArgs*>(args);
+  JavaVMInitArgs new_args;
+  memcpy(&new_args, old_args, sizeof(JavaVMInitArgs));
+  new_args.nOptions = old_args->nOptions + 2;
+  auto new_args_options =
+      std::unique_ptr<JavaVMOption[]>(new JavaVMOption[new_args.nOptions]);
+  new_args.options = new_args_options.get();
+  // Ensure that the coverage agent invoked with the "classpath" arg comes
+  // first. In this way, all other Java agents, which may be instrumented, will
+  // find the JaCoCo runtime on the bootstrap classloader's classpath.
+  new_args.options[0] = coverage_agent_classpath_arg;
+  std::copy(old_args->options, old_args->options + old_args->nOptions,
+            new_args.options + 1);
+  // Ensure that the coverage agent invoked with the "collect" arg comes last.
+  // In this way, all other Java agents' premain functions have already been
+  // executed, meaning that their modifications to the system class loader's
+  // classpath have been applied. This is important since Bazel's
+  // JacocoCoverageRunner reads it and only emits coverage for jars on the
+  // classpath.
+  new_args.options[new_args.nOptions - 1] = coverage_agent_collect_arg;
+
+  return create_java_vm(pvm, penv, &new_args);
 }

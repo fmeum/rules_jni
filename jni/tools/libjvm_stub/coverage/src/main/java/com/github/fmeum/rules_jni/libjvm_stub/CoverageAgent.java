@@ -23,11 +23,20 @@ import java.util.jar.JarFile;
 
 public final class CoverageAgent {
   public static void premain(String args, Instrumentation instrumentation) {
-    appendSelfToBootstrapClassLoaderSearch(instrumentation);
-    try {
-      JacocoCoverageRunner.main(new String[] {});
-    } catch (Exception e) {
-      error("Failed to collect coverage in JVM created via JNI_CreateJavaVM:", e);
+    switch (args) {
+      case "classpath":
+        appendSelfToBootstrapClassLoaderSearch(instrumentation);
+        break;
+      case "collect":
+        try {
+          JacocoCoverageRunner.main(new String[] {});
+        } catch (Exception e) {
+          error("Failed to collect coverage in JVM created via JNI_CreateJavaVM:", e);
+        }
+        break;
+      default:
+        error("Failed to initialize coverage agent in JVM created via JNI_CreateJavaVM:",
+            new IllegalArgumentException("Unsupported argument: " + args));
     }
   }
 
