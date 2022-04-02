@@ -14,4 +14,7 @@
 
 package javax.com.github.fmeum.rules_jni.gen;
 
-public final class $$NAME$$ { public static native void writeCoverageFile(); }
+public final class $$NAME$$ {
+  public static native void initCoverageFile();
+  public static native void writeCoverageFile();
+}

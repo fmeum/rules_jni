@@ -116,6 +116,7 @@ public final class RulesJni {
     } catch (IOException e) {
       throw new UnsatisfiedLinkError(e.getMessage());
     }
+    CoverageHelper.initCoverage(name);
   }
 
   private static Path getOrCreateTempDir() throws IOException {

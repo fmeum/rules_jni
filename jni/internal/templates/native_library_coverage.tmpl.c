@@ -14,9 +14,20 @@
 
 #include <jni.h>
 
-__attribute__((weak)) void __llvm_profile_write_file() {}
+// Disable the LLVM profile runtime's static initializer.
+int __llvm_profile_runtime = 0;
+
+void __llvm_profile_initialize_file();
+// Using __llvm_profile_dump instead of __llvm_profile_write_file ensures that
+// the profile isn't written twice without a warning.
+int __llvm_profile_dump();
+
+JNIEXPORT void JNICALL
+Java_javax_com_github_fmeum_rules_1jni_gen_$$NAME$$_initCoverageFile() {
+  __llvm_profile_initialize_file();
+}
 
 JNIEXPORT void JNICALL
 Java_javax_com_github_fmeum_rules_1jni_gen_$$NAME$$_writeCoverageFile() {
-  __llvm_profile_write_file();
+  __llvm_profile_dump();
 }

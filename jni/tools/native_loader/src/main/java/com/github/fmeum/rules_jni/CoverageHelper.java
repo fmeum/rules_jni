@@ -32,6 +32,12 @@ final class CoverageHelper {
   // We inject our coverage helpers under javax.* to make them less likely to be shaded to a
   // different name, which would break the native method lookup.
   private static final String COVERAGE_HELPERS_PACKAGE = "javax.com.github.fmeum.rules_jni.gen";
+  private static final String INIT_COVERAGE_FILE = "initCoverageFile";
+  private static final String WRITE_COVERAGE_FILE = "writeCoverageFile";
+
+  static void initCoverage(String libraryName) {
+    callHelperMethod(libraryName, INIT_COVERAGE_FILE);
+  }
 
   static void collectNativeLibrariesCoverage(Map<String, NativeLibraryInfo> loadedLibs) {
     if (loadedLibs.isEmpty()) {
@@ -39,7 +45,7 @@ final class CoverageHelper {
     }
 
     for (String libraryName : loadedLibs.keySet()) {
-      writeCoverageFile(libraryName);
+      callHelperMethod(libraryName, WRITE_COVERAGE_FILE);
     }
 
     // collect_cc_coverage.sh emits its output at a fixed location relative to COVERAGE_DIR. In
@@ -142,6 +148,18 @@ final class CoverageHelper {
       Class<?> helperClass = Class.forName(helperClassName);
       Method writeCoverageFileMethod = helperClass.getMethod("writeCoverageFile");
       writeCoverageFileMethod.invoke(null);
+    } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
+        | InvocationTargetException | UnsatisfiedLinkError e) {
+      error(e);
+    }
+  }
+
+  private static void callHelperMethod(String libraryName, String methodName) {
+    String helperClassName = COVERAGE_HELPERS_PACKAGE + "." + toJavaIdentifier(libraryName);
+    try {
+      Class<?> helperClass = Class.forName(helperClassName);
+      Method helperMethod = helperClass.getMethod(methodName);
+      helperMethod.invoke(null);
     } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException
         | InvocationTargetException | UnsatisfiedLinkError e) {
       error(e);
