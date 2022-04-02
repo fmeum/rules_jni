@@ -14,9 +14,9 @@
 
 #include <jni.h>
 
-__attribute__((weak)) void __llvm_profile_write_file() {}
+__attribute__((weak)) void __llvm_profile_dump() {}
 
 JNIEXPORT void JNICALL
 Java_javax_com_github_fmeum_rules_1jni_gen_$$NAME$$_writeCoverageFile() {
-  __llvm_profile_write_file();
+  __llvm_profile_dump();
 }
