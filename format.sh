@@ -3,7 +3,7 @@ find -name '*.c' \
      -o -name '*.cpp' \
      -o -name '*.h' \
      -o -name '*.java' \
-  | xargs clang-format-12 -i
+  | xargs clang-format-13 -i
 
 # BUILD files
 # go get github.com/bazelbuild/buildtools/buildifier

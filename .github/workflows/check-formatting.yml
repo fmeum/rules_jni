@@ -25,10 +25,10 @@ jobs:
         run: |
           wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
           sudo apt-get install software-properties-common
-          sudo add-apt-repository 'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-12 main'
-          sudo apt-get install clang-format-12
-          go get -u github.com/google/addlicense
-          go get github.com/bazelbuild/buildtools/buildifier
+          sudo add-apt-repository 'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-13 main'
+          sudo apt-get install clang-format-13
+          go install github.com/google/addlicense@latest
+          go install github.com/bazelbuild/buildtools/buildifier@latest
 
       - name: Run format.sh and print changes
         run: |
