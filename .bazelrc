@@ -1,5 +1,6 @@
 # Isolate sandboxed build actions from each other.
 build --sandbox_tmpfs_path=/tmp
+build --verbose_failures
 
 # Trim PATH to the bare minimum for build actions, but preserve it for tests.
 build --incompatible_strict_action_env

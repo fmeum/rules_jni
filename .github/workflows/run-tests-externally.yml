@@ -17,35 +17,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        bazel: [4.0.0, latest, last_green]
-        bazel_mode: [workspace, module]
-        os: [ubuntu-latest, macos-latest, windows-2019]
-        jdk: [8, 11, 17]
-        exclude:
-          - bazel: 4.0.0
-            jdk: 11
-          - bazel: 4.0.0
-            jdk: 17
-          - bazel: 4.0.0
-            bazel_mode: module
-          - bazel: last_green
-            jdk: 8
-          - bazel: last_green
-            jdk: 11
-          - bazel_mode: module
-            jdk: 8
-          - bazel_mode: module
-            jdk: 11
+        bazel: [last_green]
+        bazel_mode: [workspace, module, module_dynamic_mode_off, module_native_cc_test]
+        os: [windows-2019]
+        jdk: [17]
         include:
-          - os: ubuntu-latest
-            cache: "/home/runner/.cache/bazel-disk"
-          - os: macos-latest
-            cache: "/private/var/tmp/bazel-disk"
-            bazel_macos_args: "--xcode_version_config=//.github:host_xcodes"
           - os: windows-2019
             cache: "C:\\tmp\\bazel-disk"
           - bazel_mode: module
             bazel_extra_args: "--config=bzlmod"
+          - bazel_mode: module_dynamic_mode_off
+            bazel_extra_args: "--config=bzlmod --dynamic_mode=off"
+          - bazel_mode: module_native_cc_test
+            bazel_extra_args: "--config=bzlmod --experimental_builtins_injection_override=-cc_test"
     name: Test externally (${{ matrix.os }}, Bazel ${{ matrix.bazel }} ${{ matrix.bazel_mode }}, JDK ${{ matrix.jdk }})
     env:
       BAZELISK_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -85,12 +69,23 @@ jobs:
           bazelisk coverage --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //...
           ./verify_coverage.sh
 
+      - name: Debug param file
+        if: always()
+        env:
+          USE_BAZEL_VERSION: ${{ matrix.bazel }}
+        working-directory: ./tests
+        shell: bash
+        run: |
+          cp $(bazelisk info execution_root)/bazel-out/x64_windows-fastbuild/bin/external/fmeum_rules_jni/jni/tools/libjvm_stub/*.params ../ || true
+          cp $(bazelisk info execution_root)/bazel-out/x64_windows-fastbuild/bin/external/rules_jni.override/jni/tools/libjvm_stub/*.params ../ || true
+
       - name: Upload test logs
         if: always()
         uses: actions/upload-artifact@v2
         with:
-          name: testlogs-${{ matrix.bazel}}-${{ matrix.os }}-${{ matrix.jdk }}
+          name: testlogs-${{ matrix.bazel}}-${{ matrix.os }}-${{ matrix.jdk }}-${{ matrix.bazel_mode }}
           # https://github.com/actions/upload-artifact/issues/92#issuecomment-711107236
           path: |
             ${{ github.workspace }}/tests/bazel-testlogs*/**/test.log
             ${{ github.workspace }}/profile.gz
+            ${{ github.workspace }}/*.params
