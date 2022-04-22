@@ -15,6 +15,7 @@ jobs:
   test_externally:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         bazel: [4.0.0, latest, last_green]
         bazel_mode: [workspace, module]
