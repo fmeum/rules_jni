@@ -45,7 +45,8 @@ jobs:
           - os: windows-2019
             cache: "C:\\tmp\\bazel-disk"
           - bazel_mode: module
-            bazel_extra_args: "--config=bzlmod"
+            # Workaround for https://github.com/bazelbuild/bazel/issues/15317
+            bazel_extra_args: "--config=bzlmod --experimental_builtins_injection_override=-cc_test"
     name: Test externally (${{ matrix.os }}, Bazel ${{ matrix.bazel }} ${{ matrix.bazel_mode }}, JDK ${{ matrix.jdk }})
     env:
       BAZELISK_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
