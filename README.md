@@ -76,6 +76,7 @@ There are also the following known issues with Bazel Java coverage to keep in mi
 * `java_test` does not collect coverage for `cc_binary` targets it executes at
   runtime (https://github.com/bazelbuild/bazel/issues/15098)
 * Java coverage is not collected correctly with JDK 16+ (https://github.com/bazelbuild/bazel/pull/15081)
+* Coverage is not collected for native code that transitively depends on a `java_jni_library` target (https://github.com/bazelbuild/bazel/pull/15118)
 
 To enable this feature, add the following lines to your project's `.bazelrc`:
 
