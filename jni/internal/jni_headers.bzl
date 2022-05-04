@@ -27,12 +27,12 @@ def _jni_headers_impl(ctx):
     args.add("x")
     args.add(native_headers_jar)
     args.add("-d")
-    args.add(include_dir.path)
+    args.add_all([include_dir], expand_directories = False)
     ctx.actions.run(
         inputs = [native_headers_jar],
         tools = [ctx.executable._zipper],
         outputs = [include_dir],
-        executable = ctx.executable._zipper.path,
+        executable = ctx.executable._zipper,
         arguments = [args],
     )
 
