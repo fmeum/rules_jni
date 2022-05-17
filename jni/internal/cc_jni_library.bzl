@@ -176,9 +176,10 @@ def cc_jni_library(
         [`cc_library`](https://docs.bazel.build/versions/main/be/c-cpp.html#cc_library), except for:
         `linkshared` (always `True`), `linkstatic` (always `True`), `data` (runfiles are not supported)
     """
-    macos_library_name = "lib%s.dylib" % name
-    unix_library_name = "lib%s.so" % name
-    windows_library_name = "%s.dll" % name
+    path, sep, basename = name.rpartition("/")
+    macos_library_name = "%s%slib%s.dylib" % (path, sep, basename)
+    unix_library_name = "%s%slib%s.so" % (path, sep, basename)
+    windows_library_name = "%s%s%s.dll" % (path, sep, basename)
 
     # Arguments to set on the visible target, not the intermediate cc_binary.
     tags = cc_binary_args.pop("tags", default = None)
@@ -190,13 +191,13 @@ def cc_jni_library(
     java_coverage_helper_name = "%s_java_coverage_helper" % name
     java_jni_coverage_helper_library(
         name = java_coverage_helper_name,
-        library_name = name,
+        library_name = basename,
     )
 
     cc_coverage_helper_name = "%s_cc_coverage_helper" % name
     cc_jni_coverage_helper_library(
         name = cc_coverage_helper_name,
-        library_name = name,
+        library_name = basename,
     )
 
     # Simple concatenation is compatible with select, append is not.

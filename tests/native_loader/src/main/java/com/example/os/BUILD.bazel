@@ -7,7 +7,7 @@ java_jni_library(
         "OsUtils.java",
     ],
     native_libs = [
-        "//native_loader/src/main/native/com/example/os",
+        "//native_loader/src/main/native/com/example/os:impl/os",
     ],
     visibility = [
         "//native_loader/src/main/native/com/example/os:__subpackages__",

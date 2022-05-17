@@ -21,9 +21,9 @@ public class OsUtils {
 
   static {
     String packagePath = OsUtils.class.getPackage().getName().replace(".", "/");
-    RulesJni.loadLibrary("os", "/" + packagePath);
+    RulesJni.loadLibrary("impl/os", "/" + packagePath);
     // Verify that loading the library twice does not result in errors.
-    RulesJni.loadLibrary("os", OsUtils.class);
+    RulesJni.loadLibrary("impl/os", OsUtils.class);
   }
 
   public static native int setenv(String name, String value);
