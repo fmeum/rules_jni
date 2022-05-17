@@ -1,5 +1,6 @@
 alias(
     name = "native_loader",
     actual = "//jni/tools/native_loader/src/main/java/com/github/fmeum/rules_jni:native_loader",
+    applicable_licenses = ["//:rules_jni_license"],
     visibility = ["//visibility:public"],
 )

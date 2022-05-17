@@ -1,0 +1,23 @@
+load("@rules_license//rules:license.bzl", "license")
+
+exports_files(["LICENSE"])
+
+license(
+    name = "jdk_license",
+    copyright_notice = """jni.h:
+Copyright (c) 1996, 2018, Oracle and/or its affiliates. All rights reserved.
+jni_md.h:
+Copyright (c) 1996, 2020, Oracle and/or its affiliates. All rights reserved.
+""",
+    license_kinds = ["@rules_license//licenses/spdx:GPL-2.0-with-classpath-exception"],
+    license_text = "@com_github_openjdk_license//file",
+    visibility = ["//:__subpackages__"],
+)
+
+license(
+    name = "rules_jni_license",
+    copyright_notice = "Copyright 2021 Fabian Meumertzheim",
+    license_kinds = ["@rules_license//licenses/spdx:Apache-2.0"],
+    license_text = "//:LICENSE",
+    visibility = ["//:__subpackages__"],
+)
