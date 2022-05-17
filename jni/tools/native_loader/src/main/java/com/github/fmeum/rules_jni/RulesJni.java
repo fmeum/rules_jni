@@ -94,21 +94,23 @@ public final class RulesJni {
   }
 
   synchronized private static void loadLibrary(String name, URL libraryResource) {
-    if (LOADED_LIBS.containsKey(name)) {
-      if (!libraryResource.toString().equals(LOADED_LIBS.get(name).canonicalPath)) {
+    String basename = libraryBasename(name);
+    if (LOADED_LIBS.containsKey(basename)) {
+      if (!libraryResource.toString().equals(LOADED_LIBS.get(basename).canonicalPath)) {
         throw new UnsatisfiedLinkError(String.format(
             "Cannot load two native libraries with same basename ('%s') from different paths\nFirst library: %s\nSecond library: %s\n",
-            name, LOADED_LIBS.get(name).canonicalPath, libraryResource));
+            basename, LOADED_LIBS.get(basename).canonicalPath, libraryResource));
       }
       return;
     }
     try {
       Path tempDir = getOrCreateTempDir();
-      String mappedName = System.mapLibraryName(name);
+      String mappedName = System.mapLibraryName(basename);
       int lastDot = mappedName.lastIndexOf('.');
       Path tempFile = Files.createTempFile(
           tempDir, mappedName.substring(0, lastDot) + "_", mappedName.substring(lastDot));
-      LOADED_LIBS.put(name, new NativeLibraryInfo(libraryResource.toString(), tempFile.toFile()));
+      LOADED_LIBS.put(
+          basename, new NativeLibraryInfo(libraryResource.toString(), tempFile.toFile()));
       try (InputStream in = libraryResource.openStream()) {
         Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
         System.load(tempFile.toAbsolutePath().toString());
@@ -116,7 +118,7 @@ public final class RulesJni {
     } catch (IOException e) {
       throw new UnsatisfiedLinkError(e.getMessage());
     }
-    CoverageHelper.initCoverage(name);
+    CoverageHelper.initCoverage(basename);
   }
 
   private static Path getOrCreateTempDir() throws IOException {
@@ -126,12 +128,18 @@ public final class RulesJni {
     return tempDir;
   }
 
+  private static String libraryBasename(String name) {
+    return name.substring(name.lastIndexOf('/') + 1);
+  }
+
   private static String libraryRelativePath(String name) {
     if (name == null) {
       throw new NullPointerException("name must not be null");
     }
-    return String.format("%s_%s_%s/%s", name, OsCpuUtils.CANONICAL_OS, OsCpuUtils.CANONICAL_CPU,
-        System.mapLibraryName(name));
+    String basename = libraryBasename(name);
+    String path = name.substring(0, name.length() - basename.length());
+    return String.format("%s%s_%s_%s/%s", path, basename, OsCpuUtils.CANONICAL_OS,
+        OsCpuUtils.CANONICAL_CPU, System.mapLibraryName(basename));
   }
 
   private static void failOnNullResource(URL resource, String name) {
