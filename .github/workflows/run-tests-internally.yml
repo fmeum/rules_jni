@@ -14,19 +14,9 @@ jobs:
 
   build_and_test_internally:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        bazel_mode: [workspace, module]
-        include:
-          - bazel_mode: workspace
-            bazel_extra_args: "@fmeum_rules_jni_tests//..."
-          # Find a way to run the tests with bzlmod.
-          # https://github.com/bazelbuild/bazel-central-registry/pull/47#discussion_r772534256
-          - bazel_mode: module
-            bazel_extra_args: "--config=bzlmod"
     env:
       BAZELISK_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    name: Build and test internally (ubuntu-latest, Bazel last_green ${{ matrix.bazel_mode }}, JDK 17)
+    name: Build and test internally (ubuntu-latest, Bazel last_green workspace, JDK 17)
 
     steps:
       - uses: actions/checkout@v2
@@ -42,20 +32,15 @@ jobs:
           path: "/home/runner/.cache/bazel-disk"
           key: bazel-disk-cache-internal
 
-      - name: Clear WORKSPACE
-        if: matrix.bazel_mode == 'module'
-        working-directory: ./tests
-        run: echo 'workspace(name = "fmeum_rules_jni")' > WORKSPACE
-
       - name: Build from main workspace with layering_check
         env:
           USE_BAZEL_VERSION: "last_green"
-        run: bazelisk build --config=ci --disk_cache="/home/runner/.cache/bazel-disk" ${{ matrix.bazel_extra_args }} //...
+        run: bazelisk build --config=ci --disk_cache="/home/runner/.cache/bazel-disk" //... @fmeum_rules_jni_tests//...
 
       - name: Run tests from main workspace
         env:
           USE_BAZEL_VERSION: "last_green"
-        run: bazelisk test --config=ci --disk_cache="/home/runner/.cache/bazel-disk" ${{ matrix.bazel_extra_args }} //...
+        run: bazelisk test --config=ci --disk_cache="/home/runner/.cache/bazel-disk" //... @fmeum_rules_jni_tests//...
 
       - name: Upload test logs
         if: always()
