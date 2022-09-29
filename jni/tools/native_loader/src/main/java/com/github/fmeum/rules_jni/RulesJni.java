@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.*;
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * Static helper methods that load native libraries created with the {@code cc_jni_library} rule of
@@ -94,6 +95,66 @@ public final class RulesJni {
     loadLibrary(name, libraryResource);
   }
 
+  /**
+   * Extracts a native library created with the {@code cc_jni_library} rule from the resource
+   * directory of the class {@code inSamePackageAs} to a temporary file.
+   * <p>
+   * The correct version of the native library for the current OS and CPU architecture is chosen
+   * automatically.
+   * <p>
+   * All temporary files created during the extraction of the native library are cleaned up at JVM
+   * exit.
+   *
+   * @param name the name of the {@code cc_jni_library} target that generates the native
+   *     library to be loaded.
+   * @param inSamePackageAs a class that is contained in the same Java (or Bazel) package as the
+   *     native library.
+   * @throws NullPointerException if {@code name} or {@code inSamePackageAs} is {@code null}.
+   * @throws SecurityException if a security manager exists and its checkLink method doesn't allow
+   *     loading of the specified dynamic library.
+   * @throws UnsatisfiedLinkError if a version of the library for the current OS and CPU
+   *     architecture could not be found in the resource directory corresponding to {@code
+   *     inSamePackageAs}.
+   * @throws IOException if extracting the library failed.
+   */
+  public static Path extractLibrary(String name, Class<?> inSamePackageAs) throws IOException {
+    URL libraryResource = inSamePackageAs.getResource(libraryRelativePath(name));
+    failOnNullResource(libraryResource, name);
+    return extractLibrary(libraryBasename(name), libraryResource);
+  }
+
+  /**
+   * Loads a native library created with the {@code cc_jni_library} rule from the resource
+   * directory specified by the absolute path {@code absolutePathToPackage}.
+   * <p>
+   * The correct version of the native library for the current OS and CPU architecture is chosen
+   * automatically.
+   * <p>
+   * All temporary files created during the extraction of the native library are cleaned up at JVM
+   * exit.
+   *
+   * @param name the name of the {@code cc_jni_library} target that generates the native
+   *     library to be loaded.
+   * @param absolutePathToPackage a class that is contained in the same Java (or Bazel) package as
+   *     the native library.
+   * @throws NullPointerException if {@code name} or {@code absolutePathToPackage} is {@code null}.
+   * @throws SecurityException if a security manager exists and its checkLink method doesn't allow
+   *     loading of the specified dynamic library.
+   * @throws UnsatisfiedLinkError if a version of the library for the current OS and CPU
+   *     architecture could not be found in the specified resource directory or extracting the
+   *     library failed.
+   * @throws IOException if extracting the library failed.
+   */
+  public static Path extractLibrary(String name, String absolutePathToPackage) throws IOException {
+    if (absolutePathToPackage == null) {
+      throw new NullPointerException("absolutePathToPackage must not be null");
+    }
+    URL libraryResource =
+        RulesJni.class.getResource(absolutePathToPackage + "/" + libraryRelativePath(name));
+    failOnNullResource(libraryResource, name);
+    return extractLibrary(libraryBasename(name), libraryResource);
+  }
+
   synchronized private static void loadLibrary(String name, URL libraryResource) {
     String basename = libraryBasename(name);
     if (LOADED_LIBS.containsKey(basename)) {
@@ -104,22 +165,27 @@ public final class RulesJni {
       }
       return;
     }
+    Path tempFile;
     try {
-      Path tempDir = getOrCreateTempDir();
-      String mappedName = System.mapLibraryName(basename);
-      int lastDot = mappedName.lastIndexOf('.');
-      Path tempFile = Files.createTempFile(
-          tempDir, mappedName.substring(0, lastDot) + "_", mappedName.substring(lastDot));
-      LOADED_LIBS.put(
-          basename, new NativeLibraryInfo(libraryResource.toString(), tempFile.toFile()));
-      try (InputStream in = libraryResource.openStream()) {
-        Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
-        System.load(tempFile.toAbsolutePath().toString());
-      }
+      tempFile = extractLibrary(basename, libraryResource);
     } catch (IOException e) {
       throw new UnsatisfiedLinkError(e.getMessage());
     }
+    System.load(tempFile.toAbsolutePath().toString());
+    LOADED_LIBS.put(basename, new NativeLibraryInfo(libraryResource.toString(), tempFile.toFile()));
     CoverageHelper.initCoverage(basename);
+  }
+
+  private static Path extractLibrary(String basename, URL libraryResource) throws IOException {
+    Path tempDir = getOrCreateTempDir();
+    String mappedName = System.mapLibraryName(basename);
+    int lastDot = mappedName.lastIndexOf('.');
+    Path tempFile = Files.createTempFile(
+        tempDir, mappedName.substring(0, lastDot) + "_", mappedName.substring(lastDot));
+    try (InputStream in = libraryResource.openStream()) {
+      Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
+    }
+    return tempFile;
   }
 
   private static Path getOrCreateTempDir() throws IOException {
@@ -160,9 +226,10 @@ public final class RulesJni {
     }
     CoverageHelper.collectNativeLibrariesCoverage(LOADED_LIBS);
     if (!skipCleanup) {
-      LOADED_LIBS.values().stream().map(l -> l.tempFile).forEach(File::delete);
-      if (tempDir != null) {
-        tempDir.toFile().delete();
+      try (Stream<Path> tempFiles = Files.walk(tempDir)) {
+        tempFiles.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+      } catch (IOException e) {
+        // Cleanup is best-effort.
       }
     }
   }
