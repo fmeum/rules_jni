@@ -39,10 +39,10 @@ public final class RulesJni {
   /**
    * Loads a native library created with the {@code cc_jni_library} rule from the resource
    * directory of the class {@code inSamePackageAs}.
-   *
+   * <p>
    * The correct version of the native library for the current OS and CPU architecture is chosen
    * automatically.
-   *
+   * <p>
    * All temporary files created during the extraction of the native library are cleaned up at JVM
    * exit.
    *
@@ -55,7 +55,7 @@ public final class RulesJni {
    *     loading of the specified dynamic library.
    * @throws UnsatisfiedLinkError if a version of the library for the current OS and CPU
    *     architecture could not be found in the resource directory corresponding to {@code
-   *     inSamePackageAs}.
+   *     inSamePackageAs} or extracting the library failed.
    */
   public static void loadLibrary(String name, Class<?> inSamePackageAs) {
     URL libraryResource = inSamePackageAs.getResource(libraryRelativePath(name));
@@ -66,10 +66,10 @@ public final class RulesJni {
   /**
    * Loads a native library created with the {@code cc_jni_library} rule from the resource
    * directory specified by the absolute path {@code absolutePathToPackage}.
-   *
+   * <p>
    * The correct version of the native library for the current OS and CPU architecture is chosen
    * automatically.
-   *
+   * <p>
    * All temporary files created during the extraction of the native library are cleaned up at JVM
    * exit.
    *
@@ -81,7 +81,8 @@ public final class RulesJni {
    * @throws SecurityException if a security manager exists and its checkLink method doesn't allow
    *     loading of the specified dynamic library.
    * @throws UnsatisfiedLinkError if a version of the library for the current OS and CPU
-   *     architecture could not be found at specified resource path.
+   *     architecture could not be found in the specified resource directory or extracting the
+   *     library failed.
    */
   public static void loadLibrary(String name, String absolutePathToPackage) {
     if (absolutePathToPackage == null) {
