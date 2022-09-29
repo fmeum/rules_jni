@@ -24,6 +24,6 @@ bcr_test_module:
       name: "Run test module"
       platform: centos7
       environment:
-        JAVA_HOME: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.302.b08-0.el7_9.x86_64
+        JAVA_HOME: /usr/lib/jvm/java-1.8.0
       test_targets:
         - "//..."
