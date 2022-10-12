@@ -80,7 +80,7 @@ def java_jni_library(
 
     merge_java_infos(
         name = name,
-        libs = [
+        deps = [
             ":" + original_name,
         ] + native_libs,
         tags = tags,

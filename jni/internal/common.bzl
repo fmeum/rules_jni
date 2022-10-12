@@ -24,18 +24,18 @@ def _merge_default_infos(ctx, infos):
 
 def _merge_cc_infos_impl(ctx):
     return [
-        _merge_default_infos(ctx, [lib[DefaultInfo] for lib in ctx.attr.libs]),
-        cc_common.merge_cc_infos(direct_cc_infos = [lib[CcInfo] for lib in ctx.attr.libs]),
+        _merge_default_infos(ctx, [dep[DefaultInfo] for dep in ctx.attr.deps]),
+        cc_common.merge_cc_infos(direct_cc_infos = [dep[CcInfo] for dep in ctx.attr.deps]),
         coverage_common.instrumented_files_info(
             ctx,
-            dependency_attributes = ["libs"],
+            dependency_attributes = ["deps"],
         ),
     ]
 
 merge_cc_infos = rule(
     implementation = _merge_cc_infos_impl,
     attrs = {
-        "libs": attr.label_list(
+        "deps": attr.label_list(
             providers = [CcInfo],
         ),
     },
@@ -44,18 +44,18 @@ merge_cc_infos = rule(
 
 def _merge_java_infos_impl(ctx):
     return [
-        _merge_default_infos(ctx, [lib[DefaultInfo] for lib in ctx.attr.libs]),
-        java_common.merge([lib[JavaInfo] for lib in ctx.attr.libs]),
+        _merge_default_infos(ctx, [dep[DefaultInfo] for dep in ctx.attr.deps]),
+        java_common.merge([dep[JavaInfo] for dep in ctx.attr.deps]),
         coverage_common.instrumented_files_info(
             ctx,
-            dependency_attributes = ["libs"],
+            dependency_attributes = ["deps"],
         ),
     ]
 
 merge_java_infos = rule(
     implementation = _merge_java_infos_impl,
     attrs = {
-        "libs": attr.label_list(
+        "deps": attr.label_list(
             providers = [JavaInfo],
         ),
     },

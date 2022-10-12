@@ -4,20 +4,20 @@ load("//jni/internal:common.bzl", "make_root_relative", "merge_cc_infos")
 
 merge_cc_infos(
     name = "libjvm_stub_with_jni",
-    libs = [
+    visibility = ["//jni:__pkg__"],
+    deps = [
         ":libjvm_stub",
         "//jni",
     ],
-    visibility = ["//jni:__pkg__"],
 )
 
 merge_cc_infos(
     name = "libjvm_stub_release_with_jni",
-    libs = [
+    visibility = ["//jni:__pkg__"],
+    deps = [
         ":libjvm_stub_release",
         "//jni",
     ],
-    visibility = ["//jni:__pkg__"],
 )
 
 cc_library(
