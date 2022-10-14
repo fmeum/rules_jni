@@ -16,6 +16,7 @@
 
 #include <jni.h>
 
+#include <fstream>
 #include <iostream>
 #include <string>
 
@@ -23,6 +24,8 @@
 
 #define HELLO_FROM_JAVA_JAR_PATH \
   "fmeum_rules_jni_tests/libjvm_stub/HelloFromJava_deploy.jar"
+#define HELLO_FROM_JAVA_JAR_PATH_BZLMOD \
+  "_main/libjvm_stub/HelloFromJava_deploy.jar"
 
 using ::bazel::tools::cpp::runfiles::Runfiles;
 
@@ -31,6 +34,9 @@ std::string get_java_greeting(const Runfiles& runfiles,
   // Configure the JVM by adding the test JAR to the classpath and passing a
   // message via a property.
   std::string jar_path = runfiles.Rlocation(HELLO_FROM_JAVA_JAR_PATH);
+  if (!std::ifstream(jar_path).good()) {
+    jar_path = runfiles.Rlocation(HELLO_FROM_JAVA_JAR_PATH_BZLMOD);
+  }
   std::string class_path = "-Djava.class.path=" + jar_path;
   JavaVM* jvm = nullptr;
   JNIEnv* env = nullptr;
