@@ -9,6 +9,6 @@ coverage --experimental_use_llvm_covmap
 coverage --experimental_generate_llvm_lcov
 coverage --test_tag_filters=-no-coverage
 
-coverage:ci --repo_env=CC=clang-10
-coverage:ci --repo_env=GCOV=llvm-profdata-10
-coverage:ci --repo_env=BAZEL_LLVM_COV=llvm-cov-10
+coverage:ci --repo_env=CC=clang-14
+coverage:ci --repo_env=GCOV=llvm-profdata-14
+coverage:ci --repo_env=BAZEL_LLVM_COV=llvm-cov-14

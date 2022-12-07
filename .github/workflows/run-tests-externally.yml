@@ -81,7 +81,7 @@ jobs:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests
         run: |
-          sudo apt install clang-10 llvm-10
+          sudo apt install clang-14 llvm-14
           bazelisk coverage --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //...
           ./verify_coverage.sh
 
