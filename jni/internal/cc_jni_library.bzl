@@ -77,10 +77,12 @@ def _multi_platform_artifact_impl(ctx):
     seen_platforms = {}
     for artifact in ctx.attr.artifact:
         info = artifact[SinglePlatformArtifactInfo]
+        os = ctx.configuration.default_shell_env.get("RULES_JNI_OS_OVERRIDE", default = info.os)
+        cpu = ctx.configuration.default_shell_env.get("RULES_JNI_CPU_OVERRIDE", default = info.cpu)
         identifier = "{original_name}_{os}_{cpu}".format(
-            cpu = info.cpu,
+            cpu = cpu,
             original_name = ctx.attr.original_name,
-            os = info.os,
+            os = os,
         )
         if (info.cpu, info.os) in seen_platforms:
             fail(_CONFLICTING_PLATFORMS_MESSAGE.format(

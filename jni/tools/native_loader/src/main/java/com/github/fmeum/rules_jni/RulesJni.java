@@ -182,14 +182,24 @@ public final class RulesJni {
     int lastDot = mappedName.lastIndexOf('.');
     Path tempFile = Files.createTempFile(
         tempDir, mappedName.substring(0, lastDot) + "_", mappedName.substring(lastDot));
+
     try (InputStream in = libraryResource.openStream()) {
       Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
     }
     return tempFile;
   }
 
+  private static boolean isAndroid(){
+    String javaVendor = System.getProperty("java.vendor", "");
+    return javaVendor.contains("Android");
+  }
+
   private static Path getOrCreateTempDir() throws IOException {
     if (tempDir == null) {
+      if (RulesJni.isAndroid()){
+        return Paths.get("/data/local/tmp/");
+      }
+
       tempDir = Files.createTempDirectory("rules_jni.");
     }
     return tempDir;
@@ -219,18 +229,25 @@ public final class RulesJni {
   }
 
   private static void atExit() {
+    if(RulesJni.isAndroid()) {
+      //TODO(cobark) -- support clean up for Android
+      System.err.println(
+          "[rules_jni] Not cleaning up temporary directory for Android: " + tempDir);
+      return;
+    }
+
     boolean skipCleanup = Boolean.parseBoolean(System.getenv("RULES_JNI_SKIP_CLEANUP"));
     if (skipCleanup) {
       System.err.println(
           "[rules_jni] Not cleaning up temporary directory as requested: " + tempDir);
+      return;
     }
+
     CoverageHelper.collectNativeLibrariesCoverage(LOADED_LIBS);
-    if (!skipCleanup) {
-      try (Stream<Path> tempFiles = Files.walk(tempDir)) {
-        tempFiles.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-      } catch (IOException e) {
-        // Cleanup is best-effort.
-      }
+    try (Stream<Path> tempFiles = Files.walk(tempDir)) {
+      tempFiles.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+    } catch (IOException e) {
+      // Cleanup is best-effort.
     }
   }
 }
