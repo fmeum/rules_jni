@@ -197,7 +197,12 @@ public final class RulesJni {
   private static Path getOrCreateTempDir() throws IOException {
     if (tempDir == null) {
       if (RulesJni.isAndroid()){
-        return Paths.get("/data/local/tmp/");
+        String androidTempPath = "/data/local/tmp/rules_jni";
+        File f = new File(androidTempPath);
+        f.mkdirs();
+
+        tempDir = Paths.get(androidTempPath);
+        return tempDir;
       }
 
       tempDir = Files.createTempDirectory("rules_jni.");
@@ -229,13 +234,6 @@ public final class RulesJni {
   }
 
   private static void atExit() {
-    if(RulesJni.isAndroid()) {
-      //TODO(cobark) -- support clean up for Android
-      System.err.println(
-          "[rules_jni] Not cleaning up temporary directory for Android: " + tempDir);
-      return;
-    }
-
     boolean skipCleanup = Boolean.parseBoolean(System.getenv("RULES_JNI_SKIP_CLEANUP"));
     if (skipCleanup) {
       System.err.println(
