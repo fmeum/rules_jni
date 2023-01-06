@@ -182,30 +182,28 @@ public final class RulesJni {
     int lastDot = mappedName.lastIndexOf('.');
     Path tempFile = Files.createTempFile(
         tempDir, mappedName.substring(0, lastDot) + "_", mappedName.substring(lastDot));
-
     try (InputStream in = libraryResource.openStream()) {
       Files.copy(in, tempFile, StandardCopyOption.REPLACE_EXISTING);
     }
     return tempFile;
   }
 
-  private static boolean isAndroid(){
-    String javaVendor = System.getProperty("java.vendor", "");
-    return javaVendor.contains("Android");
-  }
-
   private static Path getOrCreateTempDir() throws IOException {
     if (tempDir == null) {
-      if (RulesJni.isAndroid()){
+      if(!EnvironmentUtils.IS_ANDROID) {
+        tempDir = Files.createTempDirectory("rules_jni.");
+      }
+      else {
+        // /data/local/tmp is the tmp dir on Android. There may be some Android devices that dont
+        // use this as their tmp dir but we will be able to create the directory under /data
         String androidTempPath = "/data/local/tmp/rules_jni";
         File f = new File(androidTempPath);
-        f.mkdirs();
-
+        // Files.createTempDirectory doesn't work on Android, createTempFile does though
+        if (!f.exists() && !f.mkdirs()) {
+          throw new IOException("Could not create rules_jni directory in Android tmp folder");
+        }
         tempDir = Paths.get(androidTempPath);
-        return tempDir;
       }
-
-      tempDir = Files.createTempDirectory("rules_jni.");
     }
     return tempDir;
   }
@@ -220,16 +218,16 @@ public final class RulesJni {
     }
     String basename = libraryBasename(name);
     String path = name.substring(0, name.length() - basename.length());
-    return String.format("%s%s_%s_%s/%s", path, basename, OsCpuUtils.CANONICAL_OS,
-        OsCpuUtils.CANONICAL_CPU, System.mapLibraryName(basename));
+    return String.format("%s%s_%s_%s/%s", path, basename, EnvironmentUtils.CANONICAL_OS,
+        EnvironmentUtils.CANONICAL_CPU, System.mapLibraryName(basename));
   }
 
   private static void failOnNullResource(URL resource, String name) {
     if (resource == null) {
       throw new UnsatisfiedLinkError(String.format(
           "Failed to find native library '%s' for OS '%s' (\"%s\") and CPU '%s' (\"%s\")", name,
-          OsCpuUtils.CANONICAL_OS, OsCpuUtils.VERBOSE_OS, OsCpuUtils.CANONICAL_CPU,
-          OsCpuUtils.VERBOSE_CPU));
+          EnvironmentUtils.CANONICAL_OS, EnvironmentUtils.VERBOSE_OS,
+          EnvironmentUtils.CANONICAL_CPU, EnvironmentUtils.VERBOSE_CPU));
     }
   }
 
@@ -238,14 +236,14 @@ public final class RulesJni {
     if (skipCleanup) {
       System.err.println(
           "[rules_jni] Not cleaning up temporary directory as requested: " + tempDir);
-      return;
     }
-
     CoverageHelper.collectNativeLibrariesCoverage(LOADED_LIBS);
-    try (Stream<Path> tempFiles = Files.walk(tempDir)) {
-      tempFiles.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-    } catch (IOException e) {
-      // Cleanup is best-effort.
+    if (!skipCleanup) {
+      try (Stream<Path> tempFiles = Files.walk(tempDir)) {
+        tempFiles.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+      } catch (IOException e) {
+        // Cleanup is best-effort.
+      }
     }
   }
 }

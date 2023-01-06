@@ -14,16 +14,23 @@
 
 package com.github.fmeum.rules_jni;
 
-final class OsCpuUtils {
+final class EnvironmentUtils {
+  public static final String JAVA_VENDOR = System.getProperty("java.vendor", "");
+  public static final boolean IS_ANDROID = isAndroid(JAVA_VENDOR);
+
   public static final String VERBOSE_OS = System.getProperty("os.name");
-  public static final String CANONICAL_OS = toCanonicalOs(VERBOSE_OS);
+  public static final String CANONICAL_OS = toCanonicalOs(VERBOSE_OS, JAVA_VENDOR);
 
   public static final String VERBOSE_CPU = System.getProperty("os.arch");
   public static final String CANONICAL_CPU = toCanonicalCpu(VERBOSE_CPU);
 
-  private OsCpuUtils() {}
+  private EnvironmentUtils() {}
 
-  private static String toCanonicalOs(String verboseOs) {
+  private static boolean isAndroid(String javaVendor) {
+    return javaVendor.contains("Android");
+  }
+
+  private static String toCanonicalOs(String verboseOs, String javaVendor) {
     if (verboseOs.startsWith("Mac OS X"))
       return "macos";
     else if (verboseOs.startsWith("FreeBSD"))
@@ -31,7 +38,7 @@ final class OsCpuUtils {
     else if (verboseOs.startsWith("OpenBSD"))
       return "openbsd";
     else if (verboseOs.startsWith("Linux"))
-      return "linux";
+      return javaVendor.contains("Android") ? "android" : "linux";
     else if (verboseOs.startsWith("Windows"))
       return "windows";
     return "unknown";
