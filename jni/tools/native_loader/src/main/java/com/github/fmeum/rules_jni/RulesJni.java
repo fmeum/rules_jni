@@ -241,7 +241,7 @@ public final class RulesJni {
     if (!skipCleanup) {
       try (Stream<Path> tempFiles = Files.walk(tempDir)) {
         tempFiles.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
-      } catch (IOException e) {
+      } catch (Exception e) {
         // Cleanup is best-effort.
       }
     }
