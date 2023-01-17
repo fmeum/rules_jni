@@ -1,7 +1,7 @@
 ## Android
 
 When building for Android, you must build your Android rules using platforms. To do so, use the flag 
-```--incompatible_enable_android_toolchain_resolution```, create a new platform rule, ex:
+`--incompatible_enable_android_toolchain_resolution` and create a new platform rule, ex:
 
 ```
 platform(
