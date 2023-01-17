@@ -190,10 +190,9 @@ public final class RulesJni {
 
   private static Path getOrCreateTempDir() throws IOException {
     if (tempDir == null) {
-      if(!EnvironmentUtils.IS_ANDROID) {
+      if (!EnvironmentUtils.IS_ANDROID) {
         tempDir = Files.createTempDirectory("rules_jni.");
-      }
-      else {
+      } else {
         // /data/local/tmp is the tmp dir on Android. There may be some Android devices that dont
         // use this as their tmp dir but we will be able to create the directory under /data
         String androidTempPath = "/data/local/tmp/rules_jni";
