@@ -29,6 +29,7 @@ OSES = [
     "macos",
     "openbsd",
     "windows",
+    "android",
 ]
 
 SELECT_TARGET_CPU = select({

@@ -1,7 +1,7 @@
 java_library(
     name = "native_loader",
     srcs = [
-        "OsCpuUtils.java",
+        "EnvironmentUtils.java",
         "RulesJni.java",
     ],
     visibility = ["//jni/tools/native_loader:__pkg__"],
