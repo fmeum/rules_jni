@@ -205,7 +205,7 @@ def cc_jni_library(
     cc_binary_args["deps"] += [
         Label("//jni"),
     ] + select({
-        "@fmeum_rules_jni//jni/internal:collect_coverage": [":" + cc_coverage_helper_name],
+        str(Label("//jni/internal:collect_coverage")): [":" + cc_coverage_helper_name],
         "//conditions:default": [],
     })
 
@@ -268,7 +268,7 @@ def cc_jni_library(
         resources = [":" + multi_platform_artifact_name],
         resource_strip_prefix = _maven_resource_prefix_if_present(),
         runtime_deps = select({
-            "@fmeum_rules_jni//jni/internal:collect_coverage": [":" + java_coverage_helper_name],
+            str(Label("//jni/internal:collect_coverage")): [":" + java_coverage_helper_name],
             "//conditions:default": [],
         }),
         tags = tags,
