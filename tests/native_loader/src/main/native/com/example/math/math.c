@@ -16,6 +16,7 @@
 
 #include "com_example_math_NativeMath.h"
 
+// 'JNIEnv*' and 'jclass' args are implicit and must be included by default.
 jint Java_com_example_math_NativeMath_increment(JNIEnv* env, jclass clazz,
                                                 jint arg1) {
   return Java_com_example_math_NativeMath_add(
