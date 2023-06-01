@@ -4,7 +4,7 @@
 
 rules_jni is a collection of Bazel rules for applications and libraries that mix Java/JVM and C/C++ code via the
 [Java Native Interface (JNI)](https://docs.oracle.com/en/java/javase/17/docs/specs/jni/index.html) or the
-[Java Incovation API](https://docs.oracle.com/en/java/javase/17/docs/specs/jni/invocation.html).
+[Java Invocation API](https://docs.oracle.com/en/java/javase/17/docs/specs/jni/invocation.html).
 
 Currently, the rules cover the following use cases for mixed Java and native application or libraries that are currently
 not covered by the native Bazel rules:
