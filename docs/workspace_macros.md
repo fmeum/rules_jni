@@ -2,7 +2,7 @@
 
 
 
-<a id="#rules_jni_dependencies"></a>
+<a id="rules_jni_dependencies"></a>
 
 ## rules_jni_dependencies
 
@@ -19,7 +19,6 @@ Currently, rules_jni depends on:
 * [bazel_skylib](https://github.com/bazelbuild/bazel-skylib)
 * [platforms](https://github.com/bazelbuild/platforms)
 * individual files of the [OpenJDK](https://github.com/openjdk/jdk)
-
 
 
 
