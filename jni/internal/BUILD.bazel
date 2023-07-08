@@ -31,14 +31,10 @@ copy_file(
 
 bzl_library(
     name = "all_rules",
-    srcs = glob(["*.bzl"]),
-    visibility = ["//jni:__pkg__"],
-    deps = [
-        "@bazel_tools//tools/build_defs/repo:http.bzl",
-        "@bazel_tools//tools/build_defs/repo:utils.bzl",
-        "@bazel_tools//tools/cpp:toolchain_utils.bzl",
-        "@bazel_tools//tools/jdk:toolchain_utils.bzl",
+    srcs = glob(["*.bzl"]) + [
+        "@bazel_tools//tools:bzl_srcs",
     ],
+    visibility = ["//jni:__pkg__"],
 )
 
 string_list_flag(

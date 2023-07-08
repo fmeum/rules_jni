@@ -15,6 +15,13 @@ stardoc(
     deps = ["//jni:all_rules"],
 )
 
+diff_test(
+    name = "rules_test",
+    failure_message = "Please run:\n    bazel run //docs:update",
+    file1 = "rules.md",
+    file2 = "rules_gen.md",
+)
+
 stardoc(
     name = "workspace_macros",
     out = "workspace_macros_gen.md",
@@ -22,26 +29,12 @@ stardoc(
     deps = ["//jni:all_rules"],
 )
 
-# Keep at the bottom for existing_rules().
-_STARDOC_RULES = [
-    name
-    for name, attrs in existing_rules().items()
-    if attrs["kind"] == "stardoc"
-]
-
-[
-    diff_test(
-        name = "%s_test" % stardoc_rule,
-        failure_message = "Please run:\n    bazel run //docs:update",
-        file1 = "%s.md" % stardoc_rule,
-        file2 = "%s_gen.md" % stardoc_rule,
-        target_compatible_with = select({
-            "@platforms//os:windows": ["@platforms//:incompatible"],
-            "//conditions:default": [],
-        }),
-    )
-    for stardoc_rule in _STARDOC_RULES
-]
+diff_test(
+    name = "workspace_macros_test",
+    failure_message = "Please run:\n    bazel run //docs:update",
+    file1 = "workspace_macros.md",
+    file2 = "workspace_macros_gen.md",
+)
 
 write_file(
     name = "update_script",
@@ -49,14 +42,16 @@ write_file(
     content = [
         "#!/bin/sh",
         "cd $BUILD_WORKSPACE_DIRECTORY",
-    ] + [
-        "cp -fv bazel-bin/docs/{0}_gen.md docs/{0}.md".format(stardoc_rule)
-        for stardoc_rule in _STARDOC_RULES
+        "cp -fv bazel-bin/docs/rules_gen.md docs/rules.md",
+        "cp -fv bazel-bin/docs/workspace_macros_gen.md docs/workspace_macros.md",
     ],
 )
 
 sh_binary(
     name = "update",
     srcs = ["update.sh"],
-    data = ["%s_gen.md" % stardoc_rule for stardoc_rule in _STARDOC_RULES],
+    data = [
+        ":rules",
+        ":workspace_macros",
+    ],
 )

@@ -2,14 +2,13 @@
 
 
 
-<a id="#jni_headers"></a>
+<a id="jni_headers"></a>
 
 ## jni_headers
 
 <pre>
 jni_headers(<a href="#jni_headers-name">name</a>, <a href="#jni_headers-lib">lib</a>)
 </pre>
-
 
 Generates the native headers for a `java_library` and exposes it to `cc_*` rules.
 
@@ -50,17 +49,16 @@ cc_library(
 )
 ```
 
-
 **ATTRIBUTES**
 
 
 | Name  | Description | Type | Mandatory | Default |
 | :------------- | :------------- | :------------- | :------------- | :------------- |
-| <a id="jni_headers-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/docs/build-ref.html#name">Name</a> | required |  |
-| <a id="jni_headers-lib"></a>lib |  The Java library for which native header files should be generated.   | <a href="https://bazel.build/docs/build-ref.html#labels">Label</a> | required |  |
+| <a id="jni_headers-name"></a>name |  A unique name for this target.   | <a href="https://bazel.build/concepts/labels#target-names">Name</a> | required |  |
+| <a id="jni_headers-lib"></a>lib |  The Java library for which native header files should be generated.   | <a href="https://bazel.build/concepts/labels">Label</a> | required |  |
 
 
-<a id="#cc_jni_library"></a>
+<a id="cc_jni_library"></a>
 
 ## cc_jni_library
 
@@ -102,11 +100,11 @@ An example of such a CI workflow can be found [here](https://github.com/CodeInte
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
 | <a id="cc_jni_library-name"></a>name |  A unique name for this target.   |  none |
-| <a id="cc_jni_library-platforms"></a>platforms |  A list of [<code>platform</code>s](https://docs.bazel.build/versions/main/be/platform.html#platform) for which this native library should be built. If the list is empty (the default), the library is only built for the current target platform.   |  <code>[]</code> |
-| <a id="cc_jni_library-cc_binary_args"></a>cc_binary_args |  Any arguments to a [<code>cc_library</code>](https://docs.bazel.build/versions/main/be/c-cpp.html#cc_library), except for: <code>linkshared</code> (always <code>True</code>), <code>linkstatic</code> (always <code>True</code>), <code>data</code> (runfiles are not supported)   |  none |
+| <a id="cc_jni_library-platforms"></a>platforms |  A list of [`platform`s](https://docs.bazel.build/versions/main/be/platform.html#platform) for which this native library should be built. If the list is empty (the default), the library is only built for the current target platform.   |  `[]` |
+| <a id="cc_jni_library-cc_binary_args"></a>cc_binary_args |  Any arguments to a [`cc_library`](https://docs.bazel.build/versions/main/be/c-cpp.html#cc_library), except for: `linkshared` (always `True`), `linkstatic` (always `True`), `data` (runfiles are not supported)   |  none |
 
 
-<a id="#java_jni_library"></a>
+<a id="java_jni_library"></a>
 
 ## java_jni_library
 
@@ -142,7 +140,7 @@ this target.
 | Name  | Description | Default Value |
 | :------------- | :------------- | :------------- |
 | <a id="java_jni_library-name"></a>name |  A unique name for this target.   |  none |
-| <a id="java_jni_library-native_libs"></a>native_libs |  A list of [<code>cc_jni_library</code>](#cc_jni_library) targets to include in this Java library.   |  <code>[]</code> |
-| <a id="java_jni_library-java_library_args"></a>java_library_args |  Any arguments to a [<code>java_library</code>](https://docs.bazel.build/versions/main/be/java.html#java_library).   |  none |
+| <a id="java_jni_library-native_libs"></a>native_libs |  A list of [`cc_jni_library`](#cc_jni_library) targets to include in this Java library.   |  `[]` |
+| <a id="java_jni_library-java_library_args"></a>java_library_args |  Any arguments to a [`java_library`](https://docs.bazel.build/versions/main/be/java.html#java_library).   |  none |
 
 
