@@ -169,6 +169,11 @@ def _test_multi_platform():
         # contents of publicly visible java_library wrapping the artifacts
         # cannot be inspected during analysis time.
         target_under_test = ":%s_multi_" % MULTI_PLATFORM_TEST_NATIVE_LIBRARY_NAME,
+        # Since Bazel 6.3.0, the cc_jni_library output is part of the
+        # `metadata_files` of its `InstrumentedFilesInfo` provider and thus
+        # requested for execution by the coverage command. However, since it
+        # uses a fake toolchain, it can't be built.
+        tags = ["no-coverage"],
     )
 
 def _platform_collision_test_impl(ctx):
