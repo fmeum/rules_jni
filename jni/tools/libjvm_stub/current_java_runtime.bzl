@@ -25,8 +25,18 @@ CURRENT_JAVA_RUNTIME_HEADER_TEMPLATE = """#ifndef RULES_JNI_LIBJVM_STUB_CURRENT_
 """
 
 def _current_java_runtime_impl(ctx):
-    java_runtime_info = ctx.attr._current_java_runtime[java_common.JavaRuntimeInfo]
-    java_rlocation_path = rlocation_path(ctx, java_runtime_info.java_executable_runfiles_path)
+    java_runtime_toolchain = ctx.toolchains["@bazel_tools//tools/jdk:runtime_toolchain_type"]
+    if java_runtime_toolchain == None:
+        # Fall back to using the host Java runtime at runtime.
+        java_rlocation_path = ""
+        java_runtime_files = depset([])
+    else:
+        java_runtime = java_runtime_toolchain.java_runtime
+        java_rlocation_path = rlocation_path(
+            ctx,
+            java_runtime.java_executable_runfiles_path,
+        )
+        java_runtime_files = java_runtime.files
 
     header = ctx.actions.declare_file(ctx.attr.name + ".h")
     ctx.actions.write(header, CURRENT_JAVA_RUNTIME_HEADER_TEMPLATE.format(java_rlocation_path))
@@ -48,12 +58,21 @@ def _current_java_runtime_impl(ctx):
 
     return [
         DefaultInfo(
-            runfiles = ctx.attr._current_java_runtime[DefaultInfo].default_runfiles,
+            runfiles = ctx.runfiles(transitive_files = java_runtime_files),
         ),
         CcInfo(
             compilation_context = compilation_context,
         ),
     ]
+
+def _optional_toolchain_if_available(toolchain_type):
+    if hasattr(config_common, "toolchain_type"):
+        return config_common.toolchain_type(
+            toolchain_type,
+            mandatory = False,
+        )
+    else:
+        return toolchain_type
 
 current_java_runtime = rule(
     implementation = _current_java_runtime_impl,
@@ -61,14 +80,12 @@ current_java_runtime = rule(
         "_cc_toolchain": attr.label(
             default = Label("@bazel_tools//tools/cpp:current_cc_toolchain"),
         ),
-        "_current_java_runtime": attr.label(
-            default = Label("@bazel_tools//tools/jdk:current_java_runtime"),
-        ),
     },
     fragments = ["cpp"],
     incompatible_use_toolchain_transition = True,
     provides = [CcInfo],
     toolchains = [
         "@bazel_tools//tools/cpp:toolchain_type",
+        _optional_toolchain_if_available("@bazel_tools//tools/jdk:runtime_toolchain_type"),
     ],
 )
