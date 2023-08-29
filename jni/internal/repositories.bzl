@@ -40,22 +40,22 @@ Currently, rules_jni depends on:
         http_file,
         name = "com_github_openjdk_jdk_jni_h",
         downloaded_file_path = "jni.h",
-        sha256 = "91f19e0a31a518631ba1ba201238a3af07af754fe541ff1f2a6b62d6358914e7",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-19%2B36/src/java.base/share/native/include/jni.h"],
+        sha256 = "99e64ebbe749e6df284f852f11b3c73f6ea97baf15120428f40f887fe0616e61",
+        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/share/native/include/jni.h"],
     )
     maybe(
         http_file,
         name = "com_github_openjdk_jdk_unix_jni_md_h",
         downloaded_file_path = "jni_md.h",
         sha256 = "88cb5c33e306900dd35a78d5a439087123b8e91b0986bb5acb42cc9bd2fcc42e",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-19%2B36/src/java.base/unix/native/include/jni_md.h"],
+        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/unix/native/include/jni_md.h"],
     )
     maybe(
         http_file,
         name = "com_github_openjdk_jdk_windows_jni_md_h",
         downloaded_file_path = "jni_md.h",
-        sha256 = "dbf96659c4c840b15ef40237db0c65657eca7a70904225fc984deb38999df515",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-19%2B36/src/java.base/windows/native/include/jni_md.h"],
+        sha256 = "3cacac1e4802ec246ea7c0c6772d4ac40c9f7255d4df095cfffe601137689771",
+        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/windows/native/include/jni_md.h"],
     )
     maybe(
         http_archive,
