@@ -5,6 +5,7 @@ exports_files(glob(["*.bzl"]))
 alias(
     name = "jni",
     actual = "//jni/internal:jni",
+    applicable_licenses = ["//:jdk_license"],
     visibility = ["//visibility:public"],
 )
 

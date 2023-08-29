@@ -18,6 +18,7 @@ Currently, rules_jni depends on:
 
 * [bazel_skylib](https://github.com/bazelbuild/bazel-skylib)
 * [platforms](https://github.com/bazelbuild/platforms)
+* [rules_license](https://github.com/bazelbuild/rules_license)
 * individual files of the [OpenJDK](https://github.com/openjdk/jdk)
 
 
