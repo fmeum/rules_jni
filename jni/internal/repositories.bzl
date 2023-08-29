@@ -37,6 +37,13 @@ def jdk_deps():
         sha256 = "3cacac1e4802ec246ea7c0c6772d4ac40c9f7255d4df095cfffe601137689771",
         urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/windows/native/include/jni_md.h"],
     )
+    maybe(
+        http_file,
+        name = "com_github_openjdk_jdk_license",
+        downloaded_file_path = "LICENSE",
+        sha256 = "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
+        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/LICENSE"],
+    )
 
 def rules_jni_dependencies():
     """Adds all external repositories required for rules_jni.
@@ -47,6 +54,7 @@ Currently, rules_jni depends on:
 
 * [bazel_skylib](https://github.com/bazelbuild/bazel-skylib)
 * [platforms](https://github.com/bazelbuild/platforms)
+* [rules_license](https://github.com/bazelbuild/rules_license)
 * individual files of the [OpenJDK](https://github.com/openjdk/jdk)
 
 """
@@ -68,8 +76,6 @@ Currently, rules_jni depends on:
             "https://github.com/bazelbuild/platforms/releases/download/0.0.7/platforms-0.0.7.tar.gz",
         ],
     )
-
-    # https://github.com/bazelbuild/platforms/issues/66
     maybe(
         http_archive,
         name = "rules_license",
