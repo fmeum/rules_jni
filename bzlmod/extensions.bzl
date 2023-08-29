@@ -13,27 +13,17 @@
 # limitations under the License.
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
+load("//jni/internal:repositories.bzl", "jdk_deps")
 
-def _download_jni_headers(ctx):
-    http_file(
-        name = "com_github_openjdk_jdk_jni_h",
-        downloaded_file_path = "jni.h",
-        sha256 = "91f19e0a31a518631ba1ba201238a3af07af754fe541ff1f2a6b62d6358914e7",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-19%2B36/src/java.base/share/native/include/jni.h"],
-    )
-    http_file(
-        name = "com_github_openjdk_jdk_unix_jni_md_h",
-        downloaded_file_path = "jni_md.h",
-        sha256 = "88cb5c33e306900dd35a78d5a439087123b8e91b0986bb5acb42cc9bd2fcc42e",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-19%2B36/src/java.base/unix/native/include/jni_md.h"],
-    )
-    http_file(
-        name = "com_github_openjdk_jdk_windows_jni_md_h",
-        downloaded_file_path = "jni_md.h",
-        sha256 = "dbf96659c4c840b15ef40237db0c65657eca7a70904225fc984deb38999df515",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-19%2B36/src/java.base/windows/native/include/jni_md.h"],
-    )
+def _download_jdk_deps_impl(ctx):
+    jdk_deps()
+    extension_metadata = getattr(ctx, "extension_metadata", None)
+    if extension_metadata:
+        return extension_metadata(
+            root_module_direct_deps = "all",
+            root_module_direct_dev_deps = [],
+        )
 
-download_jni_headers = module_extension(
-    implementation = _download_jni_headers,
+download_jdk_deps = module_extension(
+    implementation = _download_jdk_deps_impl,
 )

@@ -15,6 +15,29 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 
+def jdk_deps():
+    maybe(
+        http_file,
+        name = "com_github_openjdk_jdk_jni_h",
+        downloaded_file_path = "jni.h",
+        sha256 = "99e64ebbe749e6df284f852f11b3c73f6ea97baf15120428f40f887fe0616e61",
+        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/share/native/include/jni.h"],
+    )
+    maybe(
+        http_file,
+        name = "com_github_openjdk_jdk_unix_jni_md_h",
+        downloaded_file_path = "jni_md.h",
+        sha256 = "88cb5c33e306900dd35a78d5a439087123b8e91b0986bb5acb42cc9bd2fcc42e",
+        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/unix/native/include/jni_md.h"],
+    )
+    maybe(
+        http_file,
+        name = "com_github_openjdk_jdk_windows_jni_md_h",
+        downloaded_file_path = "jni_md.h",
+        sha256 = "3cacac1e4802ec246ea7c0c6772d4ac40c9f7255d4df095cfffe601137689771",
+        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/windows/native/include/jni_md.h"],
+    )
+
 def rules_jni_dependencies():
     """Adds all external repositories required for rules_jni.
 
@@ -37,27 +60,6 @@ Currently, rules_jni depends on:
         ],
     )
     maybe(
-        http_file,
-        name = "com_github_openjdk_jdk_jni_h",
-        downloaded_file_path = "jni.h",
-        sha256 = "99e64ebbe749e6df284f852f11b3c73f6ea97baf15120428f40f887fe0616e61",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/share/native/include/jni.h"],
-    )
-    maybe(
-        http_file,
-        name = "com_github_openjdk_jdk_unix_jni_md_h",
-        downloaded_file_path = "jni_md.h",
-        sha256 = "88cb5c33e306900dd35a78d5a439087123b8e91b0986bb5acb42cc9bd2fcc42e",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/unix/native/include/jni_md.h"],
-    )
-    maybe(
-        http_file,
-        name = "com_github_openjdk_jdk_windows_jni_md_h",
-        downloaded_file_path = "jni_md.h",
-        sha256 = "3cacac1e4802ec246ea7c0c6772d4ac40c9f7255d4df095cfffe601137689771",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/windows/native/include/jni_md.h"],
-    )
-    maybe(
         http_archive,
         name = "platforms",
         sha256 = "3a561c99e7bdbe9173aa653fd579fe849f1d8d67395780ab4770b1f381431d51",
@@ -77,3 +79,4 @@ Currently, rules_jni depends on:
             "https://github.com/bazelbuild/rules_license/releases/download/0.0.7/rules_license-0.0.7.tar.gz",
         ],
     )
+    jdk_deps()
