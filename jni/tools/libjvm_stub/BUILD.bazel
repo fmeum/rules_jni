@@ -6,8 +6,8 @@ merge_cc_infos(
     name = "libjvm_stub_with_jni",
     visibility = ["//jni:__pkg__"],
     deps = [
-        ":libjvm_stub",
         "//jni",
+        ":libjvm_stub",
     ],
 )
 
