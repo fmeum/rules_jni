@@ -26,8 +26,11 @@ cc_library(
         "rules_jni.h",
     ],
     deps = [
+        # do not sort
+        # If users use no symbol defined in :bazel, it may be dropped by the
+        # linker if it doesn't come before :libjvm_stub_lib, for which it
+        # provides a required symbol definition.
         ":libjvm_stub_lib",
-        # order here is critical
         ":bazel",
     ],
 )
@@ -38,6 +41,10 @@ cc_library(
         "rules_jni.h",
     ],
     deps = [
+        # do not sort
+        # If users use no symbol defined in :release, it may be dropped by the
+        # linker if it doesn't come before :libjvm_stub_lib, for which it
+        # provides a required symbol definition.
         ":libjvm_stub_lib",
         ":release",
     ],
