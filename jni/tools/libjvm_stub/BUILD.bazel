@@ -27,7 +27,7 @@ cc_library(
     ],
     deps = [
         ":libjvm_stub_lib",
-        # do not sort
+        # order here is critical
         ":bazel",
     ],
 )
