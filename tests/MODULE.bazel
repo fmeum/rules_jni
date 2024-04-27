@@ -9,7 +9,9 @@ bazel_dep(name = "platforms", version = "0.0.4")
 bazel_dep(name = "rules_cc", version = "0.0.2")
 bazel_dep(name = "rules_java", version = "5.1.0")
 bazel_dep(name = "stardoc", version = "0.5.0", repo_name = "io_bazel_stardoc")
-bazel_dep(name = "apple_support", version = "1.15.1", repo_name = "build_bazel_apple_support")
+
+# For the Xcode toolchain.
+bazel_dep(name = "apple_support", version = "1.15.1", dev_dependency = True)
 
 cc_configure = use_extension("@bazel_tools//tools/cpp:cc_configure.bzl", "cc_configure_extension")
 use_repo(cc_configure, "local_config_cc")
@@ -20,7 +22,5 @@ install_dev_dependencies = use_extension(
 )
 use_repo(
     install_dev_dependencies,
-    "byte_buddy_agent",
     "junit",
-    "rules_jvm_external",
 )
