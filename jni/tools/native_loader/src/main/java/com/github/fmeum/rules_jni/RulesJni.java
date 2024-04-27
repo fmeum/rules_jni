@@ -27,7 +27,7 @@ import java.util.stream.Stream;
  * <a href="https://github.com/fmeum/rules_jni">{@code rules_jni}</a>.
  */
 public final class RulesJni {
-  private static final Map<String, NativeLibraryInfo> LOADED_LIBS = new HashMap<>();
+  private static final Map<String, String> LOADED_LIBS = new HashMap<>();
 
   private static Path tempDir;
 
@@ -158,10 +158,10 @@ public final class RulesJni {
   synchronized private static void loadLibrary(String name, URL libraryResource) {
     String basename = libraryBasename(name);
     if (LOADED_LIBS.containsKey(basename)) {
-      if (!libraryResource.toString().equals(LOADED_LIBS.get(basename).canonicalPath)) {
+      if (!libraryResource.toString().equals(LOADED_LIBS.get(basename))) {
         throw new UnsatisfiedLinkError(String.format(
             "Cannot load two native libraries with same basename ('%s') from different paths\nFirst library: %s\nSecond library: %s\n",
-            basename, LOADED_LIBS.get(basename).canonicalPath, libraryResource));
+            basename, LOADED_LIBS.get(basename), libraryResource));
       }
       return;
     }
@@ -172,8 +172,7 @@ public final class RulesJni {
       throw new UnsatisfiedLinkError(e.getMessage());
     }
     System.load(tempFile.toAbsolutePath().toString());
-    LOADED_LIBS.put(basename, new NativeLibraryInfo(libraryResource.toString(), tempFile.toFile()));
-    CoverageHelper.initCoverage(basename);
+    LOADED_LIBS.put(basename, libraryResource.toString());
   }
 
   private static Path extractLibrary(String basename, URL libraryResource) throws IOException {
@@ -236,7 +235,6 @@ public final class RulesJni {
       System.err.println(
           "[rules_jni] Not cleaning up temporary directory as requested: " + tempDir);
     }
-    CoverageHelper.collectNativeLibrariesCoverage(LOADED_LIBS);
     if (!skipCleanup) {
       try (Stream<Path> tempFiles = Files.walk(tempDir)) {
         tempFiles.sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);

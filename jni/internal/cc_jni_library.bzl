@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load(":coverage.bzl", "cc_jni_coverage_helper_library", "java_jni_coverage_helper_library")
 load(":jni_headers.bzl", "jni_headers")
 load(":os_cpu_utils.bzl", "SELECT_TARGET_CPU", "SELECT_TARGET_OS")
 load(":transitions.bzl", "multi_platform_transition")
@@ -188,26 +187,9 @@ def cc_jni_library(
     # Arguments to be set on all targets.
     testonly = cc_binary_args.pop("testonly", default = None)
 
-    java_coverage_helper_name = "%s_java_coverage_helper" % name
-    java_jni_coverage_helper_library(
-        name = java_coverage_helper_name,
-        library_name = basename,
-    )
-
-    cc_coverage_helper_name = "%s_cc_coverage_helper" % name
-    cc_jni_coverage_helper_library(
-        name = cc_coverage_helper_name,
-        library_name = basename,
-    )
-
     # Simple concatenation is compatible with select, append is not.
     cc_binary_args.setdefault("deps", [])
-    cc_binary_args["deps"] += [
-        Label("//jni"),
-    ] + select({
-        str(Label("//jni/internal:collect_coverage")): [":" + cc_coverage_helper_name],
-        "//conditions:default": [],
-    })
+    cc_binary_args["deps"] += [Label("//jni")]
 
     native.cc_binary(
         name = macos_library_name,
@@ -267,10 +249,6 @@ def cc_jni_library(
         name = name,
         resources = [":" + multi_platform_artifact_name],
         resource_strip_prefix = _maven_resource_prefix_if_present(),
-        runtime_deps = select({
-            str(Label("//jni/internal:collect_coverage")): [":" + java_coverage_helper_name],
-            "//conditions:default": [],
-        }),
         tags = tags,
         testonly = testonly,
         visibility = visibility,

@@ -1,5 +1,37 @@
 load("@fmeum_rules_jni//jni:defs.bzl", "cc_jni_library")
 
+config_setting(
+    name = "linux_x86_64",
+    constraint_values = [
+        "@platforms//os:linux",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "macos_x86_64",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
+config_setting(
+    name = "macos_arm64",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:arm64",
+    ],
+)
+
+config_setting(
+    name = "windows_x86_64",
+    constraint_values = [
+        "@platforms//os:windows",
+        "@platforms//cpu:x86_64",
+    ],
+)
+
 cc_jni_library(
     name = "impl/os",
     testonly = True,
@@ -7,9 +39,10 @@ cc_jni_library(
         "onload.cpp",
     ],
     platforms = select({
-        "@platforms//os:linux": ["//native_loader:linux_x86_64"],
-        "@platforms//os:macos": ["//native_loader:macos_x86_64"],
-        "@platforms//os:windows": ["//native_loader:windows_x86_64"],
+        ":linux_x86_64": ["//native_loader:linux_x86_64"],
+        ":macos_x86_64": ["//native_loader:macos_x86_64"],
+        ":macos_arm64": ["//native_loader:macos_arm64"],
+        ":windows_x86_64": ["//native_loader:windows_x86_64"],
     }),
     visibility = [
         "//native_loader/src/main/java/com/example/os:__pkg__",

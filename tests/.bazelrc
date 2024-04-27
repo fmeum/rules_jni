@@ -8,6 +8,7 @@ coverage --combined_report=lcov
 coverage --experimental_use_llvm_covmap
 coverage --experimental_generate_llvm_lcov
 coverage --test_tag_filters=-no-coverage
+coverage --instrumentation_filter=^//analysis/cc_jni_library[/:],^//analysis/jni_headers[/:],^//libjvm_stub[/:],^//native_loader/src/main[/:]
 
 coverage:ci --repo_env=CC=clang-14
 coverage:ci --repo_env=GCOV=llvm-profdata-14

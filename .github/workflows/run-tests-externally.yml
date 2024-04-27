@@ -17,35 +17,40 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        bazel: [5.0.0, latest, last_green]
+        bazel: [6.x, 7.x, last_green]
         bazel_mode: [workspace, module]
-        os: [ubuntu-latest, macos-latest, windows-2019]
-        jdk: [8, 11, 17]
+        os: [ubuntu-latest, macos-13, macos-latest, windows-2019]
+        jdk: [8, 11, 17, 21]
         exclude:
-          - bazel: 5.0.0
+          - bazel: 6.x
             jdk: 11
-          - bazel: 5.0.0
+          - bazel: 6.x
             jdk: 17
-          - bazel: 5.0.0
-            bazel_mode: module
+          - bazel: 6.x
+            jdk: 21
           - bazel: last_green
             jdk: 8
           - bazel: last_green
             jdk: 11
-          - bazel_mode: module
-            jdk: 8
-          - bazel_mode: module
-            jdk: 11
+          - bazel: last_green
+            jdk: 17
+          - bazel_mode: workspace
+            jdk: 17
+          - bazel_mode: workspace
+            jdk: 21
         include:
           - os: ubuntu-latest
             cache: "/home/runner/.cache/bazel-disk"
+          - os: macos-13
+            cache: "/private/var/tmp/bazel-disk"
           - os: macos-latest
             cache: "/private/var/tmp/bazel-disk"
-            bazel_macos_args: "--xcode_version_config=//.github:host_xcodes"
           - os: windows-2019
             cache: "C:\\tmp\\bazel-disk"
           - bazel_mode: module
             bazel_extra_args: "--config=bzlmod"
+          - bazel_mode: workspace
+            bazel_extra_args: "--config=workspace"
     name: Test externally (${{ matrix.os }}, Bazel ${{ matrix.bazel }} ${{ matrix.bazel_mode }}, JDK ${{ matrix.jdk }})
     env:
       BAZELISK_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -54,8 +59,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Set up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v4
         with:
+          distribution: 'zulu'
           java-version: ${{ matrix.jdk }}
 
       - name: Mount Bazel disk cache
@@ -73,16 +79,16 @@ jobs:
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests
-        run: bazelisk test --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //...
+        run: bazelisk test --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} //...
 
       - name: Check coverage
-        if: ${{ (matrix.os == 'ubuntu-latest') && (matrix.jdk == '11') }}
+        if: ${{ (matrix.os == 'ubuntu-latest') && (matrix.jdk == '17') }}
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests
         run: |
           sudo apt install clang-14 llvm-14
-          bazelisk coverage --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //...
+          bazelisk coverage --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} //...
           ./verify_coverage.sh
 
       - name: Upload test logs

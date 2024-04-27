@@ -16,30 +16,30 @@ not covered by the native Bazel rules:
 
 ## Setup
 
-Add the following snippet to your `WORKSPACE`:
+If you are [MODULE.bazel](https://bazel.build/external/overview#bzlmod), add the following to your
+`MODULE.bazel`:
+
+```starlark
+bazel_dep(name = "rules_jni", version = "<latest release>")
+# Alternatively, to keep using the repository as @fmeum_rules_jni, use:
+bazel_dep(name = "rules_jni", version = "<latest release>", repo_name = "fmeum_rules_jni")
+```
+
+Otherwise, add the following snippet to your `WORKSPACE`:
 
 ```starlark
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "fmeum_rules_jni",
-    sha256 = "9a387a066f683a8aac4d165917dc7fe15ec2a20931894a97e153a9caab6123ca",
-    strip_prefix = "rules_jni-0.4.0",
-    url = "https://github.com/fmeum/rules_jni/archive/refs/tags/v0.4.0.tar.gz",
+    sha256 = "<sha of the release tarball>",
+    strip_prefix = "rules_jni-<latest release>",
+    url = "https://github.com/fmeum/rules_jni/archive/refs/tags/v<latest release>.tar.gz",
 )
 
 load("@fmeum_rules_jni//jni:repositories.bzl", "rules_jni_dependencies")
 
 rules_jni_dependencies()
-```
-
-If you are using Bazel 5 with [bzlmod](https://docs.bazel.build/versions/main/bzlmod.html), add the following to your
-`MODULE.bazel`:
-
-```starlark
-bazel_dep(name = "rules_jni", version = "0.4.0")
-# Alternatively, to keep using the repository as @fmeum_rules_jni, use:
-bazel_dep(name = "rules_jni", version = "0.4.0", repo_name = "fmeum_rules_jni")
 ```
 
 ## Documentation
@@ -57,9 +57,8 @@ Bazel runfiles using the
 
 ## Compatibility
 
-rules_jni heavily uses [platforms](https://docs.bazel.build/versions/main/platforms.html) and thus requires at least
-Bazel 4.0.0. For advanced use cases such as multi-platform native libraries,
-enabling [`--incompatible_enable_cc_toolchain_resolution`](https://github.com/bazelbuild/bazel/issues/7260) is required.
+rules_jni requires at least Bazel 6. For advanced use cases such as multi-platform native libraries,
+enabling [`--incompatible_enable_cc_toolchain_resolution`](https://github.com/bazelbuild/bazel/issues/7260) is required (default in Bazel 7+).
 
 ## Multi-language coverage
 
@@ -70,13 +69,6 @@ and `@fmeum_rules_jni//jni:libjvm`. This feature currently has the following lim
 * When using the Java Invocation API to start a JVM from native code, `@fmeum_rules_jni//jni:libjvm` has to be used
   rather than `@fmeum_rules_jni//jni:libjvm_lite` and `rules_jni_init` has to be called.
 * All jars on the classpath of a JVM started with `JNI_CreateJavaVM` have to be deploy jars.
-
-There are also the following known issues with Bazel Java coverage to keep in mind:
-
-* `java_test` does not collect coverage for `cc_binary` targets it executes at
-  runtime (https://github.com/bazelbuild/bazel/issues/15098)
-* Java coverage is not collected correctly with JDK 16+ (https://github.com/bazelbuild/bazel/pull/15081)
-* Coverage is not collected for native code that transitively depends on a `java_jni_library` target (https://github.com/bazelbuild/bazel/pull/15118)
 
 To enable this feature, add the following lines to your project's `.bazelrc`:
 
