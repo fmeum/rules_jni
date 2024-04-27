@@ -88,6 +88,7 @@ def _get_host_constraint_value(constraint_setting):
 def _get_host_legacy_cpu():
     cpu = _get_host_constraint_value("cpu")
     os = _get_host_constraint_value("os")
+
     # Indirectly test for Bazel 7 via:
     # https://github.com/bazelbuild/bazel/commit/31fd464af77f084049386af02dbcc5189c745892
     is_bazel_7_or_higher = attr.string() == attr.string()
