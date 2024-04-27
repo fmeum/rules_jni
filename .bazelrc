@@ -1,15 +1,7 @@
+test --test_output=errors
+
 # Isolate sandboxed build actions from each other.
 build --sandbox_tmpfs_path=/tmp
 
-# Trim PATH to the bare minimum for build actions, but preserve it for tests.
+# Prevent PATH from being inherited from the environment.
 build --incompatible_strict_action_env
-test --noincompatible_strict_action_env
-
-# Required for layering_check.
-build:ci --repo_env=CC=clang
-build:ci --features=layering_check
-
-build:bzlmod --enable_bzlmod
-build:workspace --noexperimental_enable_bzlmod
-
-test --test_output=errors
