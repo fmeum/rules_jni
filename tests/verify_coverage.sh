@@ -22,7 +22,7 @@ find native_loader/src/main libjvm_stub -type f \
  -print0 | while read -r -d $'\0' file
 do
   pattern=$(basename "$file")
-  if grep -q "$pattern" "$report";
+  if grep -F -q "$pattern" "$report";
   then
     echo "Coverage report contains $pattern"
   else
@@ -32,7 +32,7 @@ do
   fi
 done
 
-if grep -q "__llvm_profile_write_file" "$report";
+if grep -F -q "__llvm_profile_write_file" "$report";
 then
   echo "Coverage report mentions internal function __llvm_profile_write_file:"
   cat "$report"
@@ -40,3 +40,24 @@ then
 else
   echo "Coverage report expectedly does not contain internal functions"
 fi
+
+declare -a expected_lines=(
+  "FNDA:2,Java_com_example_math_NativeMath_add"
+  "FNDA:1,Java_com_example_math_NativeMath_increment"
+  "FNDA:1,Java_com_example_os_OsUtils_setenv"
+  "FNDA:1,JNI_OnLoad"
+  # hermetic_test, java_home_test, path_test
+  "FNDA:3,com/example/HelloFromJava::helloFromJava (Ljava/lang/String;)Ljava/lang/String;"
+)
+
+for line in "${expected_lines[@]}"
+do
+  if grep -F -q "$line" "$report";
+  then
+    echo "Coverage report contains expected line $line"
+  else
+    echo "Coverage report is missing expected line $line:"
+    cat "$report"
+    exit 1
+  fi
+done
