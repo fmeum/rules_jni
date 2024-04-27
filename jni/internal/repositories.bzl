@@ -21,28 +21,28 @@ def jdk_deps():
         name = "com_github_openjdk_jdk_jni_h",
         downloaded_file_path = "jni.h",
         sha256 = "99e64ebbe749e6df284f852f11b3c73f6ea97baf15120428f40f887fe0616e61",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/share/native/include/jni.h"],
+        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-23%2B20/src/java.base/share/native/include/jni.h"],
     )
     maybe(
         http_file,
         name = "com_github_openjdk_jdk_unix_jni_md_h",
         downloaded_file_path = "jni_md.h",
         sha256 = "88cb5c33e306900dd35a78d5a439087123b8e91b0986bb5acb42cc9bd2fcc42e",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/unix/native/include/jni_md.h"],
+        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-23%2B20/src/java.base/unix/native/include/jni_md.h"],
     )
     maybe(
         http_file,
         name = "com_github_openjdk_jdk_windows_jni_md_h",
         downloaded_file_path = "jni_md.h",
         sha256 = "3cacac1e4802ec246ea7c0c6772d4ac40c9f7255d4df095cfffe601137689771",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/src/java.base/windows/native/include/jni_md.h"],
+        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-23%2B20/src/java.base/windows/native/include/jni_md.h"],
     )
     maybe(
         http_file,
         name = "com_github_openjdk_jdk_license",
         downloaded_file_path = "LICENSE",
         sha256 = "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
-        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-22%2B12/LICENSE"],
+        urls = ["https://raw.githubusercontent.com/openjdk/jdk/jdk-23%2B20/LICENSE"],
     )
 
 def rules_jni_dependencies():

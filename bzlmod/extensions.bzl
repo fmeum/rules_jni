@@ -12,18 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
+load("@bazel_skylib//lib:modules.bzl", "modules")
 load("//jni/internal:repositories.bzl", "jdk_deps")
 
-def _download_jdk_deps_impl(ctx):
-    jdk_deps()
-    extension_metadata = getattr(ctx, "extension_metadata", None)
-    if extension_metadata:
-        return extension_metadata(
-            root_module_direct_deps = "all",
-            root_module_direct_dev_deps = [],
-        )
-
-download_jdk_deps = module_extension(
-    implementation = _download_jdk_deps_impl,
-)
+download_jdk_deps = modules.as_extension(jdk_deps)
