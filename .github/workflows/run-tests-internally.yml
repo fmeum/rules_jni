@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BAZELISK_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    name: Build and test internally (ubuntu-latest, Bazel last_green workspace, JDK 17)
+    name: Build and test internally (ubuntu-latest, Bazel last_green workspace, JDK 21)
 
     steps:
       - uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
-          java-version: 17
+          java-version: 21
 
       - name: Mount Bazel disk cache
         uses: actions/cache@v2

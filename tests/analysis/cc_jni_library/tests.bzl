@@ -87,9 +87,11 @@ def _get_host_constraint_value(constraint_setting):
 
 def _get_host_legacy_cpu():
     cpu = _get_host_constraint_value("cpu")
-    if cpu != "x86_64":
-        fail("This test requires the host CPU to be x86_64, got: %s" % cpu)
     os = _get_host_constraint_value("os")
+    if os == "osx" and cpu == "aarch64":
+        return "darwin_arm64"
+    if cpu != "x86_64":
+        fail("This test requires the host CPU to be x86_64 or darwin_arm64, got: %s" % cpu)
     if os == "linux":
         return "k8"
     elif os == "osx":

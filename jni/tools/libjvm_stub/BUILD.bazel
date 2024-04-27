@@ -1,6 +1,6 @@
+load("//jni/internal:common.bzl", "make_root_relative", "merge_cc_infos")
 load(":current_java_runtime.bzl", "current_java_runtime")
 load(":current_repository.bzl", "RULES_JNI_REPOSITORY_DEFINE")
-load("//jni/internal:common.bzl", "make_root_relative", "merge_cc_infos")
 
 merge_cc_infos(
     name = "libjvm_stub_with_jni",

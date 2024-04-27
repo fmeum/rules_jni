@@ -9,5 +9,5 @@ test --noincompatible_strict_action_env
 build:ci --repo_env=CC=clang
 build:ci --features=layering_check
 
-# Requires Bazel 5.
-build:bzlmod --experimental_enable_bzlmod
+build:bzlmod --enable_bzlmod
+build:workspace --noexperimental_enable_bzlmod

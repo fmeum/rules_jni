@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("//jni/internal:cc_jni_library.bzl", _cc_jni_library = "cc_jni_library")
 load("//jni/internal:java_jni_library.bzl", _java_jni_library = "java_jni_library")
 load("//jni/internal:jni_headers.bzl", _jni_headers = "jni_headers")
-load("//jni/internal:cc_jni_library.bzl", _cc_jni_library = "cc_jni_library")
 
 java_jni_library = _java_jni_library
 jni_headers = _jni_headers

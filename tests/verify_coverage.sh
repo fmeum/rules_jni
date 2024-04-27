@@ -13,6 +13,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set -euo pipefail
+
 report=bazel-out/_coverage/_coverage_report.dat
 
 find native_loader/src/main libjvm_stub -type f \

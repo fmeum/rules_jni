@@ -1,7 +1,7 @@
 workspace(name = "fmeum_rules_jni")
 
-load("//jni:repositories.bzl", "rules_jni_dependencies")
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
+load("//jni:repositories.bzl", "rules_jni_dependencies")
 
 rules_jni_dependencies()
 
