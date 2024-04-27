@@ -43,7 +43,6 @@ jobs:
             cache: "/home/runner/.cache/bazel-disk"
           - os: macos-13
             cache: "/private/var/tmp/bazel-disk"
-            bazel_macos_args: "--xcode_version_config=//.github:host_xcodes"
           - os: macos-latest
             cache: "/private/var/tmp/bazel-disk"
           - os: windows-2019
@@ -80,7 +79,7 @@ jobs:
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests
-        run: bazelisk test --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //...
+        run: bazelisk test --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} //...
 
       - name: Check coverage
         if: ${{ (matrix.os == 'ubuntu-latest') && (matrix.jdk == '17') }}
@@ -89,7 +88,7 @@ jobs:
         working-directory: ./tests
         run: |
           sudo apt install clang-14 llvm-14
-          bazelisk coverage --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} ${{ matrix.bazel_macos_args }} //...
+          bazelisk coverage --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} //...
           ./verify_coverage.sh
 
       - name: Upload test logs
