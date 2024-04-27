@@ -5,7 +5,7 @@ exports_files(["LICENSE"])
 license(
     name = "jdk_license",
     copyright_notice = """
-Copyright (c) 1996, 2023, Oracle and/or its affiliates. All rights reserved.
+Copyright (c) 1996, 2024, Oracle and/or its affiliates. All rights reserved.
 """,
     license_kinds = ["@rules_license//licenses/spdx:GPL-2.0-with-classpath-exception"],
     license_text = "@com_github_openjdk_jdk_license//file",
@@ -15,7 +15,7 @@ Copyright (c) 1996, 2023, Oracle and/or its affiliates. All rights reserved.
 license(
     name = "rules_jni_license",
     copyright_notice = """
-Copyright (c) 2021 Fabian Meumertzheim
+Copyright (c) 2024 Fabian Meumertzheim
 """,
     license_kinds = ["@rules_license//licenses/spdx:Apache-2.0"],
     license_text = "//:LICENSE",
