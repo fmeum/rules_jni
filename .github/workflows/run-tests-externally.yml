@@ -17,19 +17,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        bazel: [5.0.0, latest, last_green]
+        bazel: [6.0.0, 7.x, last_green]
         bazel_mode: [workspace, module]
         os: [ubuntu-latest, macos-13, macos-latest, windows-2019]
         jdk: [8, 11, 17, 21]
         exclude:
-          - bazel: 5.0.0
+          - bazel: 6.0.0
             jdk: 11
-          - bazel: 5.0.0
+          - bazel: 6.0.0
             jdk: 17
-          - bazel: 5.0.0
+          - bazel: 6.0.0
             jdk: 21
-          - bazel: 5.0.0
-            bazel_mode: module
           - bazel: last_green
             jdk: 8
           - bazel: last_green
