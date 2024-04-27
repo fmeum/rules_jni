@@ -13,8 +13,8 @@ cc_library(
 cc_library(
     name = "jni_md",
     hdrs = select({
-        "@platforms//os:windows": ["//jni/internal/windows:jni_md_h"],
-        "//conditions:default": ["//jni/internal/unix:jni_md_h"],
+        "@platforms//os:windows": ["//jni/private/windows:jni_md_h"],
+        "//conditions:default": ["//jni/private/unix:jni_md_h"],
     }),
     includes = select({
         "@platforms//os:windows": ["windows"],

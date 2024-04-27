@@ -20,7 +20,7 @@
 #include <utility>
 #include <vector>
 
-#include "jni/tools/libjvm_stub/current_java_runtime.h"
+#include "jni/private/tools/libjvm_stub/current_java_runtime.h"
 #include "rules_jni_internal.h"
 #include "tools/cpp/runfiles/runfiles.h"
 
@@ -155,7 +155,7 @@ jint rules_jni_create_java_vm_for_coverage(
     if (runfiles != nullptr) {
       coverage_agent = runfiles->Rlocation(
           RULES_JNI_REPOSITORY
-          "/jni/tools/libjvm_stub/coverage/CoverageAgent_deploy.jar");
+          "/jni/private/tools/libjvm_stub/coverage/CoverageAgent_deploy.jar");
     } else if (getenv(RULES_JNI_COVERAGE_AGENT_JAR) != nullptr) {
       // This should only every happen in tests.
       coverage_agent = getenv(RULES_JNI_COVERAGE_AGENT_JAR);

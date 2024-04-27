@@ -1,4 +1,4 @@
-load("//jni/internal:common.bzl", "make_root_relative", "merge_cc_infos")
+load("//jni/private:common.bzl", "make_root_relative", "merge_cc_infos")
 load(":current_java_runtime.bzl", "current_java_runtime")
 load(":current_repository.bzl", "RULES_JNI_REPOSITORY_DEFINE")
 
@@ -69,7 +69,7 @@ cc_library(
         "//conditions:default": ["-ldl"],
     }),
     local_defines = select({
-        "//jni/internal:collect_coverage": ["RULES_JNI_COLLECT_COVERAGE=1"],
+        "//jni/private:collect_coverage": ["RULES_JNI_COLLECT_COVERAGE=1"],
         "//conditions:default": [],
     }),
     deps = [
@@ -88,11 +88,11 @@ cc_library(
         "rules_jni_internal.h",
     ],
     data = select({
-        "//jni/internal:collect_coverage": ["//jni/tools/libjvm_stub/coverage:CoverageAgent_deploy.jar"],
+        "//jni/private:collect_coverage": ["//jni/private/tools/libjvm_stub/coverage:CoverageAgent_deploy.jar"],
         "//conditions:default": [],
     }),
     local_defines = [RULES_JNI_REPOSITORY_DEFINE] + select({
-        "//jni/internal:collect_coverage": ["RULES_JNI_COLLECT_COVERAGE=1"],
+        "//jni/private:collect_coverage": ["RULES_JNI_COLLECT_COVERAGE=1"],
         "//conditions:default": [],
     }),
     deps = [

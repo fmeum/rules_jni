@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+visibility("private")
+
 _COMMAND_LINE_OPTION_PLATFORMS = "//command_line_option:platforms"
-_SETTING_PRE_TRANSITION_PLATFORMS = str(Label("//jni/internal:pre_transition_platforms"))
+_SETTING_PRE_TRANSITION_PLATFORMS = str(Label("//jni/private:pre_transition_platforms"))
 
 def _multi_platform_transition_impl(settings, attrs):
     if not attrs.platforms:

@@ -15,6 +15,8 @@
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
 
+visibility("private")
+
 def rlocation_path(ctx, short_path):
     return paths.normalize(ctx.workspace_name + "/" + short_path)
 

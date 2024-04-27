@@ -44,8 +44,8 @@ rules_jni_dependencies()
 
 ## Documentation
 
-See the documentation for [targets](docs/targets.md), [rules](docs/rules.md)
-and [workspace macros](docs/workspace_macros.md) provided by rules_jni.
+See the documentation for [targets](docs/targets.md), [rules](docs-gen/rules.md)
+and [workspace macros](docs-gen/workspace_macros.md) provided by rules_jni.
 
 ## Examples
 

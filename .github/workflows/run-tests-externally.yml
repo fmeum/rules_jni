@@ -82,7 +82,7 @@ jobs:
         run: bazelisk test --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} //...
 
       - name: Check coverage
-        if: ${{ (matrix.os == 'ubuntu-latest') && (matrix.jdk == '17') }}
+        if: ${{ (matrix.os == 'ubuntu-latest') && (matrix.jdk == '8' || matrix.jdk == '21') }}
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests

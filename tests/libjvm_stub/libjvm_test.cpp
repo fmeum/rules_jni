@@ -74,8 +74,9 @@ int main(int argc, const char** argv) {
     // cleared all runfiles variables.
     set_env("RULES_JNI_COVERAGE_AGENT_JAR",
             runfiles
-                ->Rlocation("fmeum_rules_jni/jni/tools/libjvm_stub/coverage/"
-                            "CoverageAgent_deploy.jar")
+                ->Rlocation(
+                    "fmeum_rules_jni/jni/private/tools/libjvm_stub/coverage/"
+                    "CoverageAgent_deploy.jar")
                 .c_str());
     rules_jni_init("does_not_exist");
   }

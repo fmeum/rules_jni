@@ -15,6 +15,8 @@
 load(":common.bzl", "merge_java_infos")
 load(":jni_headers.bzl", "jni_headers")
 
+visibility("//jni")
+
 def java_jni_library(
         name,
         native_libs = [],

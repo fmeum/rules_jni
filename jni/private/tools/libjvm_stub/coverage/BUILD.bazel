@@ -5,7 +5,7 @@ java_binary(
     deploy_manifest_lines = [
         "Premain-Class: com.github.fmeum.rules_jni.libjvm_stub.CoverageAgent",
     ],
-    visibility = ["//jni/tools/libjvm_stub:__pkg__"],
+    visibility = ["//jni/private/tools/libjvm_stub:__pkg__"],
     deps = [
         "@bazel_tools//tools/jdk:JacocoCoverageRunner",
     ],

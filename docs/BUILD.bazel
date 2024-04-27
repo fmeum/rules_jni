@@ -10,7 +10,7 @@ javadoc(
 
 stardoc(
     name = "rules",
-    out = "rules_gen.md",
+    out = "rules.md",
     input = "//jni:defs.bzl",
     deps = ["//jni:all_rules"],
 )
@@ -19,12 +19,12 @@ diff_test(
     name = "rules_test",
     failure_message = "Please run:\n    bazel run //docs:update",
     file1 = "rules.md",
-    file2 = "rules_gen.md",
+    file2 = "//docs-gen:rules.md",
 )
 
 stardoc(
     name = "workspace_macros",
-    out = "workspace_macros_gen.md",
+    out = "workspace_macros.md",
     input = "//jni:repositories.bzl",
     deps = ["//jni:all_rules"],
 )
@@ -33,18 +33,7 @@ diff_test(
     name = "workspace_macros_test",
     failure_message = "Please run:\n    bazel run //docs:update",
     file1 = "workspace_macros.md",
-    file2 = "workspace_macros_gen.md",
-)
-
-write_file(
-    name = "update_script",
-    out = "update.sh",
-    content = [
-        "#!/bin/sh",
-        "cd $BUILD_WORKSPACE_DIRECTORY",
-        "cp -fv bazel-bin/docs/rules_gen.md docs/rules.md",
-        "cp -fv bazel-bin/docs/workspace_macros_gen.md docs/workspace_macros.md",
-    ],
+    file2 = "//docs-gen:workspace_macros.md",
 )
 
 sh_binary(

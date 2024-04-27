@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("//jni/internal:repositories.bzl", _rules_jni_dependencies = "rules_jni_dependencies")
+load("//jni/private:repositories.bzl", _rules_jni_dependencies = "rules_jni_dependencies")
+
+visibility("public")
 
 rules_jni_dependencies = _rules_jni_dependencies

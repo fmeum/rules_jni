@@ -4,31 +4,34 @@ exports_files(glob(["*.bzl"]))
 
 alias(
     name = "jni",
-    actual = "//jni/internal:jni",
+    actual = "//jni/private:jni",
     applicable_licenses = ["//:jdk_license"],
     visibility = ["//visibility:public"],
 )
 
 alias(
     name = "libjvm",
-    actual = "//jni/tools/libjvm_stub:libjvm_stub_with_jni",
+    actual = "//jni/private/tools/libjvm_stub:libjvm_stub_with_jni",
     visibility = ["//visibility:public"],
 )
 
 alias(
     name = "libjvm_lite",
-    actual = "//jni/tools/libjvm_stub:libjvm_stub_release_with_jni",
+    actual = "//jni/private/tools/libjvm_stub:libjvm_stub_release_with_jni",
     visibility = ["//visibility:public"],
 )
 
 bzl_library(
     name = "all_rules",
     srcs = [
+        "cc_jni_library.bzl",
         "defs.bzl",
+        "java_jni_library.bzl",
+        "jni_headers.bzl",
         "repositories.bzl",
     ],
     visibility = ["//visibility:public"],
     deps = [
-        "//jni/internal:all_rules",
+        "//jni/private:all_rules",
     ],
 )
