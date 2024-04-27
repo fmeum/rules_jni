@@ -57,7 +57,7 @@ Bazel runfiles using the
 
 ## Compatibility
 
-rules_jni requires at least Bazel 6.0.0. For advanced use cases such as multi-platform native libraries,
+rules_jni requires at least Bazel 6. For advanced use cases such as multi-platform native libraries,
 enabling [`--incompatible_enable_cc_toolchain_resolution`](https://github.com/bazelbuild/bazel/issues/7260) is required (default in Bazel 7+).
 
 ## Multi-language coverage
