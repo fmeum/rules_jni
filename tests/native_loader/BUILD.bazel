@@ -17,6 +17,15 @@ platform(
 )
 
 platform(
+    name = "macos_arm64",
+    constraint_values = [
+        "@platforms//os:macos",
+        "@platforms//cpu:arm64",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+platform(
     name = "windows_x86_64",
     constraint_values = [
         "@platforms//os:windows",
