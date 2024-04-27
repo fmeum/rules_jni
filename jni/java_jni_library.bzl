@@ -1,4 +1,4 @@
-# Copyright 2021 Fabian Meumertzheim
+# Copyright 2024 Fabian Meumertzheim
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,12 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load(":cc_jni_library.bzl", _cc_jni_library = "cc_jni_library")
-load(":java_jni_library.bzl", _java_jni_library = "java_jni_library")
-load(":jni_headers.bzl", _jni_headers = "jni_headers")
+load("//jni/private:java_jni_library.bzl", _java_jni_library = "java_jni_library")
 
 visibility("public")
 
-cc_jni_library = _cc_jni_library
 java_jni_library = _java_jni_library
-jni_headers = _jni_headers

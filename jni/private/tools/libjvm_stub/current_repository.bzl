@@ -1,5 +1,4 @@
-#!/usr/bin/env sh
-# Copyright 2021 Fabian Meumertzheim
+# Copyright 2022 Fabian Meumertzheim
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-bazel_bin_dir=$(bazel info bazel-bin)
-docs_dir=$(realpath "$(dirname "$0")")
+visibility("private")
 
-bazel build //docs:all
-cp -f "${bazel_bin_dir}/docs/rules.md" "${bazel_bin_dir}/docs/workspace_macros.md" "${docs_dir}"
+RULES_JNI_REPOSITORY_DEFINE = "RULES_JNI_REPOSITORY=\\\"%s\\\"" % Label("//:LICENSE").workspace_name

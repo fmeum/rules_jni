@@ -15,6 +15,8 @@
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
 load(":transitions.bzl", "return_to_original_target_platforms_transition")
 
+visibility("//jni")
+
 def _jni_headers_impl(ctx):
     # Giving the include directory a name with a header extension ensures
     # compatibility with Bazel 4.0.0, which only considers the extension and not

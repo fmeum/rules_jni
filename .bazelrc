@@ -1,7 +1,13 @@
 test --test_output=errors
 
 # Isolate sandboxed build actions from each other.
-build --sandbox_tmpfs_path=/tmp
+common --sandbox_tmpfs_path=/tmp
 
 # Prevent PATH from being inherited from the environment.
-build --incompatible_strict_action_env
+common --incompatible_strict_action_env
+
+common --java_language_version=8
+common --java_runtime_version=remotejdk_21
+
+common --tool_java_language_version=21
+common --tool_java_runtime_version=remotejdk_21

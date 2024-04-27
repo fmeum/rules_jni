@@ -16,6 +16,8 @@ load(":jni_headers.bzl", "jni_headers")
 load(":os_cpu_utils.bzl", "SELECT_TARGET_CPU", "SELECT_TARGET_OS")
 load(":transitions.bzl", "multi_platform_transition")
 
+visibility("//jni")
+
 SinglePlatformArtifactInfo = provider(
     fields = ["cpu", "file", "os", "platform"],
 )

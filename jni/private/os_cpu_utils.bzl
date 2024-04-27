@@ -12,7 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load("@bazel_skylib//lib:modules.bzl", "modules")
-load("//jni/internal:repositories.bzl", "jdk_deps")
+visibility("private")
 
-download_jdk_deps = modules.as_extension(jdk_deps)
+CPUS = [
+    "aarch64",
+    "arm",
+    "mips64",
+    "ppc",
+    "riscv64",
+    "s390x",
+    "x86_32",
+    "x86_64",
+]
+
+OSES = [
+    "freebsd",
+    "linux",
+    "macos",
+    "openbsd",
+    "windows",
+    "android",
+]
+
+SELECT_TARGET_CPU = select({
+    "@platforms//cpu:%s" % cpu: cpu
+    for cpu in CPUS
+})
+
+SELECT_TARGET_OS = select({
+    "@platforms//os:%s" % os: os
+    for os in OSES
+})

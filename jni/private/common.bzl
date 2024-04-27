@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+visibility("//jni/private/tools/...")
+
 def _merge_default_infos(ctx, infos):
     return DefaultInfo(
         files = depset(transitive = [info.files for info in infos]),

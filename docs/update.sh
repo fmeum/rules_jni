@@ -1,4 +1,5 @@
-# Copyright 2022 Fabian Meumertzheim
+#!/usr/bin/env bash
+# Copyright 2021 Fabian Meumertzheim
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,4 +13,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-RULES_JNI_REPOSITORY_DEFINE = "RULES_JNI_REPOSITORY=\\\"%s\\\"" % Label("//:LICENSE").workspace_name
+set -euo pipefail
+
+cd "$BUILD_WORKSPACE_DIRECTORY"
+
+bazel build $(bazel query 'kind(stardoc, //docs:all)')
+
+mkdir -p docs-gen
+cp -fv bazel-bin/docs/rules.md docs-gen/rules.md
+cp -fv bazel-bin/docs/workspace_macros.md docs-gen/workspace_macros.md

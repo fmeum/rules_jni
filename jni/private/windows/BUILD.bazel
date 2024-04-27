@@ -5,5 +5,5 @@ copy_file(
     src = "@com_github_openjdk_jdk_windows_jni_md_h//file",
     out = "jni_md.h",
     is_executable = False,
-    visibility = ["//jni/internal:__pkg__"],
+    visibility = ["//jni/private:__pkg__"],
 )

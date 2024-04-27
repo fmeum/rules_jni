@@ -14,7 +14,7 @@
 
 load("@bazel_skylib//lib:new_sets.bzl", "sets")
 load("@bazel_skylib//lib:unittest.bzl", "analysistest", "asserts")
-load("@fmeum_rules_jni//jni:defs.bzl", "jni_headers")
+load("@fmeum_rules_jni//jni:jni_headers.bzl", "jni_headers")
 
 def _provider_test_impl(ctx):
     env = analysistest.begin(ctx)
@@ -43,8 +43,7 @@ def _provider_test_impl(ctx):
     system_include_paths = [path for path in compilation_context.system_includes.to_list()]
     asserts.false(env, "." in system_include_paths)
 
-    # Paths differ depending on whether bazel test is run from the main or the tests workspace.
-    asserts.true(env, any([path == "jni/internal" or path.endswith("/jni/internal") for path in system_include_paths]))
+    asserts.true(env, any([path.endswith("/jni/private") for path in system_include_paths]))
 
     asserts.equals(
         env,
