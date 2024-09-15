@@ -88,13 +88,3 @@ jobs:
           sudo apt install clang-14 llvm-14
           bazelisk coverage --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} //...
           ./verify_coverage.sh
-
-      - name: Upload test logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: testlogs-${{ matrix.bazel}}-${{ matrix.os }}-${{ matrix.jdk }}
-          # https://github.com/actions/upload-artifact/issues/92#issuecomment-711107236
-          path: |
-            ${{ github.workspace }}/tests/bazel-testlogs*/**/test.log
-            ${{ github.workspace }}/profile.gz

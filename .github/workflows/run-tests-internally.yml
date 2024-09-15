@@ -42,12 +42,3 @@ jobs:
         env:
           USE_BAZEL_VERSION: "last_green"
         run: bazelisk test --disk_cache="/home/runner/.cache/bazel-disk" //...
-
-      - name: Upload test logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: testlogs-internal
-          # https://github.com/actions/upload-artifact/issues/92#issuecomment-711107236
-          path: |
-            ${{ github.workspace }}/bazel-testlogs*/**/test.log
