@@ -19,7 +19,7 @@ jobs:
     name: Build and test internally (ubuntu-latest, Bazel last_green module, JDK 21)
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Set up JDK
         uses: actions/setup-java@v4
@@ -28,7 +28,7 @@ jobs:
           java-version: 21
 
       - name: Mount Bazel disk cache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: "/home/runner/.cache/bazel-disk"
           key: bazel-disk-cache-internal
@@ -45,7 +45,7 @@ jobs:
 
       - name: Upload test logs
         if: always()
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: testlogs-internal
           # https://github.com/actions/upload-artifact/issues/92#issuecomment-711107236
