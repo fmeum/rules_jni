@@ -26,6 +26,8 @@ jobs:
             jdk: 11
           - bazel: 6.x
             jdk: 17
+          - bazel: 6.x
+            bazel_mode: module
           - bazel: last_green
             jdk: 8
           - bazel: last_green
@@ -77,7 +79,7 @@ jobs:
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests
-        run: bazelisk test --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} //...
+        run: bazelisk test --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} //... @fmeum_rules_jni//jni/...
 
       - name: Check coverage
         if: ${{ (matrix.os == 'ubuntu-latest') && (matrix.jdk == '8' || matrix.jdk == '21') }}

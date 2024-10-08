@@ -33,6 +33,7 @@ bzl_library(
     name = "all_rules",
     srcs = glob(["*.bzl"]) + [
         "@bazel_tools//tools:bzl_srcs",
+        "@rules_cc//cc:bzl_srcs",
     ],
     visibility = ["//jni:__pkg__"],
 )

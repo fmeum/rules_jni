@@ -7,6 +7,8 @@
 ## jni_headers
 
 <pre>
+load("@rules_jni//jni:defs.bzl", "jni_headers")
+
 jni_headers(<a href="#jni_headers-name">name</a>, <a href="#jni_headers-lib">lib</a>)
 </pre>
 
@@ -63,6 +65,8 @@ cc_library(
 ## cc_jni_library
 
 <pre>
+load("@rules_jni//jni:defs.bzl", "cc_jni_library")
+
 cc_jni_library(<a href="#cc_jni_library-name">name</a>, <a href="#cc_jni_library-platforms">platforms</a>, <a href="#cc_jni_library-cc_binary_args">cc_binary_args</a>)
 </pre>
 
@@ -109,6 +113,8 @@ An example of such a CI workflow can be found [here](https://github.com/CodeInte
 ## java_jni_library
 
 <pre>
+load("@rules_jni//jni:defs.bzl", "java_jni_library")
+
 java_jni_library(<a href="#java_jni_library-name">name</a>, <a href="#java_jni_library-native_libs">native_libs</a>, <a href="#java_jni_library-java_library_args">java_library_args</a>)
 </pre>
 

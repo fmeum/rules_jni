@@ -7,6 +7,8 @@
 ## rules_jni_dependencies
 
 <pre>
+load("@rules_jni//jni:repositories.bzl", "rules_jni_dependencies")
+
 rules_jni_dependencies()
 </pre>
 
