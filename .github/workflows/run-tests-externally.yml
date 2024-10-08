@@ -79,7 +79,7 @@ jobs:
         env:
           USE_BAZEL_VERSION: ${{ matrix.bazel }}
         working-directory: ./tests
-        run: bazelisk test --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} //...
+        run: bazelisk test --config=ci --disk_cache=${{ matrix.cache }} --profile=${{ github.workspace }}/profile.gz ${{ matrix.bazel_extra_args }} //... @fmeum_rules_jni//jni/...
 
       - name: Check coverage
         if: ${{ (matrix.os == 'ubuntu-latest') && (matrix.jdk == '8' || matrix.jdk == '21') }}
