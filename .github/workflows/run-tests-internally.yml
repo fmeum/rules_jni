@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       BAZELISK_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    name: Build and test internally (ubuntu-latest, Bazel last_green module, JDK 21)
+    name: Build and test internally (ubuntu-latest, Bazel last_rc module, JDK 21)
 
     steps:
       - uses: actions/checkout@v4
@@ -35,10 +35,10 @@ jobs:
 
       - name: Build main repository
         env:
-          USE_BAZEL_VERSION: "last_green"
+          USE_BAZEL_VERSION: "last_rc"
         run: bazelisk build --disk_cache="/home/runner/.cache/bazel-disk" //...
 
       - name: Run tests in main repository
         env:
-          USE_BAZEL_VERSION: "last_green"
+          USE_BAZEL_VERSION: "last_rc"
         run: bazelisk test --disk_cache="/home/runner/.cache/bazel-disk" //...

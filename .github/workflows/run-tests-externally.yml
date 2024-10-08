@@ -26,6 +26,8 @@ jobs:
             jdk: 11
           - bazel: 6.x
             jdk: 17
+          - bazel: 6.x
+            bazel_mode: module
           - bazel: last_green
             jdk: 8
           - bazel: last_green
