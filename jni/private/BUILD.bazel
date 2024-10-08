@@ -32,10 +32,7 @@ copy_file(
 bzl_library(
     name = "all_rules",
     srcs = glob(["*.bzl"]) + [
-        "@bazel_tools//tools/build_defs/repo:cache.bzl",
-        "@bazel_tools//tools/build_defs/repo:http.bzl",
-        "@bazel_tools//tools/build_defs/repo:utils.bzl",
-        "@bazel_tools//tools/cpp:toolchain_utils.bzl",
+        "@bazel_tools//tools:bzl_srcs",
         "@rules_cc//cc:bzl_srcs",
     ],
     visibility = ["//jni:__pkg__"],
