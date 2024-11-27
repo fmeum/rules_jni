@@ -99,10 +99,10 @@ def _get_host_legacy_cpu():
     if os == "linux":
         return "k8"
     elif os == "osx":
-        if is_bazel_7_or_higher:
-            return "darwin_x86_64"
-        else:
-            return "darwin"
+        #if is_bazel_7_or_higher:
+        return "darwin_x86_64"
+        # else:
+           # return "darwin"
     elif os == "windows":
         return "x64_windows"
     else:
