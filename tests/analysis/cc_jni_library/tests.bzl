@@ -89,22 +89,16 @@ def _get_host_legacy_cpu():
     cpu = _get_host_constraint_value("cpu")
     os = _get_host_constraint_value("os")
 
-    # Indirectly test for Bazel 7 via:
-    # https://github.com/bazelbuild/bazel/commit/31fd464af77f084049386af02dbcc5189c745892
-    is_bazel_7_or_higher = attr.string() == attr.string()
     if os == "osx" and cpu == "aarch64":
         return "darwin_arm64"
     if cpu != "x86_64":
         fail("This test requires the host CPU to be x86_64 or darwin_arm64, got: %s" % cpu)
     if os == "linux":
         return "k8"
-    elif os == "osx":
-        if is_bazel_7_or_higher:
-            return "darwin_x86_64"
-        else:
-            return "darwin"
     elif os == "windows":
         return "x64_windows"
+    elif os == "osx":
+        return "darwin_x86_64"
     else:
         fail("This test requires the host OS to be linux, macos or windows, got: %s" % os)
 
