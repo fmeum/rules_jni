@@ -6,6 +6,9 @@ build --sandbox_tmpfs_path=/tmp
 # Full PATH is needed for tests and flipping this separately for test would duplicate build actions.
 build --noincompatible_strict_action_env
 
+build --java_language_version=8
+build --tool_java_language_version=8
+
 # Required for layering_check.
 build:ci --repo_env=CC=clang
 build:ci --features=layering_check

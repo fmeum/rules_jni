@@ -67,7 +67,7 @@ cc_library(
 <pre>
 load("@rules_jni//jni:defs.bzl", "cc_jni_library")
 
-cc_jni_library(<a href="#cc_jni_library-name">name</a>, <a href="#cc_jni_library-platforms">platforms</a>, <a href="#cc_jni_library-cc_binary_args">cc_binary_args</a>)
+cc_jni_library(<a href="#cc_jni_library-name">name</a>, <a href="#cc_jni_library-platforms">platforms</a>, <a href="#cc_jni_library-cc_binary_args">**cc_binary_args</a>)
 </pre>
 
 A native library that can be loaded by a Java application at runtime.
@@ -115,7 +115,7 @@ An example of such a CI workflow can be found [here](https://github.com/CodeInte
 <pre>
 load("@rules_jni//jni:defs.bzl", "java_jni_library")
 
-java_jni_library(<a href="#java_jni_library-name">name</a>, <a href="#java_jni_library-native_libs">native_libs</a>, <a href="#java_jni_library-java_library_args">java_library_args</a>)
+java_jni_library(<a href="#java_jni_library-name">name</a>, <a href="#java_jni_library-native_libs">native_libs</a>, <a href="#java_jni_library-java_library_args">**java_library_args</a>)
 </pre>
 
 A Java library that bundles one or more native libraries created with [`cc_jni_library`](#cc_jni_library).
