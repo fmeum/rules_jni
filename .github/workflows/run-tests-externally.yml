@@ -28,12 +28,16 @@ jobs:
             jdk: 17
           - bazel: 6.x
             bazel_mode: module
+          - bazel: 8.x
+            bazel_mode: workspace
           - bazel: last_green
             jdk: 8
           - bazel: last_green
             jdk: 11
           - bazel: last_green
             jdk: 17
+          - bazel: last_green
+            bazel_mode: workspace
           - bazel_mode: workspace
             jdk: 17
           - bazel_mode: workspace
