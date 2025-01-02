@@ -47,7 +47,7 @@ def _jni_headers_impl(ctx):
     )
     compilation_context = cc_common.create_compilation_context(
         headers = depset([include_dir]),
-        quote_includes = [include_dir.path],
+        quote_includes = depset([include_dir.path]),
     )
     cc_info_with_jni = cc_common.merge_cc_infos(
         direct_cc_infos = [
