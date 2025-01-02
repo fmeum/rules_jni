@@ -46,7 +46,7 @@ def _jni_headers_impl(ctx):
         unsupported_features = ctx.disabled_features,
     )
     compilation_context = cc_common.create_compilation_context(
-        headers = [include_dir],
+        headers = depset([include_dir]),
         quote_includes = [include_dir.path],
     )
     cc_info_with_jni = cc_common.merge_cc_infos(
