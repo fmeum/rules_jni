@@ -45,12 +45,8 @@ def _jni_headers_impl(ctx):
         requested_features = ctx.features,
         unsupported_features = ctx.disabled_features,
     )
-    compilation_context, _ = cc_common.compile(
-        name = ctx.attr.name,
-        actions = ctx.actions,
-        feature_configuration = feature_configuration,
-        cc_toolchain = cc_toolchain,
-        public_hdrs = [include_dir],
+    compilation_context = cc_common.create_compilation_context(
+        headers = [include_dir],
         quote_includes = [include_dir.path],
     )
     cc_info_with_jni = cc_common.merge_cc_infos(
