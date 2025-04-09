@@ -20,6 +20,7 @@ build:workspace --noexperimental_enable_bzlmod
 coverage --repo_env=CC=clang
 coverage --repo_env=BAZEL_USE_LLVM_NATIVE_COVERAGE=1
 coverage --repo_env=GCOV=llvm-profdata
+coverage --repo_env=BAZEL_LLVM_PROFDATA=llvm-profdata
 coverage --combined_report=lcov
 coverage --experimental_use_llvm_covmap
 coverage --experimental_generate_llvm_lcov
