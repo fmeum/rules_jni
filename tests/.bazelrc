@@ -28,4 +28,5 @@ coverage --instrumentation_filter=^//analysis/cc_jni_library[/:],^//analysis/jni
 
 coverage:ci --repo_env=CC=clang-14
 coverage:ci --repo_env=GCOV=llvm-profdata-14
+coverage:ci --repo_env=BAZEL_LLVM_PROFDATA=llvm-profdata-14
 coverage:ci --repo_env=BAZEL_LLVM_COV=llvm-cov-14
