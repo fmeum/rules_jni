@@ -12,6 +12,48 @@ load("@fmeum_rules_jni//jni:repositories.bzl", "rules_jni_dependencies")
 rules_jni_dependencies()
 
 http_archive(
+    name = "rules_pkg",
+    sha256 = "8f9ee2dc10c1ae514ee599a8b42ed99fa262b757058f65ad3c384289ff70c4b8",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_pkg/releases/download/0.9.1/rules_pkg-0.9.1.tar.gz",
+        "https://github.com/bazelbuild/rules_pkg/releases/download/0.9.1/rules_pkg-0.9.1.tar.gz",
+    ],
+)
+
+load("@rules_pkg//:deps.bzl", "rules_pkg_dependencies")
+
+rules_pkg_dependencies()
+
+http_archive(
+    name = "rules_cc",
+    sha256 = "abc605dd850f813bb37004b77db20106a19311a96b2da1c92b789da529d28fe1",
+    strip_prefix = "rules_cc-0.0.17",
+    urls = ["https://github.com/bazelbuild/rules_cc/releases/download/0.0.17/rules_cc-0.0.17.tar.gz"],
+)
+
+http_archive(
+    name = "rules_java",
+    sha256 = "8475fae7a95463a4fd323a46b0f5601f89863ba019afa358cc9fa1d0e67cdd63",
+    urls = [
+        "https://github.com/bazelbuild/rules_java/releases/download/8.6.0/rules_java-8.6.0.tar.gz",
+    ],
+)
+
+load("@rules_java//java:rules_java_deps.bzl", "rules_java_dependencies")
+
+rules_java_dependencies()
+
+# note that the following line is what is minimally required from protobuf for the java rules
+# consider using the protobuf_deps() public API from @com_google_protobuf//:protobuf_deps.bzl
+load("@com_google_protobuf//bazel/private:proto_bazel_features.bzl", "proto_bazel_features")  # buildifier: disable=bzl-visibility
+
+proto_bazel_features(name = "proto_bazel_features")
+
+load("@rules_java//java:repositories.bzl", "rules_java_toolchains")
+
+rules_java_toolchains()
+
+http_archive(
     name = "build_bazel_apple_support",
     sha256 = "c4bb2b7367c484382300aee75be598b92f847896fb31bbd22f3a2346adf66a80",
     url = "https://github.com/bazelbuild/apple_support/releases/download/1.15.1/apple_support.1.15.1.tar.gz",

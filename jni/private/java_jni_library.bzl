@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@rules_java//java:java_library.bzl", "java_library")
 load(":common.bzl", "merge_java_infos")
 load(":jni_headers.bzl", "jni_headers")
 
@@ -60,11 +61,13 @@ def java_jni_library(
 
     java_library_deps_arg = "deps" if java_library_args.get("srcs") else "runtime_deps"
 
-    # Simple concatenation is compatible with select, append is not.
     java_library_args.setdefault(java_library_deps_arg, [])
+
+    # Simple concatenation is compatible with select, append is not.
+    # buildifier: disable=list-append
     java_library_args[java_library_deps_arg] += [Label("//jni/tools/native_loader")]
 
-    native.java_library(
+    java_library(
         name = original_name,
         tags = ["manual"],
         visibility = ["//visibility:private"],

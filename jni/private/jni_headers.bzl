@@ -13,6 +13,9 @@
 # limitations under the License.
 
 load("@bazel_tools//tools/cpp:toolchain_utils.bzl", "find_cpp_toolchain")
+load("@rules_cc//cc/common:cc_common.bzl", "cc_common")
+load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
+load("@rules_java//java/common:java_info.bzl", "JavaInfo")
 load(":transitions.bzl", "return_to_original_target_platforms_transition")
 
 visibility("//jni")

@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-load(":jni_headers.bzl", "jni_headers")
+load("@rules_cc//cc:cc_binary.bzl", "cc_binary")
+load("@rules_java//java:java_library.bzl", "java_library")
 load(":os_cpu_utils.bzl", "SELECT_TARGET_CPU", "SELECT_TARGET_OS")
 load(":transitions.bzl", "multi_platform_transition")
 
@@ -189,11 +190,13 @@ def cc_jni_library(
     # Arguments to be set on all targets.
     testonly = cc_binary_args.pop("testonly", default = None)
 
-    # Simple concatenation is compatible with select, append is not.
     cc_binary_args.setdefault("deps", [])
+
+    # Simple concatenation is compatible with select, append is not.
+    # buildifier: disable=list-append
     cc_binary_args["deps"] += [Label("//jni")]
 
-    native.cc_binary(
+    cc_binary(
         name = macos_library_name,
         linkshared = True,
         linkstatic = True,
@@ -202,7 +205,7 @@ def cc_jni_library(
         visibility = ["//visibility:private"],
         **cc_binary_args
     )
-    native.cc_binary(
+    cc_binary(
         name = unix_library_name,
         linkshared = True,
         linkstatic = True,
@@ -211,7 +214,7 @@ def cc_jni_library(
         visibility = ["//visibility:private"],
         **cc_binary_args
     )
-    native.cc_binary(
+    cc_binary(
         name = windows_library_name,
         linkshared = True,
         linkstatic = True,
@@ -246,8 +249,7 @@ def cc_jni_library(
         testonly = testonly,
         visibility = ["//visibility:private"],
     )
-
-    native.java_library(
+    java_library(
         name = name,
         resources = [":" + multi_platform_artifact_name],
         resource_strip_prefix = _maven_resource_prefix_if_present(),

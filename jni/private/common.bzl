@@ -12,6 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+load("@rules_cc//cc/common:cc_common.bzl", "cc_common")
+load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
+load("@rules_java//java/common:java_common.bzl", "java_common")
+load("@rules_java//java/common:java_info.bzl", "JavaInfo")
+
 visibility("//jni/private/tools/...")
 
 def _merge_default_infos(ctx, infos):
