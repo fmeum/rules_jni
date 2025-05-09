@@ -2,6 +2,15 @@ workspace(name = "fmeum_rules_jni_tests")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_jar")
 
+local_repository(
+    name = "fmeum_rules_jni",
+    path = "../",
+)
+
+load("@fmeum_rules_jni//jni:repositories.bzl", "rules_jni_dependencies")
+
+rules_jni_dependencies()
+
 http_archive(
     name = "rules_pkg",
     sha256 = "8f9ee2dc10c1ae514ee599a8b42ed99fa262b757058f65ad3c384289ff70c4b8",
@@ -35,15 +44,6 @@ rules_java_dependencies()
 
 load("@rules_java//java:repositories.bzl", "rules_java_toolchains")
 rules_java_toolchains()
-
-local_repository(
-    name = "fmeum_rules_jni",
-    path = "../",
-)
-
-load("@fmeum_rules_jni//jni:repositories.bzl", "rules_jni_dependencies")
-
-rules_jni_dependencies()
 
 http_archive(
     name = "build_bazel_apple_support",
