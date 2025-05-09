@@ -159,9 +159,10 @@ public final class RulesJni {
     String basename = libraryBasename(name);
     if (LOADED_LIBS.containsKey(basename)) {
       if (!libraryResource.toString().equals(LOADED_LIBS.get(basename))) {
-        throw new UnsatisfiedLinkError(String.format(
-            "Cannot load two native libraries with same basename ('%s') from different paths\nFirst library: %s\nSecond library: %s\n",
-            basename, LOADED_LIBS.get(basename), libraryResource));
+        throw new UnsatisfiedLinkError(
+            String.format("Cannot load two native libraries with same basename ('%s') from "
+                    + "different paths\nFirst library: %s\nSecond library: %s\n",
+                basename, LOADED_LIBS.get(basename), libraryResource));
       }
       return;
     }

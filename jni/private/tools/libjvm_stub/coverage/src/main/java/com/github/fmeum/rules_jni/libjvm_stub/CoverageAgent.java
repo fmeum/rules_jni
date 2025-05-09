@@ -53,8 +53,8 @@ public final class CoverageAgent {
           CoverageAgent.class.getProtectionDomain().getCodeSource().getLocation().toURI()));
       instrumentation.appendToBootstrapClassLoaderSearch(ownJar);
     } catch (IOException | NullPointerException | URISyntaxException e) {
-      warn(
-          "Failed to append JaCoCo to bootstrap class loader search path, which may cause test failures",
+      warn("Failed to append JaCoCo to bootstrap class loader search path, which may cause test "
+              + "failures",
           e);
     }
   }

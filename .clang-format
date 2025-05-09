@@ -3,6 +3,10 @@ Language: Cpp
 BasedOnStyle: Google
 DerivePointerAlignment: false
 ---
+Language: C
+BasedOnStyle: Google
+DerivePointerAlignment: false
+---
 Language: Java
 BasedOnStyle: Google
 ...
