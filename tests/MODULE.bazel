@@ -8,6 +8,7 @@ bazel_dep(name = "bazel_skylib", version = "1.1.1")
 bazel_dep(name = "platforms", version = "0.0.4")
 bazel_dep(name = "rules_cc", version = "0.0.17")
 bazel_dep(name = "rules_java", version = "7.2.0")
+bazel_dep(name = "rules_shell", version = "0.3.0")
 bazel_dep(name = "stardoc", version = "0.5.0", repo_name = "io_bazel_stardoc")
 
 # For the Xcode toolchain.

@@ -16,6 +16,7 @@ load("@bazel_skylib//lib:new_sets.bzl", "sets")
 load("@bazel_skylib//lib:unittest.bzl", "analysistest", "asserts")
 load("@fmeum_rules_jni//jni:defs.bzl", "cc_jni_library")
 load("@local_config_platform//:constraints.bzl", "HOST_CONSTRAINTS")
+load("@rules_cc//cc:cc_library.bzl", "cc_library")
 
 MULTI_PLATFORM_TEST_NATIVE_LIBRARY_NAME = "multi_platform_native_lib"
 
@@ -269,7 +270,7 @@ unsupported_runfiles_test = analysistest.make(
 )
 
 def _test_unsupported_runfiles():
-    native.cc_library(
+    cc_library(
         name = "unsupported_runfiles_cc_lib",
         data = [":tests.bzl"],
     )

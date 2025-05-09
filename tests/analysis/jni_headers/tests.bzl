@@ -15,6 +15,8 @@
 load("@bazel_skylib//lib:new_sets.bzl", "sets")
 load("@bazel_skylib//lib:unittest.bzl", "analysistest", "asserts")
 load("@fmeum_rules_jni//jni:jni_headers.bzl", "jni_headers")
+load("@rules_cc//cc/common:cc_info.bzl", "CcInfo")
+load("@rules_java//java:java_library.bzl", "java_library")
 
 def _provider_test_impl(ctx):
     env = analysistest.begin(ctx)
@@ -56,7 +58,7 @@ def _provider_test_impl(ctx):
 provider_test = analysistest.make(_provider_test_impl)
 
 def _test_provider():
-    native.java_library(
+    java_library(
         name = "provider_java_lib",
         tags = ["manual"],
     )

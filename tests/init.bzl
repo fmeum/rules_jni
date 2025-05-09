@@ -14,7 +14,6 @@
 
 load("@bazel_skylib//:workspace.bzl", "bazel_skylib_workspace")
 load("@rules_jvm_external//:defs.bzl", "maven_install")
-load("@rules_jvm_external//:specs.bzl", "maven")
 
 def rules_jni_tests_init():
     maven_install(
