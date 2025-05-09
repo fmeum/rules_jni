@@ -59,6 +59,8 @@ Currently, rules_jni depends on:
 * [rules_license](https://github.com/bazelbuild/rules_license)
 * individual files of the [OpenJDK](https://github.com/openjdk/jdk)
 
+It also requires rules_cc 0.0.17 or later and rules_java 8.6.0 or later, which must be supplied by
+the end user.
 """
     maybe(
         http_archive,
