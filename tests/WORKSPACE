@@ -11,6 +11,15 @@ load("@fmeum_rules_jni//jni:repositories.bzl", "rules_jni_dependencies")
 
 rules_jni_dependencies()
 
+# Create the host platform repository transitively required by rules_go.
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load("@platforms//host:extension.bzl", "host_platform_repo")
+
+maybe(
+    host_platform_repo,
+    name = "host_platform",
+)
+
 http_archive(
     name = "rules_pkg",
     sha256 = "8f9ee2dc10c1ae514ee599a8b42ed99fa262b757058f65ad3c384289ff70c4b8",

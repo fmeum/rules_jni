@@ -14,8 +14,7 @@ SHA=$(shasum -a 256 $ARCHIVE | awk '{print $1}')
 cat << EOF
 ## Using Bzlmod
 
-1. Enable with \`common --enable_bzlmod\` in \`.bazelrc\`.
-2. Add to your \`MODULE.bazel\` file:
+Add to your \`MODULE.bazel\` file:
 
 \`\`\`starlark
 bazel_dep(name = "rules_jni", version = "${TAG:1}")
@@ -32,6 +31,19 @@ http_archive(
     sha256 = "${SHA}",
     strip_prefix = "${PREFIX}",
     url = "https://github.com/fmeum/rules_jni/releases/download/${TAG}/${ARCHIVE}",
+)
+
+load("@rules_jni//jni:repositories.bzl", "rules_jni_dependencies")
+
+rules_jni_dependencies()
+
+# Create the host platform repository transitively required by rules_go.
+load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load("@platforms//host:extension.bzl", "host_platform_repo")
+
+maybe(
+	host_platform_repo,
+	name = "host_platform",
 )
 EOF
 
