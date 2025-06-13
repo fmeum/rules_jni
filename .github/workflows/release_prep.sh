@@ -36,15 +36,6 @@ http_archive(
 load("@rules_jni//jni:repositories.bzl", "rules_jni_dependencies")
 
 rules_jni_dependencies()
-
-# Create the host platform repository transitively required by rules_go.
-load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
-load("@platforms//host:extension.bzl", "host_platform_repo")
-
-maybe(
-	host_platform_repo,
-	name = "host_platform",
-)
 EOF
 
 echo "\`\`\`"
