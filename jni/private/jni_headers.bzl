@@ -135,7 +135,6 @@ cc_library(
         ),
     },
     fragments = ["cpp"],
-    incompatible_use_toolchain_transition = True,
     provides = [CcInfo],
     toolchains = ["@bazel_tools//tools/cpp:toolchain_type"],
 )
