@@ -49,7 +49,7 @@ jobs:
             cache: "/private/var/tmp/bazel-disk"
           - os: macos-latest
             cache: "/private/var/tmp/bazel-disk"
-          - os: windows-2019
+          - os: windows-latest
             cache: "C:\\tmp\\bazel-disk"
           - bazel_mode: module
             bazel_extra_args: "--config=bzlmod"
