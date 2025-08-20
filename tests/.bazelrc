@@ -1,5 +1,9 @@
 test --test_output=errors
 
+# Keep builds consistent across
+# https://github.com/bazelbuild/bazel/commit/2dde0d53a3c867b3b862c951092b25bae623d409
+build --features=system_include_paths
+
 # Isolate sandboxed build actions from each other.
 build --sandbox_tmpfs_path=/tmp
 
