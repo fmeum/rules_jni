@@ -15,4 +15,4 @@ buildifier -r .
 
 # Licence headers
 # go install github.com/google/addlicense@latest
-addlicense -c "Fabian Meumertzheim" docs/ jni/ tests/
+addlicense -c "Fabian Meumertzheim" -ignore '**/BUILD.bazel' -ignore '**/MODULE.bazel' docs/ jni/ tests/
