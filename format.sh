@@ -14,5 +14,5 @@ find . -name '*.c' \
 buildifier -r .
 
 # Licence headers
-# go get -u github.com/google/addlicense
+# go install github.com/google/addlicense@latest
 addlicense -c "Fabian Meumertzheim" docs/ jni/ tests/
