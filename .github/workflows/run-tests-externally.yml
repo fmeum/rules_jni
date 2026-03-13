@@ -17,17 +17,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        bazel: ["6.*", "7.*", "8.*", "9.*", last_green]
+        bazel: ["7.*", "8.*", "9.*", last_green]
         bazel_mode: [workspace, module]
         os: [ubuntu-latest, macos-latest, windows-latest]
         jdk: [8, 11, 17, 21]
         exclude:
-          - bazel: "6.*"
-            jdk: 11
-          - bazel: "6.*"
-            jdk: 17
-          - bazel: "6.*"
-            bazel_mode: module
           - bazel: "8.*"
             bazel_mode: workspace
           - bazel: "9.*"
