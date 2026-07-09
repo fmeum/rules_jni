@@ -75,6 +75,13 @@ load(
 
 apple_support_dependencies()
 
+# apple_support declares the bazel_features repository but does not run its
+# setup macro, which defines the bazel_features_version repository that the
+# generated Apple cc toolchain config loads.
+load("@bazel_features//:deps.bzl", "bazel_features_deps")
+
+bazel_features_deps()
+
 http_jar(
     name = "junit",
     sha256 = "8e495b634469d64fb8acfa3495a065cbacc8a0fff55ce1e31007be4c16dc57d3",
