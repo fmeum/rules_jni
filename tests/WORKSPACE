@@ -64,8 +64,8 @@ rules_java_toolchains()
 
 http_archive(
     name = "build_bazel_apple_support",
-    sha256 = "c4bb2b7367c484382300aee75be598b92f847896fb31bbd22f3a2346adf66a80",
-    url = "https://github.com/bazelbuild/apple_support/releases/download/1.15.1/apple_support.1.15.1.tar.gz",
+    sha256 = "73c8dc6cdd7cea87956db9279a69c9e68bd2a5ec6a6a507e36d6e2d7da4d71a4",
+    url = "https://github.com/bazelbuild/apple_support/releases/download/1.21.1/apple_support.1.21.1.tar.gz",
 )
 
 load(
@@ -75,10 +75,18 @@ load(
 
 apple_support_dependencies()
 
+# apple_support declares the bazel_features repository but does not run its
+# setup macro, which defines the bazel_features_version repository that the
+# generated Apple cc toolchain config loads.
+load("@bazel_features//:deps.bzl", "bazel_features_deps")
+
+bazel_features_deps()
+
 http_jar(
     name = "junit",
     sha256 = "8e495b634469d64fb8acfa3495a065cbacc8a0fff55ce1e31007be4c16dc57d3",
     urls = [
+        "https://mirror.bazel.build/repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar",
         "https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar",
     ],
 )
