@@ -103,8 +103,16 @@ def _get_host_legacy_cpu():
     else:
         fail("This test requires the host OS to be linux, macos or windows, got: %s" % os)
 
+def _get_host_cc_toolchain_label():
+    legacy_cpu = _get_host_legacy_cpu()
+    if legacy_cpu.startswith("darwin_"):
+        # With Bazel 9 and newer, rules_cc no longer autoconfigures a C++
+        # toolchain on macOS and apple_support provides it instead.
+        return "@local_config_apple_cc//:cc-compiler-%s" % legacy_cpu
+    return "@local_config_cc//:cc-compiler-%s" % legacy_cpu
+
 def _test_multi_platform():
-    local_config_cc_toolchain_label = "@local_config_cc//:cc-compiler-%s" % _get_host_legacy_cpu()
+    local_config_cc_toolchain_label = _get_host_cc_toolchain_label()
 
     native.platform(
         name = "multi_platform_linux",
